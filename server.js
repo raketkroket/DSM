@@ -20,6 +20,7 @@ const STATIC_FILES = new Map([
   ['/offerte.html', 'offerte.html'],
   ['/style.css', 'style.css'],
   ['/form.css', 'form.css'],
+  ['/images.js', 'images.js'],
   ['/script.js', 'script.js']
 ]);
 const CONTENT_TYPES = {
