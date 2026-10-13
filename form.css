@@ -22,7 +22,7 @@
   resize: vertical;
 }
 
-.btn:disabled {
+.button:disabled {
   cursor: wait;
   opacity: .65;
   transform: none;

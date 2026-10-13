@@ -46,5 +46,12 @@ test('serves the quote page', async () => {
   const response = await fetch(`${baseUrl}/offerte.html`);
 
   assert.equal(response.status, 200);
-  assert.match(await response.text(), /Aanvraag versturen/);
+  assert.match(await response.text(), /Verstuur aanvraag/);
+});
+
+test('serves the shared image catalogue', async () => {
+  const response = await fetch(`${baseUrl}/images.js`);
+
+  assert.equal(response.status, 200);
+  assert.match(await response.text(), /DSM_IMAGES/);
 });
