@@ -8,7 +8,7 @@ export function Faq({ faq, withSchema = true }: { faq: FaqContent; withSchema?: 
   return (
     <section aria-labelledby="faq-titel" className="py-24 md:py-36">
       {withSchema && <JsonLd data={faqJsonLd(faq)} />}
-      <div className="shell grid gap-12 lg:grid-cols-12 lg:gap-6">
+      <div className="shell grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-6">
         <Reveal className="lg:col-span-4">
           <p className="eyebrow">{faq.eyebrow}</p>
           <h2 id="faq-titel" className="display-md mt-6 max-w-[14ch] text-navy">

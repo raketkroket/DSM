@@ -55,7 +55,7 @@ export function ProcessTimeline({ process }: { process: HomeContent['process'] }
 
   return (
     <section aria-labelledby="werkwijze-titel" className="relative bg-paper py-24 md:py-36">
-      <div className="shell grid gap-14 lg:grid-cols-12 lg:gap-6">
+      <div className="shell grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-6">
         <div className="lg:col-span-5">
           <div className="lg:sticky lg:top-32">
             <Reveal>

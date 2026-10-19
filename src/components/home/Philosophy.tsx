@@ -19,7 +19,7 @@ export function Philosophy({ philosophy }: { philosophy: HomeContent['philosophy
           className="mt-8 max-w-[20ch] text-[clamp(2.4rem,6.4vw,6.4rem)] leading-[0.98] font-medium tracking-[-0.045em]"
         />
 
-        <div className="mt-20 grid gap-14 md:mt-28 lg:grid-cols-12 lg:gap-6">
+        <div className="mt-20 grid grid-cols-1 gap-14 md:mt-28 lg:grid-cols-12 lg:gap-6">
           <div className="space-y-6 text-[1.05rem] leading-relaxed text-white/70 lg:col-span-5">
             {philosophy.paragraphs.map((paragraph, index) => (
               <Reveal key={index} delay={index * 0.08}>

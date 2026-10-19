@@ -177,6 +177,7 @@ export function QuoteForm({
               disabled={index > step}
               onClick={() => index < step && goTo(index)}
               aria-current={index === step ? 'step' : undefined}
+              aria-label={`Stap ${index + 1}: ${item.title}${index < step ? ' (terug naar deze stap)' : ''}`}
               className="group w-full text-left disabled:cursor-default"
             >
               <span className="block h-[3px] overflow-hidden rounded-full bg-line">
@@ -214,7 +215,7 @@ export function QuoteForm({
 
             {step === 0 && (
               <div className="mt-8">
-                <div role="radiogroup" aria-label="Gewenste beveiligingsdienst" aria-invalid={allErrors.service ? true : undefined} className="grid gap-2.5 sm:grid-cols-2">
+                <div role="radiogroup" aria-label="Gewenste beveiligingsdienst" aria-invalid={allErrors.service ? true : undefined} className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
                   {[...services.map((service) => service.title), OTHER_SERVICE].map((title, index) => {
                     const selected = values.service === title;
                     return (
@@ -264,7 +265,7 @@ export function QuoteForm({
             )}
 
             {step === 2 && (
-              <div className="mt-8 grid gap-6 sm:grid-cols-2">
+              <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <div className="sm:col-span-2">
                   <Field id="company" label="Bedrijfsnaam" error={allErrors.company}>
                     <TextInput id="company" value={values.company} onChange={(event) => set('company', event.target.value)} error={allErrors.company} autoComplete="organization" />
@@ -298,7 +299,7 @@ export function QuoteForm({
                   ['E-mailadres', values.email, 2],
                   ['Telefoonnummer', values.phone, 2],
                 ].map(([label, value, target]) => (
-                  <div key={label as string} className="grid gap-1 px-5 py-4 sm:grid-cols-[11rem_1fr_auto] sm:gap-4">
+                  <div key={label as string} className="grid grid-cols-1 gap-1 px-5 py-4 sm:grid-cols-[11rem_1fr_auto] sm:gap-4">
                     <dt className="text-[0.85rem] text-muted">{label}</dt>
                     <dd className="text-[0.95rem] break-words whitespace-pre-line text-navy">{value as string}</dd>
                     <button type="button" onClick={() => goTo(target as number)} className="justify-self-start text-[0.85rem] text-steel underline-offset-4 hover:text-navy hover:underline sm:justify-self-end">
@@ -318,7 +319,7 @@ export function QuoteForm({
         </div>
       )}
 
-      <div className="mt-8 flex items-center justify-between gap-4 border-t border-line pt-6">
+      <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-6">
         {step > 0 ? (
           <button type="button" onClick={() => goTo(step - 1)} className="inline-flex items-center gap-2 text-[0.95rem] text-muted hover:text-navy">
             <ArrowLeft className="h-4 w-4" /> Vorige

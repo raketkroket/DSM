@@ -10,6 +10,7 @@ import { Breadcrumbs } from '@/components/site/Breadcrumbs';
 import { JsonLd } from '@/components/site/JsonLd';
 import { Photo } from '@/components/site/Photo';
 import { breadcrumbJsonLd, serviceJsonLd } from '@/lib/seo';
+import { fitTitle } from '@/lib/fit';
 import type { ServiceContent, SiteContent } from '@/lib/content/types';
 
 const delay = (ms: number) => ({ '--d': `${ms}ms` }) as React.CSSProperties;
@@ -48,7 +49,7 @@ function HeroFrame({ service, index, total }: { service: ServiceContent; index: 
             <div className="intro-fade" style={delay(300)}>
               <Breadcrumbs items={crumbs(service)} />
             </div>
-            <h1 className="mt-6 display-xl text-navy">
+            <h1 className="fit-title mt-6 leading-[0.96] font-medium tracking-[-0.045em] text-navy [--fit-w:165vw] md:[--fit-w:min(112vw,1400px)]" style={fitTitle(service.title, 7.25)}>
               <span className="block overflow-hidden pb-[0.08em]">
                 <span className="intro-rise block" style={delay(420)}>
                   {service.title}
@@ -72,12 +73,12 @@ function HeroFrame({ service, index, total }: { service: ServiceContent; index: 
 function HeroSplit({ service, index, total }: { service: ServiceContent; index: number; total: number }) {
   return (
     <section className="pt-28 md:pt-36">
-      <div className="shell grid gap-12 lg:grid-cols-12 lg:gap-6">
+      <div className="shell grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-6">
         <div className="flex flex-col lg:col-span-6 lg:pt-10">
           <div className="intro-fade" style={delay(200)}>
             <Breadcrumbs items={crumbs(service)} />
           </div>
-          <h1 className="mt-8 display-xl text-navy">
+          <h1 className="fit-title mt-8 leading-[0.96] font-medium tracking-[-0.045em] text-navy [--fit-w:165vw] lg:[--fit-w:min(80vw,1180px)]" style={fitTitle(service.title, 7.25)}>
             <span className="block overflow-hidden pb-[0.08em]">
               <span className="intro-rise block" style={delay(320)}>
                 {service.title}
@@ -124,14 +125,14 @@ function HeroType({ service, index, total }: { service: ServiceContent; index: n
             <ServiceNumber index={index} total={total} />
           </div>
         </div>
-        <h1 className="mt-10 max-w-[16ch] text-[clamp(2.8rem,8vw,8.5rem)] leading-[0.92] font-medium tracking-[-0.05em] text-navy">
+        <h1 className="fit-title mt-10 max-w-[18ch] leading-[0.92] font-medium tracking-[-0.05em] text-navy [--fit-w:165vw] md:[--fit-w:min(150vw,2400px)]" style={fitTitle(service.title, 8.5)}>
           <span className="block overflow-hidden pb-[0.08em]">
             <span className="intro-rise block" style={delay(320)}>
               {service.title}
             </span>
           </span>
         </h1>
-        <div className="mt-10 grid gap-8 md:grid-cols-12">
+        <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-12">
           <p className="intro-fade-up accent text-[clamp(1.5rem,2.6vw,2.4rem)] leading-tight text-navy-soft md:col-span-6" style={delay(560)}>
             {service.tagline}
           </p>
@@ -153,7 +154,7 @@ function HeroType({ service, index, total }: { service: ServiceContent; index: n
 function ActivitiesRows({ service }: { service: ServiceContent }) {
   return (
     <section aria-labelledby="werkzaamheden" className="py-24 md:py-32">
-      <div className="shell grid gap-12 lg:grid-cols-12 lg:gap-6">
+      <div className="shell grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-6">
         <div className="lg:col-span-4">
           <div className="lg:sticky lg:top-32">
             <Reveal>
@@ -198,7 +199,7 @@ function ActivitiesCards({ service }: { service: ServiceContent }) {
             </p>
           </Reveal>
         </div>
-        <RevealGroup as="ol" className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <RevealGroup as="ol" className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {service.activities.map((activity, i) => (
             <RevealItem
               as="li"
@@ -220,7 +221,7 @@ function ActivitiesDark({ service }: { service: ServiceContent }) {
   return (
     <section aria-labelledby="werkzaamheden" className="relative overflow-hidden bg-navy-deep py-24 text-white md:py-32">
       <div className="blueprint-dark pointer-events-none absolute inset-0" aria-hidden />
-      <div className="shell relative grid gap-12 lg:grid-cols-12 lg:gap-6">
+      <div className="shell relative grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-6">
         <div className="lg:col-span-5">
           <Reveal>
             <p className="eyebrow text-steel-soft!">Werkzaamheden</p>
@@ -232,7 +233,7 @@ function ActivitiesDark({ service }: { service: ServiceContent }) {
             <Photo image={service.detailImage} sizes="36vw" />
           </ImageReveal>
         </div>
-        <RevealGroup as="ol" className="grid gap-x-8 sm:grid-cols-2 lg:col-span-6 lg:col-start-7">
+        <RevealGroup as="ol" className="grid grid-cols-1 gap-x-8 sm:grid-cols-2 lg:col-span-6 lg:col-start-7">
           {service.activities.map((activity, i) => (
             <RevealItem as="li" key={activity} className="border-t border-white/12 py-6">
               <span className="font-mono text-[0.7rem] text-steel-soft">{String(i + 1).padStart(2, '0')}</span>
@@ -269,7 +270,7 @@ export function ServiceView({ service, index, site }: Props) {
 
       {/* Introduction */}
       <section aria-labelledby="introductie" className="py-24 md:py-32">
-        <div className="shell grid gap-14 lg:grid-cols-12 lg:gap-6">
+        <div className="shell grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-6">
           <div className="lg:col-span-6 lg:col-start-7 lg:row-start-1">
             <h2 id="introductie" className="sr-only">
               Over {service.title.toLowerCase()}
@@ -314,7 +315,7 @@ export function ServiceView({ service, index, site }: Props) {
 
       {/* Audience */}
       <section aria-labelledby="doelgroep" className="py-24 md:py-32">
-        <div className="shell grid items-center gap-12 lg:grid-cols-12 lg:gap-6">
+        <div className="shell grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-6">
           <div className={`lg:col-span-6 ${variant === 2 ? 'lg:col-start-7' : ''}`}>
             <Reveal>
               <p className="eyebrow">{service.audienceTitle}</p>
@@ -346,17 +347,21 @@ export function ServiceView({ service, index, site }: Props) {
         <div className="shell">
           <Reveal className="relative overflow-hidden rounded-[1.75rem] bg-navy px-6 py-14 text-white sm:px-12 md:px-16 md:py-20">
             <div className="blueprint-dark pointer-events-none absolute inset-0" aria-hidden />
-            <div className="relative grid gap-10 md:grid-cols-12 md:items-end">
-              <div className="md:col-span-7">
+            <div className="relative grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-end">
+              <div className="lg:col-span-7">
                 <p className="eyebrow text-steel-soft!">Vrijblijvend advies</p>
-                <h2 id="dienst-cta" className="display-md mt-6">
+                <h2
+                  id="dienst-cta"
+                  className="fit-title mt-6 leading-[1.04] font-medium tracking-[-0.035em] [--fit-w:135vw] lg:[--fit-w:min(74vw,1000px)]"
+                  style={fitTitle(service.title, 3.4)}
+                >
                   {service.title} voor uw organisatie?
                 </h2>
                 <p className="mt-5 max-w-[34rem] text-[1.02rem] leading-relaxed text-white/70">
                   Vertel ons over uw locatie en wensen. Op basis van uw aanvraag bespreken wij welke aanpak passend is.
                 </p>
               </div>
-              <div className="flex flex-col gap-3 md:col-span-5 md:items-end">
+              <div className="flex flex-col gap-3 sm:flex-row lg:col-span-5 lg:flex-col lg:items-end">
                 <ButtonLink href={`/offerte?dienst=${service.slug}`} variant="light">
                   Vraag vrijblijvend een offerte aan
                 </ButtonLink>
@@ -385,7 +390,7 @@ export function ServiceView({ service, index, site }: Props) {
               </Link>
             </Reveal>
           </div>
-          <RevealGroup as="ul" className="mt-12 grid gap-6 md:grid-cols-3">
+          <RevealGroup as="ul" className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
             {related.map((item) => (
               <RevealItem as="li" key={item.slug}>
                 <Link href={`/diensten/${item.slug}`} className="group block">

@@ -154,10 +154,12 @@ export function Header({ services, logo, email, phone }: HeaderProps) {
             </nav>
 
             <div className="flex items-center gap-2">
-              <Link href="/offerte" className={buttonClass('primary', 'hidden min-h-11! pr-2! text-[0.88rem] sm:inline-flex')}>
-                <span>Offerte aanvragen</span>
-                <ArrowBadge />
-              </Link>
+              <span className="hidden sm:block">
+                <Link href="/offerte" className={buttonClass('primary', 'min-h-11! pr-2! text-[0.88rem] whitespace-nowrap')}>
+                  <span>Offerte aanvragen</span>
+                  <ArrowBadge />
+                </Link>
+              </span>
               <button
                 type="button"
                 className="relative grid h-11 w-11 place-items-center rounded-full bg-navy text-white lg:hidden"

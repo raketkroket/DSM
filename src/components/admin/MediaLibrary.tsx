@@ -99,16 +99,19 @@ function MediaCard({
             )}
           </div>
         )}
-        <div className="mt-auto flex flex-wrap items-center gap-1 border-t border-line pt-3">
+        <div className="mt-auto flex items-center justify-between border-t border-line pt-3">
+          <div className="flex items-center">
           <button type="button" onClick={() => onMove(index, index - 1)} disabled={index === 0} className="grid h-8 w-8 place-items-center rounded-lg text-muted hover:bg-mist disabled:opacity-30" aria-label="Eerder in de volgorde">
             <ArrowUp className="h-4 w-4" />
           </button>
           <button type="button" onClick={() => onMove(index, index + 1)} disabled={index === total - 1} className="grid h-8 w-8 place-items-center rounded-lg text-muted hover:bg-mist disabled:opacity-30" aria-label="Later in de volgorde">
             <ArrowDown className="h-4 w-4" />
           </button>
+          </div>
+          <div className="flex items-center">
           <button
             type="button"
-            className="ml-auto grid h-8 w-8 place-items-center rounded-lg text-muted hover:bg-mist"
+            className="grid h-8 w-8 place-items-center rounded-lg text-muted hover:bg-mist"
             aria-label="Gebruik tonen"
             title="Waar wordt deze foto gebruikt?"
             onClick={() => start(async () => setUsage(await getMediaUsage(item.url)))}
@@ -169,6 +172,7 @@ function MediaCard({
           >
             <Trash2 className="h-4 w-4" />
           </button>
+          </div>
         </div>
         <p className="text-[0.7rem] text-muted">Toegevoegd {formatDate(item.created_at, false)}</p>
       </div>
@@ -259,7 +263,7 @@ export function MediaLibrary({ initial }: { initial: MediaItem[] }) {
           />
         </div>
       ) : (
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {items.map((item, index) => (
             <MediaCard
               key={item.id}

@@ -61,7 +61,7 @@ async function Detail({ params }: { params: PageProps<'/admin/aanvragen/[id]'>['
         }
       />
 
-      <div className="grid gap-6 xl:grid-cols-[1.5fr_1fr]">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.5fr_1fr]">
         <div className="space-y-6">
           <Card>
             <CardHeader title={enquiry.kind === 'quote' ? 'Omschrijving van de aanvraag' : 'Bericht'} />
@@ -71,7 +71,7 @@ async function Detail({ params }: { params: PageProps<'/admin/aanvragen/[id]'>['
             <CardHeader title="Gegevens" />
             <dl className="divide-y divide-line">
               {details.map(([label, value]) => (
-                <div key={label} className="grid gap-1 px-5 py-3.5 sm:grid-cols-[12rem_1fr]">
+                <div key={label} className="grid grid-cols-1 gap-1 px-5 py-3.5 sm:grid-cols-[12rem_1fr]">
                   <dt className="text-[0.85rem] text-muted">{label}</dt>
                   <dd className="text-[0.95rem] break-words text-navy">
                     {label === 'E-mailadres' ? (

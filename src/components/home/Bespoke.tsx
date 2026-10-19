@@ -24,7 +24,7 @@ export function Bespoke({ bespoke }: { bespoke: HomeContent['bespoke'] }) {
               <p key={index}>{paragraph}</p>
             ))}
           </div>
-          <RevealGroup as="ul" className="mt-7 grid gap-x-6 gap-y-3 border-t border-line pt-7 sm:grid-cols-2">
+          <RevealGroup as="ul" className="mt-7 grid grid-cols-1 gap-x-6 gap-y-3 border-t border-line pt-7 sm:grid-cols-2">
             {bespoke.factors.map((factor) => (
               <RevealItem as="li" key={factor} className="flex gap-3 text-[0.92rem] leading-snug text-ink">
                 <Check className="mt-0.5 h-4 w-4 shrink-0 text-steel" aria-hidden />

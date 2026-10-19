@@ -17,7 +17,7 @@ export function ContactView({ site }: { site: SiteContent }) {
     <>
       <section className="pt-[5.5rem] md:pt-24">
         <div className="shell">
-          <div className="grid gap-6 lg:grid-cols-12">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
             <div className="flex flex-col justify-end pt-10 pb-4 lg:col-span-7 lg:pt-24">
               <div className="intro-fade" style={delay(150)}>
                 <Breadcrumbs items={[{ name: 'Home', href: '/' }, { name: 'Contact' }]} />
@@ -54,7 +54,7 @@ export function ContactView({ site }: { site: SiteContent }) {
       </section>
 
       <section aria-labelledby="contactformulier" className="py-20 md:py-28">
-        <div className="shell grid gap-14 lg:grid-cols-12 lg:gap-6">
+        <div className="shell grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-6">
           <aside className="space-y-6 lg:col-span-4">
             <Reveal className="relative overflow-hidden rounded-[1.5rem] bg-navy p-8 text-white">
               <div className="blueprint-dark pointer-events-none absolute inset-0" aria-hidden />

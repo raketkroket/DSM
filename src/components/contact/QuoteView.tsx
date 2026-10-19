@@ -10,9 +10,9 @@ export function QuoteView({ site }: { site: SiteContent }) {
   const { contact, home, services, settings } = site;
   return (
     <section className="pt-[5.5rem] pb-16 md:pt-24 md:pb-24">
-      <div className="shell grid gap-6 lg:grid-cols-12">
+      <div className="shell grid grid-cols-1 gap-6 lg:grid-cols-12">
         {/* Context panel */}
-        <aside className="relative overflow-hidden rounded-[1.75rem] bg-navy text-white lg:col-span-5">
+        <aside className="relative min-w-0 overflow-hidden rounded-[1.75rem] bg-navy text-white lg:col-span-5">
           <div className="intro-fade absolute inset-0" style={delay(100)} aria-hidden>
             <Photo image={{ ...contact.quoteImage, alt: '' }} sizes="(min-width: 1024px) 40vw, 92vw" className="opacity-35" priority />
             <div className="absolute inset-0 bg-gradient-to-b from-navy/70 via-navy/85 to-navy-deep" />
@@ -60,7 +60,7 @@ export function QuoteView({ site }: { site: SiteContent }) {
         </aside>
 
         {/* Form */}
-        <div className="intro-fade-up rounded-[1.75rem] border border-line bg-white p-6 shadow-soft sm:p-10 lg:col-span-7 lg:p-14" style={delay(400)}>
+        <div className="intro-fade-up min-w-0 rounded-[1.75rem] border border-line bg-white p-5 shadow-soft sm:p-10 lg:col-span-7 lg:p-14" style={delay(400)}>
           <Suspense fallback={<div className="min-h-[34rem] animate-pulse rounded-2xl bg-mist/60" aria-label="Formulier laden" />}>
             <QuoteForm
               services={services.items.map(({ slug, title, shortTitle }) => ({ slug, title, shortTitle }))}

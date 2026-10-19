@@ -15,7 +15,7 @@ export function Footer({ settings, services }: { settings: SettingsContent; serv
     <footer className="relative overflow-hidden bg-navy-deep text-white">
       <div className="blueprint-dark pointer-events-none absolute inset-0 opacity-60" aria-hidden />
       <div className="shell relative pt-20 pb-10 md:pt-28">
-        <div className="grid gap-14 lg:grid-cols-[1.3fr_1fr]">
+        <div className="grid grid-cols-1 gap-14 lg:grid-cols-[1.3fr_1fr]">
           <div>
             <p className="eyebrow text-steel-soft!">{settings.companyName}</p>
             <p className="display-lg mt-6 max-w-[14ch] text-white">

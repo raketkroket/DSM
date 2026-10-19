@@ -36,7 +36,7 @@ export function ContactForm({ privacyNote }: { privacyNote: string }) {
   return (
     <form
       noValidate
-      className="relative grid gap-6 sm:grid-cols-2"
+      className="relative grid grid-cols-1 gap-6 sm:grid-cols-2"
       onSubmit={async (event) => {
         event.preventDefault();
         const result = local.safeParse(values);

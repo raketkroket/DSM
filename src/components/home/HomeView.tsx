@@ -22,7 +22,7 @@ export function HomeView({ site }: { site: SiteContent }) {
 
       <section aria-labelledby="diensten-titel" className="py-24 md:py-36">
         <div className="shell">
-          <div className="mb-14 grid gap-8 md:mb-20 lg:grid-cols-12 lg:gap-6">
+          <div className="mb-14 grid grid-cols-1 gap-8 md:mb-20 lg:grid-cols-12 lg:gap-6">
             <Reveal className="lg:col-span-7">
               <p className="eyebrow">{home.servicesIntro.eyebrow}</p>
               <h2 id="diensten-titel" className="display-lg mt-6 max-w-[15ch] text-navy">

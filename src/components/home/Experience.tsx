@@ -10,7 +10,7 @@ export function Experience({ experience }: { experience: HomeContent['experience
   return (
     <section id="ervaring" aria-labelledby="ervaring-titel" className="relative py-24 md:py-36">
       <div className="shell">
-        <div className="grid gap-16 lg:grid-cols-12 lg:gap-6">
+        <div className="grid grid-cols-1 gap-16 lg:grid-cols-12 lg:gap-6">
           <div className="lg:col-span-5">
             <Reveal>
               <p className="eyebrow">{experience.eyebrow}</p>
@@ -53,7 +53,7 @@ export function Experience({ experience }: { experience: HomeContent['experience
         {/* Development line */}
         <div className="relative mt-28 md:mt-36">
           <DrawLine className="absolute top-[0.3rem] right-0 left-0 hidden md:block" />
-          <RevealGroup as="ol" className="grid gap-10 md:grid-cols-3 md:gap-8">
+          <RevealGroup as="ol" className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8">
             {experience.milestones.map((milestone, index) => (
               <RevealItem as="li" key={milestone.title} className="relative md:pt-10">
                 <span className="absolute top-0 left-0 hidden h-[0.6rem] w-[0.6rem] rounded-full border border-navy bg-paper md:block" aria-hidden>

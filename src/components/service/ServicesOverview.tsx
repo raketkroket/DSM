@@ -45,7 +45,7 @@ export function ServicesOverview({ site }: { site: SiteContent }) {
               </span>
             </span>
           </h1>
-          <div className="mt-12 grid gap-8 md:grid-cols-12">
+          <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-12">
             <p className="intro-fade-up lead text-muted md:col-span-6" style={delay(620)}>
               {services.intro}
             </p>

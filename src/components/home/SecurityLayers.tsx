@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'motion/react';
-import { useRef, useState, type KeyboardEvent } from 'react';
+import { useLayoutEffect, useRef, useState, type KeyboardEvent } from 'react';
 import { EASE } from '@/components/motion/ease';
 import { Reveal } from '@/components/motion/Reveal';
 import type { HomeContent } from '@/lib/content/types';
@@ -55,14 +55,14 @@ const LAYER_LINKS = [
 
 const ANNOTATIONS = [
   [
-    { at: pct(10, 10.6, 0), label: 'Ontvangst en registratie', align: 'left' as const },
+    { at: pct(10.8, 10, 1.6), label: 'Ontvangst en registratie', align: 'right' as const },
     { at: pct(14.2, 13.3, 0), label: 'Bezoekersstromen', align: 'right' as const },
-    { at: pct(6.4, 13, 0), label: 'Medewerkers en bezoekers', align: 'left' as const },
+    { at: pct(1.2, 12.6, 0), label: 'Medewerkers en bezoekers', align: 'right' as const },
   ],
   [
-    { at: pct(0, 14, 0), label: 'Perimeter en hekwerk', align: 'left' as const },
+    { at: pct(0, 9, 0.9), label: 'Perimeter en hekwerk', align: 'right' as const },
     { at: pct(15, 3, 7), label: 'Gebouwschil', align: 'right' as const },
-    { at: pct(19, 5.5, 2.6), label: 'Bedrijfsmiddelen', align: 'right' as const },
+    { at: pct(17.5, 1.5, 2.6), label: 'Bedrijfsmiddelen', align: 'left' as const },
     { at: pct(15, 14, 0.8), label: 'Toegangspoort', align: 'right' as const },
   ],
   [
@@ -101,6 +101,41 @@ function Camera({ x, y, z, dir }: { x: number; y: number; z: number; dir: 1 | -1
       <rect x={sx - 5 + dir * 3} y={sy - 3} width="10" height="6" rx="2" className="fill-navy" />
       <circle cx={sx + dir * 9} cy={sy} r="1.6" className="fill-steel" />
     </g>
+  );
+}
+
+type Note = { at: { left: string; top: string }; label: string; align: 'left' | 'right' };
+
+/** A label pinned to a point in the scene; flips to the other side if it would leave the frame. */
+function Annotation({ note, index }: { note: Note; index: number }) {
+  const pill = useRef<HTMLSpanElement>(null);
+  const [align, setAlign] = useState(note.align);
+  useLayoutEffect(() => {
+    const element = pill.current;
+    const frame = element?.closest('[data-scene]');
+    if (!element || !frame) return;
+    const box = element.getBoundingClientRect();
+    const bounds = frame.getBoundingClientRect();
+    if (box.right > bounds.right - 4 && align === 'right') setAlign('left');
+    else if (box.left < bounds.left + 4 && align === 'left') setAlign('right');
+  }, [align]);
+  return (
+    <motion.div
+      className="pointer-events-none absolute hidden sm:block"
+      style={note.at}
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5, ease: EASE, delay: 0.25 + index * 0.08 }}
+    >
+      <span ref={pill} className={`absolute flex -translate-y-1/2 items-center gap-2 whitespace-nowrap ${align === 'left' ? 'right-0 flex-row-reverse' : 'left-0'}`}>
+        <span className="h-2 w-2 shrink-0 rounded-full border border-navy bg-white" />
+        <span className="h-px w-6 bg-navy/50" />
+        <span className="rounded-full border border-line bg-white/95 px-3 py-1 font-mono text-[0.62rem] tracking-[0.08em] text-navy uppercase shadow-soft">
+          {note.label}
+        </span>
+      </span>
+    </motion.div>
   );
 }
 
@@ -145,7 +180,7 @@ export function SecurityLayers({ layers }: { layers: HomeContent['layers'] }) {
   return (
     <section id="lagen" aria-labelledby="lagen-titel" className="relative overflow-hidden bg-white py-24 md:py-36">
       <div className="shell">
-        <div className="grid gap-8 lg:grid-cols-12 lg:gap-6">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-6">
           <div className="lg:col-span-6">
             <Reveal>
               <p className="eyebrow">{layers.eyebrow}</p>
@@ -159,7 +194,7 @@ export function SecurityLayers({ layers }: { layers: HomeContent['layers'] }) {
           </Reveal>
         </div>
 
-        <div className="mt-14 grid gap-10 lg:mt-20 lg:grid-cols-12 lg:gap-6">
+        <div className="mt-14 grid grid-cols-1 gap-10 lg:mt-20 lg:grid-cols-12 lg:gap-6">
           {/* Controls + detail */}
           <div className="order-2 lg:order-1 lg:col-span-4">
             <div role="tablist" aria-label="Beveiligingslagen" aria-orientation="vertical" className="grid grid-cols-3 gap-2 lg:grid-cols-1 lg:gap-0">
@@ -185,7 +220,7 @@ export function SecurityLayers({ layers }: { layers: HomeContent['layers'] }) {
                     <span className={`font-mono text-[0.7rem] ${selected ? 'text-steel-soft lg:text-steel' : 'text-steel'}`}>
                       {String(index + 1).padStart(2, '0')}
                     </span>
-                    <span className="text-[1.05rem] font-medium tracking-[-0.02em] sm:text-[1.25rem] lg:text-[2rem] lg:leading-none lg:tracking-[-0.035em]">
+                    <span className="max-w-full text-[0.85rem] font-medium tracking-[-0.02em] break-words xs:text-[1rem] sm:text-[1.25rem] lg:text-[2rem] lg:leading-none lg:tracking-[-0.035em]">
                       {item.title}
                     </span>
                     {selected && (
@@ -243,7 +278,7 @@ export function SecurityLayers({ layers }: { layers: HomeContent['layers'] }) {
                   {String(active + 1).padStart(2, '0')} — {items[active]?.title}
                 </span>
               </div>
-              <div className="relative mx-auto aspect-[720/560] w-full max-w-[56rem]">
+              <div data-scene className="relative mx-auto aspect-[720/560] w-full max-w-[56rem]">
                 <svg viewBox={`0 0 ${VIEW.w} ${VIEW.h}`} className="absolute inset-0 h-full w-full" role="img" aria-label="Gestileerde weergave van een bedrijfslocatie met de lagen mensen, eigendommen en processen">
                   {/* Ground plot */}
                   <path d={path([[0, 0], [20, 0], [20, 14], [0, 14]])} className="fill-white stroke-line-strong" strokeWidth="1" />
@@ -383,23 +418,7 @@ export function SecurityLayers({ layers }: { layers: HomeContent['layers'] }) {
                 {/* Annotations */}
                 <AnimatePresence>
                   {ANNOTATIONS[active].map((note, index) => (
-                    <motion.div
-                      key={`${active}-${note.label}`}
-                      className="pointer-events-none absolute hidden sm:block"
-                      style={note.at}
-                      initial={{ opacity: 0, y: 6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.5, ease: EASE, delay: 0.25 + index * 0.08 }}
-                    >
-                      <span className={`absolute flex items-center gap-2 whitespace-nowrap ${note.align === 'left' ? 'right-0 flex-row-reverse' : 'left-0'} -translate-y-1/2`}>
-                        <span className="h-2 w-2 shrink-0 rounded-full border border-navy bg-white" />
-                        <span className="h-px w-6 bg-navy/50" />
-                        <span className="rounded-full border border-line bg-white/95 px-3 py-1 font-mono text-[0.62rem] tracking-[0.08em] text-navy uppercase shadow-soft">
-                          {note.label}
-                        </span>
-                      </span>
-                    </motion.div>
+                    <Annotation key={`${active}-${note.label}`} note={note} index={index} />
                   ))}
                 </AnimatePresence>
               </div>

@@ -3,7 +3,7 @@ import { Logo } from '@/components/brand/Logo';
 
 export function AuthShell({ title, description, children }: { title: string; description: string; children: ReactNode }) {
   return (
-    <main className="grid min-h-svh lg:grid-cols-[1.05fr_1fr]">
+    <main className="grid grid-cols-1 min-h-svh lg:grid-cols-[1.05fr_1fr]">
       <div className="relative hidden overflow-hidden bg-navy-deep p-12 text-white lg:flex lg:flex-col">
         <div className="blueprint-dark pointer-events-none absolute inset-0" aria-hidden />
         <div className="relative">

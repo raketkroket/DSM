@@ -133,10 +133,14 @@ export function ContentEditor({ section, panels, initial, published, pending, pu
               <Badge tone="warning">Niet opgeslagen wijzigingen</Badge>
             ) : hasPending ? (
               <Badge tone="steel">Concept opgeslagen{savedAt ? ` · ${formatDate(savedAt)}` : ''}</Badge>
+            ) : liveAt ? (
+              <Badge tone="success">Gepubliceerd · {formatDate(liveAt)}</Badge>
             ) : (
-              <Badge tone="success">Gepubliceerd{liveAt ? ` · ${formatDate(liveAt)}` : ''}</Badge>
+              <>
+                <Badge>Standaardtekst</Badge>
+                <span>Toont de tekst uit het aangeleverde document.</span>
+              </>
             )}
-            {!liveAt && !hasPending && !dirty && <span>Toont de standaardtekst uit het aangeleverde document.</span>}
           </div>
           <div className="flex flex-wrap items-center gap-2">
             {previews.length === 1 ? (
@@ -180,7 +184,7 @@ export function ContentEditor({ section, panels, initial, published, pending, pu
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[14rem_1fr]">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[14rem_1fr]">
         {panels.length > 1 && (
           <nav aria-label="Onderdelen" className="lg:sticky lg:top-24 lg:self-start">
             <ol className="no-scrollbar -mx-4 flex gap-1 overflow-x-auto px-4 lg:mx-0 lg:flex-col lg:px-0">

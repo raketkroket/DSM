@@ -55,7 +55,7 @@ function CtaField({ spec, value, onChange, pages }: { spec: FieldSpec; value: Ct
   return (
     <fieldset className="rounded-2xl border border-line bg-paper p-4">
       <legend className="px-1 text-[0.88rem] font-medium text-navy">{spec.label}</legend>
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div>
           <label htmlFor={labelId} className="text-[0.8rem] text-muted">
             Tekst op de knop

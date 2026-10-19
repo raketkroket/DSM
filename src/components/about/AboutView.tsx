@@ -9,6 +9,7 @@ import { ClosingCta } from '@/components/site/ClosingCta';
 import { JsonLd } from '@/components/site/JsonLd';
 import { Photo } from '@/components/site/Photo';
 import { breadcrumbJsonLd } from '@/lib/seo';
+import { fitTitle } from '@/lib/fit';
 import type { SiteContent } from '@/lib/content/types';
 
 const delay = (ms: number) => ({ '--d': `${ms}ms` }) as React.CSSProperties;
@@ -44,7 +45,7 @@ export function AboutView({ site }: { site: SiteContent }) {
             </span>
           </h1>
         </div>
-        <div className="shell mt-14 grid gap-10 md:mt-20 md:grid-cols-12 md:gap-6">
+        <div className="shell mt-14 grid grid-cols-1 gap-10 md:mt-20 md:grid-cols-12 md:gap-6">
           <div className="md:col-span-4 md:pt-4">
             <p className="intro-fade-up lead text-ink" style={delay(700)}>
               {about.hero.lead}
@@ -64,7 +65,7 @@ export function AboutView({ site }: { site: SiteContent }) {
 
       {/* Intro statement */}
       <section aria-labelledby="over-intro" className="py-24 md:py-40">
-        <div className="shell grid gap-12 lg:grid-cols-12 lg:gap-6">
+        <div className="shell grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-6">
           <div className="lg:col-span-8">
             <ScrollStatement id="over-intro" text={about.intro.title} className="display-lg text-navy" />
           </div>
@@ -80,7 +81,7 @@ export function AboutView({ site }: { site: SiteContent }) {
 
       {/* Development chapters with sticky photograph */}
       <section aria-labelledby="ontwikkeling" className="border-t border-line bg-white py-24 md:py-36">
-        <div className="shell grid gap-14 lg:grid-cols-12 lg:gap-6">
+        <div className="shell grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-6">
           <div className="lg:col-span-5">
             <div className="lg:sticky lg:top-28">
               <Reveal>
@@ -118,10 +119,14 @@ export function AboutView({ site }: { site: SiteContent }) {
       <section aria-labelledby="expertise" className="relative overflow-hidden bg-navy-deep py-24 text-white md:py-36">
         <div className="blueprint-dark pointer-events-none absolute inset-0" aria-hidden />
         <div className="shell relative">
-          <div className="grid gap-10 lg:grid-cols-12 lg:gap-6">
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-6">
             <Reveal className="lg:col-span-7">
               <p className="eyebrow text-steel-soft!">{about.expertise.eyebrow}</p>
-              <h2 id="expertise" className="display-lg mt-6 max-w-[16ch]">
+              <h2
+                id="expertise"
+                className="fit-title mt-6 max-w-[16ch] leading-none font-medium tracking-[-0.04em] [--fit-w:165vw] lg:[--fit-w:min(92vw,1300px)]"
+                style={fitTitle(about.expertise.title, 5)}
+              >
                 {about.expertise.title}
               </h2>
             </Reveal>
@@ -133,11 +138,11 @@ export function AboutView({ site }: { site: SiteContent }) {
               ))}
             </div>
           </div>
-          <div className="mt-16 grid gap-6 lg:grid-cols-12">
+          <div className="mt-16 grid grid-cols-1 gap-6 lg:grid-cols-12">
             <ImageReveal parallax={8} className="aspect-[4/3] rounded-[1.5rem] bg-navy lg:col-span-5 lg:aspect-auto">
               <Photo image={about.expertise.image} sizes="(min-width: 1024px) 40vw, 92vw" />
             </ImageReveal>
-            <RevealGroup className="grid gap-px overflow-hidden rounded-[1.5rem] bg-white/10 sm:grid-cols-2 lg:col-span-7">
+            <RevealGroup className="grid grid-cols-1 gap-px overflow-hidden rounded-[1.5rem] bg-white/10 sm:grid-cols-2 lg:col-span-7">
               {about.expertise.areas.map((area, index) => (
                 <RevealItem key={area.title} className="bg-navy-deep p-7 md:p-9">
                   <span className="font-mono text-[0.7rem] text-steel-soft">{String(index + 1).padStart(2, '0')}</span>
@@ -152,7 +157,7 @@ export function AboutView({ site }: { site: SiteContent }) {
 
       {/* Mission & vision */}
       <section aria-label="Missie en visie" className="py-24 md:py-36">
-        <div className="shell grid gap-6 lg:grid-cols-2">
+        <div className="shell grid grid-cols-1 gap-6 lg:grid-cols-2">
           <Reveal className="relative flex flex-col overflow-hidden rounded-[1.75rem] border border-line bg-white p-8 shadow-soft md:p-14">
             <p className="eyebrow">01</p>
             <h2 className="display-md mt-8 text-navy">{about.mission.title}</h2>
@@ -185,12 +190,12 @@ export function AboutView({ site }: { site: SiteContent }) {
           <Reveal>
             <p className="eyebrow">{about.values.eyebrow}</p>
           </Reveal>
-          <h2 id="waarden" className="mt-8 flex flex-col text-[clamp(3rem,9.5vw,10rem)] leading-[0.92] font-medium tracking-[-0.06em] text-navy md:flex-row md:flex-wrap md:gap-x-[0.25em]">
+          <h2 id="waarden" className="mt-8 flex flex-col text-[clamp(2.4rem,9.5vw,10rem)] leading-[0.92] font-medium tracking-[-0.06em] text-navy md:flex-row md:flex-wrap md:gap-x-[0.25em]">
             {words.map((word, index) => (
               <WordReveal key={word} as="span" parts={[{ text: word, accent: index === 1 }]} delay={index * 0.12} className={index === 1 ? 'block text-navy-soft' : 'block'} />
             ))}
           </h2>
-          <div className="mt-16 grid gap-10 lg:grid-cols-12 lg:gap-6">
+          <div className="mt-16 grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-6">
             <div className="space-y-5 text-[1.05rem] leading-relaxed text-muted lg:col-span-6">
               {about.values.paragraphs.map((paragraph, index) => (
                 <Reveal key={index} delay={index * 0.06}>
@@ -239,7 +244,7 @@ export function AboutView({ site }: { site: SiteContent }) {
 
       {/* Future */}
       <section aria-labelledby="toekomst" className="pb-24 md:pb-36">
-        <div className="shell grid gap-10 lg:grid-cols-12 lg:gap-6">
+        <div className="shell grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-6">
           <Reveal className="lg:col-span-6">
             <p className="eyebrow">Toekomst</p>
             <h2 id="toekomst" className="display-md mt-6 max-w-[16ch] text-navy">

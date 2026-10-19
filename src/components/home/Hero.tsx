@@ -25,7 +25,7 @@ export function Hero({ hero, layers }: { hero: HomeContent['hero']; layers: Home
         <div className="relative">
           {/* Photograph */}
           <div
-            className="intro-unveil-up relative h-[58svh] min-h-[22rem] overflow-hidden rounded-[1.75rem] bg-navy md:h-[calc(100svh-7.5rem)] md:min-h-[38rem] md:max-h-[58rem]"
+            className="intro-unveil-up relative h-[46svh] min-h-[18rem] overflow-hidden rounded-[1.75rem] bg-navy md:h-[calc(100svh-7.5rem)] md:min-h-[38rem] md:max-h-[58rem]"
             style={delay(120)}
           >
             <HeroParallax>
@@ -66,7 +66,7 @@ export function Hero({ hero, layers }: { hero: HomeContent['hero']; layers: Home
               </span>
             </h1>
 
-            <div className="mt-6 grid gap-6 md:mt-8 md:grid-cols-[1fr_auto] md:items-end md:gap-10">
+            <div className="mt-6 grid grid-cols-1 gap-6 md:mt-8 md:grid-cols-[1fr_auto] md:items-end md:gap-10">
               <p className="intro-fade-up lead max-w-[34rem] text-muted" style={delay(820)}>
                 {hero.lead}
               </p>
@@ -84,7 +84,7 @@ export function Hero({ hero, layers }: { hero: HomeContent['hero']; layers: Home
         </div>
 
         {/* Lower band */}
-        <div className="grid gap-10 border-b border-line py-12 md:mt-14 md:grid-cols-12 md:py-14">
+        <div className="grid grid-cols-1 gap-10 border-b border-line py-12 md:mt-14 md:grid-cols-12 md:py-14">
           <div className="intro-fade md:col-span-6 lg:col-span-5" style={delay(1150)}>
             <p className="text-[1.05rem] leading-relaxed text-ink/80">{hero.body}</p>
           </div>
@@ -94,7 +94,7 @@ export function Hero({ hero, layers }: { hero: HomeContent['hero']; layers: Home
                 <li key={layer.title} className="bg-paper">
                   <a href="#lagen" className="group flex h-full flex-col justify-between gap-6 p-4 transition-colors hover:bg-white md:p-5">
                     <span className="font-mono text-[0.68rem] text-steel">{String(index + 1).padStart(2, '0')}</span>
-                    <span className="text-[0.95rem] font-medium text-navy md:text-base">{layer.title}</span>
+                    <span className="text-[0.8rem] font-medium break-words text-navy xs:text-[0.95rem] md:text-base">{layer.title}</span>
                   </a>
                 </li>
               ))}

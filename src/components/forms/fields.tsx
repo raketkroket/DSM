@@ -89,10 +89,11 @@ export function Consent({ checked, onChange, error, note }: { checked: boolean; 
           checked={checked}
           onChange={(event) => onChange(event.target.checked)}
           aria-invalid={error ? true : undefined}
+          aria-labelledby="consent-label"
           aria-describedby={error ? 'consent-error' : undefined}
           className="mt-1 h-4 w-4 shrink-0 accent-navy"
         />
-        <span>
+        <span id="consent-label">
           {note}{' '}
           <a href="/privacy" className="text-navy underline underline-offset-4" target="_blank" rel="noopener">
             Lees onze privacyverklaring

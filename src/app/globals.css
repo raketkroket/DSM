@@ -63,6 +63,8 @@
 
   h1, h2, h3, h4 {
     text-wrap: balance;
+    /* Long Dutch compounds may only break when they genuinely do not fit. */
+    overflow-wrap: break-word;
   }
 
   p {
@@ -267,3 +269,17 @@
 .layer-pulse { transform-box: fill-box; transform-origin: center; animation: layer-pulse 2.4s var(--ease-soft) infinite; }
 .layer-dash { animation: layer-dash 2.6s linear infinite; }
 .layer-float { animation: layer-float 5s var(--ease-soft) infinite; }
+
+/* Headlines with long Dutch compounds: size by the longest word so nothing is clipped.
+   --fit-w is roughly the available width divided by the average glyph width (≈0.56em). */
+.fit-title {
+  font-size: clamp(1.5rem, calc(var(--fit-w, 165vw) / var(--chars, 12)), var(--fit-max, 7rem));
+}
+
+/* Route change: a short, quiet entrance shared by every public page. */
+/* Opacity only: a transform here would trap fixed/sticky descendants during the animation. */
+@keyframes dsm-page-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.page-enter { animation: dsm-page-enter 0.6s var(--ease-arch) both; }

@@ -14,7 +14,7 @@ export function Sectors({ sectors }: { sectors: HomeContent['sectors'] }) {
   return (
     <section aria-labelledby="sectoren-titel" className="relative py-24 md:py-36">
       <div className="shell">
-        <div className="grid gap-8 lg:grid-cols-12 lg:gap-6">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-6">
           <Reveal className="lg:col-span-6">
             <p className="eyebrow">{sectors.eyebrow}</p>
             <h2 id="sectoren-titel" className="display-md mt-6 max-w-[16ch] text-navy">
@@ -71,7 +71,7 @@ export function Sectors({ sectors }: { sectors: HomeContent['sectors'] }) {
         </Reveal>
 
         {/* Mobile list */}
-        <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:hidden">
+        <ul className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:hidden">
           {sectors.items.map((sector, index) => (
             <Reveal as="li" key={sector.title} className="overflow-hidden rounded-[1.25rem] bg-white shadow-soft">
               <div className="relative aspect-[16/10] bg-navy">

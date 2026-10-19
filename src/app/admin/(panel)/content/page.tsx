@@ -23,7 +23,7 @@ async function Overview() {
         description="Wijzig teksten en foto’s. Wijzigingen worden eerst als concept bewaard; met Publiceren zet u ze live."
         actions={pending > 0 ? <PublishAllButton count={pending} /> : undefined}
       />
-      <ul className="grid gap-4 md:grid-cols-2">
+      <ul className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {SECTION_KEYS.map((key) => {
           const state = states[key];
           return (

@@ -72,7 +72,7 @@ export function AdminSkeleton() {
   return (
     <div className="animate-pulse space-y-6" aria-label="Laden" role="status">
       <div className="h-10 w-64 rounded-xl bg-mist" />
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {[0, 1, 2].map((i) => (
           <div key={i} className="h-28 rounded-2xl bg-mist" />
         ))}

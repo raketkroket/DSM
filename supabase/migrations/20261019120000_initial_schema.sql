@@ -1,7 +1,6 @@
 -- Dedicated Security Management — initial schema
 -- Run with the Supabase CLI (`supabase db push`) or paste into the SQL editor.
 
-create extension if not exists pgcrypto;
 
 -- ─────────────────────────────────────────────────────────────
 -- Administrators
