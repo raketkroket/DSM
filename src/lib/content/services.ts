@@ -1,0 +1,341 @@
+import { photos } from './photos';
+import type { ServiceContent, ServicesContent } from './types';
+
+/** Copy from the client's approved document "Website Dedicated Security Management B.V.". */
+const items: ServiceContent[] = [
+  {
+    slug: 'bouwplaatsbeveiliging',
+    title: 'Bouwplaatsbeveiliging',
+    shortTitle: 'Bouwplaatsen',
+    tagline: 'Bescherming van bouwprojecten, materialen en materieel.',
+    summary:
+      'Beveiliging van bouwplaatsen tegen diefstal, vandalisme en onbevoegde toegang. Wij helpen een veilige werkomgeving te creëren en eigendommen te beschermen.',
+    intro: [
+      'Bouwplaatsen zijn kwetsbaar voor diefstal, vandalisme en onbevoegde toegang. Kostbare materialen, machines en gereedschappen kunnen aantrekkelijke doelwitten vormen, zeker buiten reguliere werktijden.',
+      'Daarnaast brengt onbevoegde aanwezigheid op een bouwterrein veiligheidsrisico’s met zich mee.',
+      'Dedicated Security Management B.V. biedt beveiligingsondersteuning gericht op het beheersen van deze risico’s en het beschermen van uw bouwproject.',
+    ],
+    activitiesTitle: 'Mogelijke werkzaamheden',
+    activities: [
+      'Toezicht op toegangswegen en bouwterreinen.',
+      'Controleren van personen en voertuigen volgens vastgestelde afspraken.',
+      'Preventieve controlerondes.',
+      'Signaleren van verdachte of onveilige situaties.',
+      'Controleren van afsluitingen, hekken en toegangspunten.',
+      'Melden en registreren van bijzonderheden en incidenten.',
+      'Afstemming met de opdrachtgever bij veiligheidsproblemen.',
+    ],
+    audienceTitle: 'Voor wie?',
+    audience: 'Aannemers, projectontwikkelaars, bouwbedrijven en andere organisaties die bouwprojecten uitvoeren.',
+    importance: [
+      'Kostbare materialen en machines zijn vooral buiten werktijden een aantrekkelijk doelwit.',
+      'Onbevoegde aanwezigheid op een bouwterrein brengt veiligheidsrisico’s met zich mee.',
+      'Duidelijke toegangsafspraken houden overzicht op wie het terrein betreedt.',
+    ],
+    note: '',
+    image: photos.cranesDusk,
+    detailImage: photos.rebarInspection,
+    seoTitle: 'Bouwplaatsbeveiliging',
+    seoDescription:
+      'Bouwplaatsbeveiliging tegen diefstal, vandalisme en onbevoegde toegang. Toezicht, toegangscontrole en preventieve controlerondes voor uw bouwproject.',
+  },
+  {
+    slug: 'evenementenbeveiliging',
+    title: 'Evenementenbeveiliging',
+    shortTitle: 'Evenementen',
+    tagline: 'Veiligheid en gastvrijheid tijdens uw evenement.',
+    summary:
+      'Professionele beveiligingsondersteuning bij evenementen. Hierbij staan veiligheid, toezicht, toegangscontrole en een ordelijk verloop centraal.',
+    intro: [
+      'Een succesvol evenement vraagt om goede organisatie, duidelijke afspraken en een veilige omgeving voor bezoekers, medewerkers en betrokken partijen.',
+      'Of het nu gaat om een zakelijk evenement, festival, beurs of besloten bijeenkomst: beveiliging speelt een belangrijke rol bij het voorkomen van ongewenste situaties en het behouden van overzicht.',
+      'Dedicated Security Management B.V. richt zich op een professionele combinatie van veiligheid, representativiteit en gastvriendelijk optreden.',
+    ],
+    activitiesTitle: 'Mogelijke werkzaamheden',
+    activities: [
+      'Toegangscontrole en bezoekersontvangst.',
+      'Controle van toegangsbewijzen waar van toepassing.',
+      'Toezicht op bezoekersstromen.',
+      'Signaleren van spanningen en ongewenst gedrag.',
+      'Preventief optreden bij mogelijke ordeverstoringen.',
+      'Toezicht op afgeschermde en besloten ruimtes.',
+      'Samenwerking en communicatie met de evenementenorganisatie.',
+      'Handelen volgens vooraf vastgestelde incident- en calamiteitenprocedures.',
+    ],
+    audienceTitle: 'Voor welke evenementen?',
+    audience: 'Zakelijke evenementen, festivals, beurzen en besloten bijeenkomsten.',
+    importance: [
+      'Overzicht op bezoekersstromen voorkomt ongewenste situaties.',
+      'Vooraf vastgestelde procedures zorgen voor duidelijk handelen bij incidenten.',
+      'Representatief en gastvriendelijk optreden draagt bij aan de beleving van uw gasten.',
+    ],
+    note: '',
+    image: photos.conference,
+    detailImage: photos.eventLobby,
+    seoTitle: 'Evenementenbeveiliging',
+    seoDescription:
+      'Evenementenbeveiliging met toegangscontrole, toezicht op bezoekersstromen en gastvriendelijk optreden. Voor zakelijke evenementen, festivals, beurzen en bijeenkomsten.',
+  },
+  {
+    slug: 'receptiediensten',
+    title: 'Receptiediensten',
+    shortTitle: 'Receptie',
+    tagline: 'De eerste indruk van uw organisatie.',
+    summary:
+      'Een gastvrije en professionele ontvangst, gecombineerd met toezicht en toegangscontrole. Onze receptiediensten dragen bij aan een representatieve en veilige omgeving.',
+    intro: [
+      'De receptie vormt vaak het eerste contactmoment tussen een bezoeker en uw organisatie. Een professionele ontvangst draagt bij aan een gastvrije, representatieve en veilige werkomgeving.',
+      'Onze receptiediensten combineren hospitality met beveiligingsbewustzijn.',
+      'Naast het ontvangen en begeleiden van bezoekers ligt de nadruk op toegangscontrole, het bewaken van overzicht en het signaleren van bijzonderheden.',
+    ],
+    activitiesTitle: 'Mogelijke werkzaamheden',
+    activities: [
+      'Ontvangen en doorverwijzen van bezoekers.',
+      'Registreren van bezoekers volgens de geldende procedures.',
+      'Uitvoeren van toegangscontroles.',
+      'Uitgeven en beheren van bezoekerspassen.',
+      'Toezicht op de entree en ontvangstruimtes.',
+      'Signaleren en rapporteren van veiligheidsincidenten.',
+      'Ondersteuning bij geldende veiligheids- en calamiteitenprocedures.',
+    ],
+    audienceTitle: 'Voor wie?',
+    audience: 'Organisaties in de zakelijke dienstverlening en andere kantooromgevingen die ontvangst en toegangscontrole willen combineren.',
+    importance: [
+      'De receptie is het eerste contactmoment met uw organisatie.',
+      'Toegangscontrole bij de entree houdt overzicht op wie het gebouw betreedt.',
+      'Hospitality en beveiligingsbewustzijn versterken elkaar.',
+    ],
+    note: '',
+    image: photos.reception,
+    detailImage: photos.lobbyGates,
+    seoTitle: 'Receptiediensten met beveiligingsbewustzijn',
+    seoDescription:
+      'Receptiediensten die gastvrije ontvangst combineren met toegangscontrole, bezoekersregistratie en toezicht op de entree van uw organisatie.',
+  },
+  {
+    slug: 'recreatiebeveiliging',
+    title: 'Recreatiebeveiliging',
+    shortTitle: 'Recreatie',
+    tagline: 'Een veilige omgeving voor gasten en medewerkers.',
+    summary:
+      'Beveiliging en toezicht op recreatieparken, vakantieparken en andere recreatieve locaties, met aandacht voor de veiligheid van gasten, medewerkers en eigendommen.',
+    intro: [
+      'Op recreatielocaties staat ontspanning centraal. Tegelijkertijd is het belangrijk dat gasten en medewerkers zich veilig voelen en dat incidenten zoveel mogelijk worden voorkomen.',
+      'Recreatiebeveiliging vraagt om een toegankelijke, servicegerichte en alerte houding.',
+      'Onze beveiligingsaanpak richt zich op het bewaren van rust, het signaleren van ongewenste situaties en het ondersteunen van een veilige omgeving.',
+    ],
+    activitiesTitle: 'Mogelijke werkzaamheden',
+    activities: [
+      'Toezicht op recreatieterreinen en gemeenschappelijke voorzieningen.',
+      'Toegangscontrole.',
+      'Preventieve surveillancerondes.',
+      'Signaleren van overlast en ongewenst gedrag.',
+      'Toezicht tijdens drukke periodes en activiteiten.',
+      'Rapportage van incidenten en bijzonderheden.',
+      'Samenwerking met beheerders en locatiemanagement.',
+    ],
+    audienceTitle: 'Voor welke locaties?',
+    audience: 'Recreatieparken, vakantieparken, recreatieterreinen en andere bezoekerslocaties.',
+    importance: [
+      'Gasten en medewerkers moeten zich veilig voelen op een plek die draait om ontspanning.',
+      'Drukke periodes en activiteiten vragen om extra overzicht.',
+      'Een servicegerichte houding past bij de gastvrijheid van uw locatie.',
+    ],
+    note: '',
+    image: photos.parkAerial,
+    detailImage: photos.cabinLake,
+    seoTitle: 'Recreatiebeveiliging voor parken en bezoekerslocaties',
+    seoDescription:
+      'Recreatiebeveiliging voor vakantieparken en recreatieterreinen: preventieve surveillancerondes, toegangscontrole en een servicegerichte, alerte houding.',
+  },
+  {
+    slug: 'objectbewaking',
+    title: 'Objectbewaking',
+    shortTitle: 'Objecten',
+    tagline: 'Structurele bescherming van gebouwen en terreinen.',
+    summary:
+      'Bewaking van bedrijfspanden, kantoren, terreinen en andere objecten. Gericht op het voorkomen van ongewenste situaties en het beschermen van personen en eigendommen.',
+    intro: [
+      'Bedrijfspanden, kantoren, opslaglocaties en industriële terreinen kunnen te maken krijgen met verschillende veiligheidsrisico’s.',
+      'Objectbewaking richt zich op het beschermen van personen, gebouwen en bedrijfsmiddelen tegen ongewenste situaties.',
+      'De werkzaamheden kunnen bestaan uit vaste beveiligingsposten, toegangscontrole en toezicht binnen en rondom een locatie.',
+    ],
+    activitiesTitle: 'Mogelijke werkzaamheden',
+    activities: [
+      'Bezoekers- en toegangscontrole.',
+      'Toezicht op bedrijfsgebouwen en terreinen.',
+      'Openings- en sluitrondes.',
+      'Controleren van veiligheidsgevoelige ruimtes.',
+      'Signaleren van verdachte situaties.',
+      'Registratie en rapportage van incidenten.',
+      'Ondersteuning bij calamiteitenprocedures.',
+    ],
+    audienceTitle: 'Voor welke objecten?',
+    audience: 'Bedrijfspanden, kantoren, opslaglocaties, industriële terreinen en vastgoedobjecten.',
+    importance: [
+      'Personen, gebouwen en bedrijfsmiddelen verdienen structurele bescherming.',
+      'Openings- en sluitrondes geven zekerheid aan het begin en einde van de dag.',
+      'Vaste posten en toezicht rondom de locatie houden overzicht op bewegingen.',
+    ],
+    note: '',
+    image: photos.officeNight,
+    detailImage: photos.warehouse,
+    seoTitle: 'Objectbewaking voor bedrijfspanden en terreinen',
+    seoDescription:
+      'Objectbewaking voor kantoren, bedrijfspanden, opslaglocaties en terreinen: toegangscontrole, openings- en sluitrondes en toezicht binnen en rondom uw locatie.',
+  },
+  {
+    slug: 'winkelsurveillance',
+    title: 'Winkelsurveillance',
+    shortTitle: 'Winkels',
+    tagline: 'Veilig winkelen voor klanten en medewerkers.',
+    summary:
+      'Beveiliging van winkels en winkelomgevingen, gericht op het voorkomen van winkeldiefstal, het signaleren van verdachte situaties en het waarborgen van een veilige winkelervaring.',
+    intro: [
+      'Winkeldiefstal, agressie en andere ongewenste situaties kunnen de veiligheid en bedrijfsvoering van een winkel beïnvloeden.',
+      'Professionele winkelsurveillance draagt bij aan een veilige winkelomgeving en kan een preventieve werking hebben.',
+      'Onze aanpak is gericht op alert toezicht, het herkennen van afwijkende situaties en zorgvuldig handelen wanneer dat noodzakelijk is.',
+    ],
+    activitiesTitle: 'Mogelijke werkzaamheden',
+    activities: [
+      'Preventieve aanwezigheid op de winkelvloer.',
+      'Signaleren van mogelijk diefstalgedrag.',
+      'Toezicht op winkelruimtes.',
+      'Ondersteuning bij het omgaan met ongewenste situaties.',
+      'Samenwerking met winkelmanagement en medewerkers.',
+      'Registratie en rapportage van incidenten.',
+    ],
+    audienceTitle: 'Voor wie?',
+    audience: 'Winkels, winkelcentra en andere commerciële ruimtes.',
+    importance: [
+      'Winkeldiefstal en agressie beïnvloeden zowel veiligheid als bedrijfsvoering.',
+      'Zichtbare, alerte aanwezigheid kan een preventieve werking hebben.',
+      'Medewerkers kunnen zich richten op hun klanten.',
+    ],
+    note: '',
+    image: photos.storeGuard,
+    detailImage: photos.retailInterior,
+    seoTitle: 'Winkelsurveillance',
+    seoDescription:
+      'Winkelsurveillance gericht op het voorkomen van winkeldiefstal, het signaleren van verdachte situaties en een veilige winkelervaring voor klanten en medewerkers.',
+  },
+  {
+    slug: 'cameratoezicht',
+    title: 'Cameratoezicht',
+    shortTitle: 'Camera’s',
+    tagline: 'Technologie als ondersteuning van effectieve beveiliging.',
+    summary:
+      'Cameratoezicht ter ondersteuning van de beveiliging van gebouwen, terreinen en andere locaties. Gericht op het signaleren van incidenten en het vergroten van het veiligheidsniveau.',
+    intro: [
+      'Cameratoezicht kan een waardevolle aanvulling vormen op fysieke beveiligingsmaatregelen.',
+      'Door camerabeelden op een zorgvuldige en gerichte manier te gebruiken, kunnen afwijkende situaties sneller worden gesignaleerd en kan de beveiliging van locaties worden ondersteund.',
+      'Afhankelijk van de opdracht en beschikbare voorzieningen kan cameratoezicht worden gecombineerd met toegangscontrole en fysieke beveiliging.',
+    ],
+    activitiesTitle: 'Mogelijke werkzaamheden',
+    activities: [
+      'Toezicht houden via aanwezige camerasystemen.',
+      'Signaleren van verdachte bewegingen of situaties.',
+      'Registreren en doorgeven van bijzonderheden.',
+      'Samenwerking met beveiligingsmedewerkers op locatie.',
+      'Ondersteuning bij incidentopvolging volgens vastgestelde procedures.',
+    ],
+    audienceTitle: 'Voor welke locaties?',
+    audience: 'Gebouwen, terreinen en andere locaties waar camerasystemen aanwezig zijn of fysieke beveiliging ondersteunen.',
+    importance: [
+      'Afwijkende situaties kunnen sneller worden gesignaleerd.',
+      'Camerabeelden ondersteunen de beveiligingsmedewerkers op locatie.',
+      'In combinatie met toegangscontrole ontstaat een samenhangende aanpak.',
+    ],
+    note: 'Bij de inzet van cameratoezicht houden wij rekening met de geldende privacyregels en gemaakte afspraken met de opdrachtgever.',
+    image: photos.cameraFacade,
+    detailImage: photos.cameraCorner,
+    seoTitle: 'Cameratoezicht ter ondersteuning van beveiliging',
+    seoDescription:
+      'Cameratoezicht als aanvulling op fysieke beveiliging: signaleren van afwijkende situaties en samenwerking met beveiligers op locatie, met oog voor privacyregels.',
+  },
+  {
+    slug: 'beveiliging-op-maat',
+    title: 'Beveiliging op maat',
+    shortTitle: 'Op maat',
+    tagline: 'Niet iedere beveiligingsvraag past binnen een standaarddienst.',
+    summary:
+      'Iedere organisatie kent eigen veiligheidsrisico’s en uitdagingen. Daarom bieden wij beveiligingsoplossingen die volledig worden afgestemd op de specifieke situatie en wensen van de opdrachtgever.',
+    intro: [
+      'Naast de diensten die u op onze website vindt, biedt Dedicated Security Management B.V. ook de mogelijkheid om een volledig op maat samengesteld bewakings- of beveiligingstraject te verzorgen.',
+      'Sommige locaties of opdrachten vragen om een combinatie van verschillende beveiligingsvormen. Bijvoorbeeld een bedrijfslocatie waarbij toegangscontrole, objectbewaking en cameratoezicht samen onderdeel vormen van één beveiligingsaanpak.',
+      'Daarom denken wij graag mee over een beveiligingstraject dat aansluit bij de specifieke situatie van uw organisatie.',
+    ],
+    activitiesTitle: 'Wij kijken onder meer naar',
+    activities: [
+      'De aard en omvang van uw organisatie.',
+      'De locatie en bijbehorende risico’s.',
+      'De gewenste beveiligingsmomenten.',
+      'De aanwezigheid van medewerkers en bezoekers.',
+      'Bestaande veiligheidsmaatregelen.',
+      'De doelstellingen en het beschikbare budget.',
+    ],
+    audienceTitle: 'Voor wie?',
+    audience: 'Organisaties waarvan de beveiligingsvraag niet binnen één standaarddienst past.',
+    importance: [
+      'Samen zoeken wij naar een aanpak die veiligheid, praktische uitvoerbaarheid en kostenefficiëntie met elkaar verbindt.',
+      'Verschillende beveiligingsvormen kunnen samen één samenhangende aanpak vormen.',
+      'Wij kijken samen met u naar veiligheidsbehoeften, mogelijke risico’s en gewenste maatregelen.',
+    ],
+    note: 'Wilt u met ons in gesprek over de mogelijkheden? Neem dan geheel vrijblijvend contact met ons op voor meer informatie of vraag direct een offerte aan.',
+    image: photos.cardReader,
+    detailImage: photos.glassCeiling,
+    seoTitle: 'Beveiliging op maat',
+    seoDescription:
+      'Beveiliging op maat: een bewakings- of beveiligingstraject dat volledig is afgestemd op uw organisatie, locatie, risico’s en wensen.',
+  },
+  {
+    slug: 'veiligheidskundigen-en-risicoanalyses',
+    title: 'Veiligheidskundigen en risicoanalyses',
+    shortTitle: 'Risicoanalyses',
+    tagline: 'Inzicht in risico’s. Grip op veiligheid.',
+    summary:
+      'Onze veiligheidskundige dienstverlening richt zich op het inventariseren, analyseren en beoordelen van veiligheidsrisico’s. Op basis daarvan kunnen passende preventieve maatregelen en veiligheidsadviezen worden opgesteld.',
+    intro: [
+      'Een veilige werkomgeving begint met inzicht in de risico’s die zich binnen een organisatie of op een locatie kunnen voordoen.',
+      'Risico’s zijn niet altijd direct zichtbaar. Denk aan onveilige werksituaties, onvoldoende toegangsbeveiliging, gebrekkige veiligheidsprocedures of het ontbreken van duidelijke afspraken bij calamiteiten.',
+      'Door risico’s systematisch te onderzoeken, ontstaat een beter beeld van noodzakelijke preventieve maatregelen. Dedicated Security Management B.V. wil organisaties ondersteunen bij het identificeren, beoordelen en beheersen van veiligheidsrisico’s.',
+    ],
+    activitiesTitle: 'Mogelijke dienstverlening',
+    activities: [
+      'Uitvoeren van risicoanalyses (Risk Assessments).',
+      'In kaart brengen van veiligheidsrisico’s op locaties.',
+      'Adviseren over preventieve veiligheidsmaatregelen.',
+      'Beoordelen van bestaande veiligheidsprocedures.',
+      'Ondersteunen bij het opstellen van veiligheidsplannen.',
+      'Adviseren over toegangsbeheer en beveiligingsmaatregelen.',
+      'Ondersteuning bij risico-inventarisaties en -evaluaties (RI&E), indien de benodigde deskundigheid aanwezig is.',
+    ],
+    audienceTitle: 'Waarom een risicoanalyse?',
+    audience:
+      'Een risicoanalyse helpt organisaties om kwetsbaarheden tijdig te herkennen en gerichter te investeren in beveiligingsmaatregelen.',
+    importance: [
+      'Kwetsbaarheden tijdig herkennen.',
+      'De kans op incidenten verkleinen.',
+      'Gerichter investeren in beveiligingsmaatregelen.',
+      'Veiligheidsverantwoordelijkheden duidelijker vastleggen.',
+      'De continuïteit van bedrijfsactiviteiten beter beschermen.',
+    ],
+    note: 'Ondersteuning bij een RI&E bieden wij alleen wanneer de daarvoor benodigde deskundigheid aanwezig is. Wij bespreken vooraf welke vorm van analyse passend is.',
+    image: photos.riskWhiteboard,
+    detailImage: photos.planDrawing,
+    seoTitle: 'Veiligheidskundigen en risicoanalyses (Risk Assessments)',
+    seoDescription:
+      'Risicoanalyses en veiligheidskundig advies: veiligheidsrisico’s inventariseren, beoordelen en beheersen met passende preventieve maatregelen.',
+  },
+];
+
+export const defaultServices: ServicesContent = {
+  eyebrow: 'Diensten',
+  title: 'Beveiliging voor iedere',
+  titleAccent: 'omgeving en verantwoordelijkheid.',
+  intro:
+    'Een bouwplaats vraagt om een andere beveiligingsaanpak dan een evenement, winkel of kantoorgebouw. Daarom begint iedere opdracht met het begrijpen van uw organisatie en de bijbehorende veiligheidsbehoeften.',
+  items,
+};
+
+export const SERVICE_SLUGS = items.map((item) => item.slug);

@@ -1,0 +1,84 @@
+'use server';
+
+import { updateTag } from 'next/cache';
+import { CONTENT_TAG } from '@/lib/content/get';
+import { sanitizeSection } from '@/lib/content/sanitize';
+import { SECTION_KEYS, type SectionKey } from '@/lib/content/types';
+import { getAdmin } from '../auth';
+import type { ActionResult } from './types';
+
+const MAX_BYTES = 400_000;
+
+function isSection(value: unknown): value is SectionKey {
+  return typeof value === 'string' && (SECTION_KEYS as string[]).includes(value);
+}
+
+const expired: ActionResult = { ok: false, message: 'Uw sessie is verlopen. Log opnieuw in.' };
+
+export async function saveDraft(section: SectionKey, input: unknown): Promise<ActionResult> {
+  const admin = await getAdmin();
+  if (!admin) return expired;
+  if (!isSection(section)) return { ok: false, message: 'Onbekend onderdeel.' };
+  if (JSON.stringify(input ?? null).length > MAX_BYTES) return { ok: false, message: 'De inhoud is te groot om op te slaan.' };
+
+  const { data, problems } = sanitizeSection(section, input);
+  const at = new Date().toISOString();
+  const { error } = await admin.supabase
+    .from('content_drafts')
+    .upsert({ key: section, data, updated_at: at, updated_by: admin.user.id }, { onConflict: 'key' });
+  if (error) return { ok: false, message: `Opslaan mislukt: ${error.message}` };
+  return { ok: true, message: problems.length ? 'Opgeslagen, met correcties.' : 'Concept opgeslagen.', at, problems };
+}
+
+export async function publishSection(section: SectionKey, input?: unknown): Promise<ActionResult> {
+  const admin = await getAdmin();
+  if (!admin) return expired;
+  if (!isSection(section)) return { ok: false, message: 'Onbekend onderdeel.' };
+
+  let problems: string[] = [];
+  if (input !== undefined) {
+    const saved = await saveDraft(section, input);
+    if (!saved.ok) return saved;
+    problems = saved.problems ?? [];
+  }
+
+  const { data: draft, error: readError } = await admin.supabase.from('content_drafts').select('data').eq('key', section).maybeSingle();
+  if (readError) return { ok: false, message: `Publiceren mislukt: ${readError.message}` };
+  if (!draft) return { ok: false, message: 'Er is geen concept om te publiceren.' };
+
+  const { data } = sanitizeSection(section, draft.data);
+  const at = new Date().toISOString();
+  const { error } = await admin.supabase
+    .from('content_published')
+    .upsert({ key: section, data, published_at: at, published_by: admin.user.id }, { onConflict: 'key' });
+  if (error) return { ok: false, message: `Publiceren mislukt: ${error.message}` };
+
+  updateTag(CONTENT_TAG);
+  return { ok: true, message: 'Gepubliceerd. De wijzigingen staan live.', at, problems };
+}
+
+export async function publishAll(): Promise<ActionResult> {
+  const admin = await getAdmin();
+  if (!admin) return expired;
+  const { data: drafts, error } = await admin.supabase.from('content_drafts').select('key, data');
+  if (error) return { ok: false, message: `Publiceren mislukt: ${error.message}` };
+  if (!drafts?.length) return { ok: false, message: 'Er zijn geen concepten om te publiceren.' };
+
+  const at = new Date().toISOString();
+  const rows = drafts
+    .filter((row) => isSection(row.key))
+    .map((row) => ({ key: row.key, data: sanitizeSection(row.key as SectionKey, row.data).data, published_at: at, published_by: admin.user.id }));
+  const { error: upsertError } = await admin.supabase.from('content_published').upsert(rows, { onConflict: 'key' });
+  if (upsertError) return { ok: false, message: `Publiceren mislukt: ${upsertError.message}` };
+  updateTag(CONTENT_TAG);
+  return { ok: true, message: `${rows.length} onderdelen gepubliceerd.`, at };
+}
+
+export async function discardDraft(section: SectionKey): Promise<ActionResult> {
+  const admin = await getAdmin();
+  if (!admin) return expired;
+  if (!isSection(section)) return { ok: false, message: 'Onbekend onderdeel.' };
+  const { error } = await admin.supabase.from('content_drafts').delete().eq('key', section);
+  if (error) return { ok: false, message: `Verwerpen mislukt: ${error.message}` };
+  return { ok: true, message: 'Concept verworpen. De gepubliceerde versie is hersteld.' };
+}
