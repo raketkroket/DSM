@@ -7,6 +7,7 @@ import { Bespoke } from './Bespoke';
 import { Experience } from './Experience';
 import { Hero } from './Hero';
 import { Philosophy } from './Philosophy';
+import { PlannerTeaser } from './PlannerTeaser';
 import { ProcessTimeline } from './ProcessTimeline';
 import { Sectors } from './Sectors';
 import { SecurityLayers } from './SecurityLayers';
@@ -44,6 +45,7 @@ export function HomeView({ site }: { site: SiteContent }) {
         </div>
       </section>
 
+      <PlannerTeaser />
       <SecurityLayers layers={home.layers} />
       <ProcessTimeline process={home.process} />
       <Sectors sectors={home.sectors} />

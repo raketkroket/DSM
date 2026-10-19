@@ -3,6 +3,7 @@
 Corporate website and content management for Dedicated Security Management B.V.
 
 - **Public site**: homepage, services overview, nine dedicated service pages, about, contact, multi-step quote request, privacy statement.
+- **Beveiligingsplanner** (`/beveiligingsplanner`): an interactive tool where visitors choose their location, concerns and the hours they need cover (click-and-drag week grid), see matching services with the reasons, and send the profile straight into a pre-filled quote request. It recommends services only and never shows prices: the client's document contains no rates. Progress is remembered in the visitor's browser.
 - **Admin** (`/admin`): secure login, dashboard, content editor with draft → preview → publish, media library, enquiry management and website settings.
 
 All default copy comes from the client's approved document *Website Dedicated Security Management B.V.*. Contact details (phone, e-mail, address, KvK) are intentionally empty until the owner fills them in under **Beheer → Instellingen**; empty fields are hidden on the site.

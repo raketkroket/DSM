@@ -6,6 +6,7 @@ export const INTERNAL_PAGES = [
   { href: '/', label: 'Home' },
   { href: '/diensten', label: 'Diensten' },
   ...defaultServices.items.map((item) => ({ href: `/diensten/${item.slug}`, label: `Dienst: ${item.title}` })),
+  { href: '/beveiligingsplanner', label: 'Beveiligingsplanner' },
   { href: '/over-ons', label: 'Over ons' },
   { href: '/contact', label: 'Contact' },
   { href: '/offerte', label: 'Offerte aanvragen' },

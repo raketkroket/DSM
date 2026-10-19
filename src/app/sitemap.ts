@@ -7,6 +7,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '', priority: 1 },
     { path: '/diensten', priority: 0.9 },
     ...SERVICE_SLUGS.map((slug) => ({ path: `/diensten/${slug}`, priority: 0.8 })),
+    { path: '/beveiligingsplanner', priority: 0.8 },
     { path: '/over-ons', priority: 0.7 },
     { path: '/contact', priority: 0.7 },
     { path: '/offerte', priority: 0.8 },

@@ -50,6 +50,7 @@ export function Footer({ settings, services }: { settings: SettingsContent; serv
                   {[
                     ['/', 'Home'],
                     ['/diensten', 'Diensten'],
+                    ['/beveiligingsplanner', 'Beveiligingsplanner'],
                     ['/over-ons', 'Over ons'],
                     ['/contact', 'Contact'],
                     ['/offerte', 'Offerte aanvragen'],

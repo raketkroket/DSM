@@ -9,6 +9,7 @@ import { z } from 'zod';
 import { EASE } from '@/components/motion/ease';
 import { ArrowBadge, buttonClass } from '@/components/site/Button';
 import { fieldErrors, OTHER_SERVICE, quoteFields, type FieldErrors } from '@/lib/enquiry/schema';
+import { PLANNER_STORAGE_KEY } from '@/lib/planner';
 import { Consent, Field, FormAlert, Honeypot, TextArea, TextInput } from './fields';
 import { useSubmission } from './useSubmission';
 
@@ -45,6 +46,21 @@ const stepSchemas = [
   }),
 ];
 
+/** Profile handed over by the beveiligingsplanner (session storage may be unavailable). */
+function readPlannerMessage() {
+  if (typeof window === 'undefined') return '';
+  try {
+    const raw = window.sessionStorage.getItem(PLANNER_STORAGE_KEY);
+    const message = raw ? (JSON.parse(raw) as { message?: unknown }).message : '';
+    return typeof message === 'string' ? `${message.slice(0, 3000)}
+
+Aanvullende informatie:
+` : '';
+  } catch {
+    return '';
+  }
+}
+
 export function QuoteForm({
   services,
   privacyNote,
@@ -60,17 +76,18 @@ export function QuoteForm({
   const preset = services.find((service) => service.slug === params.get('dienst'))?.title ?? '';
   const [step, setStep] = useState(preset ? 1 : 0);
   const [direction, setDirection] = useState(1);
-  const [values, setValues] = useState<Values>({
+  const fromPlanner = params.get('planner') === '1';
+  const [values, setValues] = useState<Values>(() => ({
     service: preset,
     location: '',
-    message: '',
+    message: fromPlanner ? readPlannerMessage() : '',
     company: '',
     name: '',
     email: '',
     phone: '',
     consent: false,
     website: '',
-  });
+  }));
   const [errors, setErrors] = useState<FieldErrors>({});
   const { status, message, serverErrors, submit, clearError } = useSubmission('/api/offerte');
   const heading = useRef<HTMLHeadingElement>(null);
@@ -250,6 +267,13 @@ export function QuoteForm({
                     {allErrors.service}
                   </p>
                 )}
+                <p className="mt-5 text-[0.88rem] text-muted">
+                  Twijfelt u welke dienst past?{' '}
+                  <Link href="/beveiligingsplanner" className="text-navy underline underline-offset-4">
+                    Gebruik de beveiligingsplanner
+                  </Link>
+                  .
+                </p>
               </div>
             )}
 

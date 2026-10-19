@@ -23,6 +23,7 @@ type HeaderProps = {
 const links = [
   { href: '/', label: 'Home' },
   { href: '/diensten', label: 'Diensten', mega: true },
+  { href: '/beveiligingsplanner', label: 'Planner' },
   { href: '/over-ons', label: 'Over ons' },
   { href: '/contact', label: 'Contact' },
 ];
