@@ -24,7 +24,7 @@ export type PanelSpec = { key: string | null; label: string; help?: string; fiel
 
 export const SECTION_META: Record<SectionKey, { label: string; description: string; preview: string }> = {
   home: { label: 'Homepagina', description: 'Hero, introductie, filosofie, lagen, werkwijze, sectoren en afsluiting.', preview: '' },
-  services: { label: 'Diensten', description: 'Overzichtspagina en de negen dienstpagina’s.', preview: 'diensten' },
+  services: { label: 'Diensten', description: 'Overzichtspagina en alle dienstpagina’s (toevoegen, verwijderen, volgorde).', preview: 'diensten' },
   about: { label: 'Over ons', description: 'Verhaal, ontwikkeling, expertise, missie en visie, galerij.', preview: 'over-ons' },
   faq: { label: 'Veelgestelde vragen', description: 'Vragen en antwoorden op home, diensten en contact.', preview: '' },
   contact: { label: 'Contact & offerte', description: 'Contactpagina, offerteformulier en bevestiging.', preview: 'contact' },
