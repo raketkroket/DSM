@@ -8,6 +8,7 @@ import { requireAdmin } from '@/lib/admin/auth';
 import { getSectionStates } from '@/lib/admin/content';
 import { SECTION_META } from '@/lib/admin/editor-spec';
 import { SECTION_KEYS } from '@/lib/content/types';
+import { STOCK_PREFIX } from '@/lib/content/photos';
 
 export const metadata: Metadata = { title: 'Dashboard' };
 
@@ -16,13 +17,12 @@ type EnquiryRow = { id: string; kind: 'quote' | 'contact'; status: 'new' | 'cont
 async function Dashboard({ searchParams }: { searchParams: PageProps<'/admin'>['searchParams'] }) {
   const params = await searchParams;
   const { supabase } = await requireAdmin();
-  const [states, recent, newQuotes, newMessages, open, media] = await Promise.all([
+  const [states, recent, newQuotes, newMessages, open] = await Promise.all([
     getSectionStates(supabase),
     supabase.from('enquiries').select('id, kind, status, name, company, service, created_at').order('created_at', { ascending: false }).limit(6),
     supabase.from('enquiries').select('id', { count: 'exact', head: true }).eq('kind', 'quote').eq('status', 'new'),
     supabase.from('enquiries').select('id', { count: 'exact', head: true }).eq('kind', 'contact').eq('status', 'new'),
     supabase.from('enquiries').select('id', { count: 'exact', head: true }).neq('status', 'completed'),
-    supabase.from('media').select('id', { count: 'exact', head: true }),
   ]);
   const enquiries = (recent.data ?? []) as EnquiryRow[];
   const pending = SECTION_KEYS.filter((key) => states[key].pending);
@@ -33,7 +33,7 @@ async function Dashboard({ searchParams }: { searchParams: PageProps<'/admin'>['
     { done: Boolean(settings.notificationEmail || process.env.ENQUIRY_NOTIFICATION_EMAIL), label: 'E-mailadres voor meldingen ingesteld', href: '/admin/instellingen' },
     { done: Boolean(process.env.RESEND_API_KEY && process.env.RESEND_FROM_EMAIL), label: 'E-mailverzending (Resend) gekoppeld', href: null },
     { done: Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY), label: 'Formulieren gekoppeld aan de database', href: null },
-    { done: (media.count ?? 0) > 0, label: 'Eigen foto’s geüpload', href: '/admin/media' },
+    { done: !JSON.stringify(SECTION_KEYS.map((key) => states[key].published)).includes(STOCK_PREFIX), label: 'Tijdelijke stockfoto’s vervangen', href: '/admin/fotos' },
   ];
 
   const stats = [

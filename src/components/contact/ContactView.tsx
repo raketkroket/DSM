@@ -32,7 +32,7 @@ export function ContactView({ site }: { site: SiteContent }) {
                   </span>
                 </span>
                 <span className="block overflow-hidden pb-[0.1em]">
-                  <span className="intro-rise accent block text-navy-soft" style={delay(420)}>
+                  <span className="intro-rise accent block" style={delay(420)}>
                     {contact.hero.titleAccent}
                   </span>
                 </span>
@@ -42,7 +42,7 @@ export function ContactView({ site }: { site: SiteContent }) {
               </p>
             </div>
             <div
-              className="intro-unveil-up relative h-[22rem] overflow-hidden rounded-[1.75rem] bg-navy lg:col-span-5 lg:h-auto lg:min-h-[36rem]"
+              className="intro-unveil-up relative h-[22rem] overflow-hidden rounded-[3px] bg-navy lg:col-span-5 lg:h-auto lg:min-h-[36rem]"
               style={delay(200)}
             >
               <div className="intro-settle absolute inset-0" style={delay(200)}>
@@ -56,7 +56,7 @@ export function ContactView({ site }: { site: SiteContent }) {
       <section aria-labelledby="contactformulier" className="py-20 md:py-28">
         <div className="shell grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-6">
           <aside className="space-y-6 lg:col-span-4">
-            <Reveal className="relative overflow-hidden rounded-[1.5rem] bg-navy p-8 text-white">
+            <Reveal className="relative overflow-hidden rounded-[3px] bg-navy p-8 text-white">
               <div className="blueprint-dark pointer-events-none absolute inset-0" aria-hidden />
               <div className="relative">
                 <p className="eyebrow text-steel-soft!">Offerte</p>
@@ -68,7 +68,7 @@ export function ContactView({ site }: { site: SiteContent }) {
               </div>
             </Reveal>
             {hasDetails ? (
-              <Reveal delay={0.1} className="rounded-[1.5rem] border border-line bg-white p-8">
+              <Reveal delay={0.1} className="rounded-[3px] border border-line bg-white p-8">
                 <p className="eyebrow">Direct contact</p>
                 <ul className="mt-6 space-y-4 text-[0.98rem]">
                   {settings.phone && (

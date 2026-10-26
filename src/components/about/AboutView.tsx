@@ -39,7 +39,7 @@ export function AboutView({ site }: { site: SiteContent }) {
               </span>
             </span>
             <span className="block overflow-hidden pb-[0.1em] md:pl-[12%]">
-              <span className="intro-rise accent block text-navy-soft" style={delay(430)}>
+              <span className="intro-rise accent block" style={delay(430)}>
                 {about.hero.titleAccent}
               </span>
             </span>
@@ -55,7 +55,7 @@ export function AboutView({ site }: { site: SiteContent }) {
               Dedicated Solution Services → Dedicated Security Management B.V.
             </p>
           </div>
-          <div className="intro-unveil relative aspect-[16/11] overflow-hidden rounded-[1.75rem] bg-navy md:col-span-8" style={delay(450)}>
+          <div className="intro-unveil relative aspect-[16/11] overflow-hidden rounded-[3px] bg-navy md:col-span-8" style={delay(450)}>
             <div className="intro-settle absolute inset-0" style={delay(450)}>
               <Photo image={about.hero.image} sizes="(min-width: 768px) 64vw, 92vw" priority />
             </div>
@@ -90,7 +90,7 @@ export function AboutView({ site }: { site: SiteContent }) {
                   {about.origin.title}
                 </h2>
               </Reveal>
-              <ImageReveal parallax={6} className="mt-10 aspect-[4/5] rounded-[1.5rem] bg-mist">
+              <ImageReveal parallax={6} className="mt-10 aspect-[4/5] rounded-[3px] bg-mist">
                 <Photo image={about.origin.image} sizes="(min-width: 1024px) 38vw, 92vw" />
               </ImageReveal>
             </div>
@@ -139,10 +139,10 @@ export function AboutView({ site }: { site: SiteContent }) {
             </div>
           </div>
           <div className="mt-16 grid grid-cols-1 gap-6 lg:grid-cols-12">
-            <ImageReveal parallax={8} className="aspect-[4/3] rounded-[1.5rem] bg-navy lg:col-span-5 lg:aspect-auto">
+            <ImageReveal parallax={8} className="aspect-[4/3] rounded-[3px] bg-navy lg:col-span-5 lg:aspect-auto">
               <Photo image={about.expertise.image} sizes="(min-width: 1024px) 40vw, 92vw" />
             </ImageReveal>
-            <RevealGroup className="grid grid-cols-1 gap-px overflow-hidden rounded-[1.5rem] bg-white/10 sm:grid-cols-2 lg:col-span-7">
+            <RevealGroup className="grid grid-cols-1 gap-px overflow-hidden rounded-[3px] bg-white/10 sm:grid-cols-2 lg:col-span-7">
               {about.expertise.areas.map((area, index) => (
                 <RevealItem key={area.title} className="bg-navy-deep p-7 md:p-9">
                   <span className="font-mono text-[0.7rem] text-steel-soft">{String(index + 1).padStart(2, '0')}</span>
@@ -158,7 +158,7 @@ export function AboutView({ site }: { site: SiteContent }) {
       {/* Mission & vision */}
       <section aria-label="Missie en visie" className="py-24 md:py-36">
         <div className="shell grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <Reveal className="relative flex flex-col overflow-hidden rounded-[1.75rem] border border-line bg-white p-8 shadow-soft md:p-14">
+          <Reveal className="relative flex flex-col overflow-hidden rounded-[3px] border border-line bg-white p-8 shadow-soft md:p-14">
             <p className="eyebrow">01</p>
             <h2 className="display-md mt-8 text-navy">{about.mission.title}</h2>
             <div className="mt-8 space-y-5 text-[1.05rem] leading-relaxed text-muted">
@@ -169,7 +169,7 @@ export function AboutView({ site }: { site: SiteContent }) {
               ))}
             </div>
           </Reveal>
-          <Reveal delay={0.12} className="relative flex flex-col overflow-hidden rounded-[1.75rem] bg-navy p-8 text-white md:p-14">
+          <Reveal delay={0.12} className="relative flex flex-col overflow-hidden rounded-[3px] bg-navy p-8 text-white md:p-14">
             <div className="blueprint-dark pointer-events-none absolute inset-0" aria-hidden />
             <p className="eyebrow relative text-steel-soft!">02</p>
             <h2 className="display-md relative mt-8">{about.vision.title}</h2>
@@ -230,7 +230,7 @@ export function AboutView({ site }: { site: SiteContent }) {
               .map((image, index) => (
                 <figure
                   key={`${image.src}-${index}`}
-                  className={`relative shrink-0 snap-start overflow-hidden rounded-[1.25rem] bg-mist ${
+                  className={`relative shrink-0 snap-start overflow-hidden rounded-[3px] bg-mist ${
                     index % 2 === 0 ? 'aspect-[4/5] w-[72vw] sm:w-[34vw] lg:w-[24rem]' : 'aspect-[5/4] w-[86vw] self-end sm:w-[44vw] lg:w-[30rem]'
                   }`}
                 >

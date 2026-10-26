@@ -67,7 +67,7 @@ export function ProcessTimeline({ process }: { process: HomeContent['process'] }
             </Reveal>
 
             <div className="mt-14 hidden items-end gap-6 lg:flex" aria-hidden>
-              <div className="relative h-[8.5rem] w-[7.5rem] overflow-hidden">
+              <div className="relative h-[8.5rem] w-[11rem] overflow-hidden">
                 <AnimatePresence initial={false} mode="popLayout">
                   <motion.span
                     key={active}

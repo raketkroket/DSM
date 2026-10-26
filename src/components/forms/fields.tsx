@@ -3,7 +3,7 @@
 import type { InputHTMLAttributes, ReactNode, TextareaHTMLAttributes } from 'react';
 
 const base =
-  'peer block w-full rounded-xl border bg-white px-4 text-[1rem] text-ink placeholder:text-muted/60 transition-[border-color,box-shadow] duration-300 outline-none focus:border-navy focus:shadow-[0_0_0_4px_rgba(110,145,172,0.18)]';
+  'peer block w-full rounded-[2px] border bg-white px-4 text-[1rem] text-ink placeholder:text-muted/60 transition-[border-color,box-shadow] duration-300 outline-none focus:border-navy focus:shadow-[0_0_0_4px_rgba(110,145,172,0.18)]';
 
 export function Field({
   id,
@@ -114,7 +114,7 @@ export function FormAlert({ tone, children }: { tone: 'error' | 'info'; children
   return (
     <div
       role={tone === 'error' ? 'alert' : 'status'}
-      className={`rounded-xl border px-4 py-3 text-[0.92rem] leading-relaxed ${
+      className={`rounded-[2px] border px-4 py-3 text-[0.92rem] leading-relaxed ${
         tone === 'error' ? 'border-danger/30 bg-danger/5 text-danger' : 'border-line bg-mist text-ink'
       }`}
     >

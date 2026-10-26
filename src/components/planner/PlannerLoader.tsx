@@ -7,8 +7,8 @@ export const PlannerLoader = dynamic(() => import('./Planner').then((module) => 
   ssr: false,
   loading: () => (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-6" aria-label="Planner laden" role="status">
-      <div className="h-[36rem] animate-pulse rounded-[1.75rem] bg-mist/70 lg:col-span-7" />
-      <div className="h-[36rem] animate-pulse rounded-[1.75rem] bg-navy/15 lg:col-span-5" />
+      <div className="h-[36rem] animate-pulse rounded-[3px] bg-mist/70 lg:col-span-7" />
+      <div className="h-[36rem] animate-pulse rounded-[3px] bg-navy/15 lg:col-span-5" />
     </div>
   ),
 });

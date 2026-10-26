@@ -21,12 +21,12 @@ export function PlannerTeaser() {
         <Reveal>
           <Link
             href="/beveiligingsplanner"
-            className="group relative grid grid-cols-1 overflow-hidden rounded-[1.75rem] border border-line bg-white shadow-soft transition-shadow duration-700 hover:shadow-panel lg:grid-cols-12"
+            className="group relative grid grid-cols-1 overflow-hidden rounded-[3px] border border-line bg-white shadow-soft transition-shadow duration-700 hover:shadow-panel lg:grid-cols-12"
           >
             <div className="relative z-10 p-7 sm:p-10 lg:col-span-6 lg:p-14">
               <p className="eyebrow">Beveiligingsplanner</p>
               <h2 id="planner-teaser" className="display-md mt-6 max-w-[14ch] text-navy">
-                Stel uw beveiliging <span className="accent text-navy-soft">zelf samen.</span>
+                Stel uw beveiliging <span className="accent">zelf samen.</span>
               </h2>
               <p className="mt-5 max-w-[30rem] text-[1.05rem] leading-relaxed text-muted">
                 Kies uw locatie, uw aandachtspunten en de momenten waarop beveiliging nodig is. U ziet direct welke diensten passen.
@@ -40,7 +40,7 @@ export function PlannerTeaser() {
                 {TILES.map(({ icon: Icon, label }, index) => (
                   <span
                     key={label}
-                    className={`flex flex-col items-start gap-6 rounded-xl border p-3 text-[0.75rem] transition-transform duration-700 ease-[var(--ease-arch)] group-hover:-translate-y-1 ${
+                    className={`flex flex-col items-start gap-6 rounded-[2px] border p-3 text-[0.75rem] transition-transform duration-700 ease-[var(--ease-arch)] group-hover:-translate-y-1 ${
                       index === 1 ? 'border-navy bg-navy text-white' : 'border-line bg-white text-ink'
                     }`}
                     style={{ transitionDelay: `${index * 60}ms` }}
@@ -50,7 +50,7 @@ export function PlannerTeaser() {
                   </span>
                 ))}
               </div>
-              <div className="rounded-xl border border-line bg-white p-3">
+              <div className="rounded-[2px] border border-line bg-white p-3">
                 <div className="grid grid-cols-7 gap-1">
                   {PREVIEW.flatMap((row, p) =>
                     row.map((on, d) => (

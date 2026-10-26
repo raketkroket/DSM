@@ -151,7 +151,7 @@ export function QuoteForm({
         </span>
         <h2 className="display-sm mt-8 text-navy">{confirmationTitle}</h2>
         <p className="mt-4 max-w-[30rem] text-[1.05rem] leading-relaxed text-muted">{message || confirmationText}</p>
-        <dl className="mt-8 grid max-w-[30rem] gap-3 rounded-2xl border border-line bg-paper p-5 text-[0.92rem]">
+        <dl className="mt-8 grid max-w-[30rem] gap-3 rounded-[3px] border border-line bg-paper p-5 text-[0.92rem]">
           <div className="flex justify-between gap-4">
             <dt className="text-muted">Dienst</dt>
             <dd className="text-right text-navy">{values.service}</dd>
@@ -194,7 +194,7 @@ export function QuoteForm({
               disabled={index > step}
               onClick={() => index < step && goTo(index)}
               aria-current={index === step ? 'step' : undefined}
-              aria-label={`Stap ${index + 1}: ${item.title}${index < step ? ' (terug naar deze stap)' : ''}`}
+              aria-label={`${String(index + 1).padStart(2, '0')} ${item.title}`}
               className="group w-full text-left disabled:cursor-default"
             >
               <span className="block h-[3px] overflow-hidden rounded-full bg-line">
@@ -238,7 +238,7 @@ export function QuoteForm({
                     return (
                       <label
                         key={title}
-                        className={`flex cursor-pointer items-center gap-4 rounded-xl border px-4 py-3.5 transition-[border-color,background-color] duration-300 ${
+                        className={`flex cursor-pointer items-center gap-4 rounded-[2px] border px-4 py-3.5 transition-[border-color,background-color] duration-300 ${
                           selected ? 'border-navy bg-navy text-white' : 'border-line-strong bg-white text-ink hover:border-navy/50'
                         }`}
                       >
@@ -313,7 +313,7 @@ export function QuoteForm({
             )}
 
             {step === 3 && (
-              <dl className="mt-8 divide-y divide-line overflow-hidden rounded-2xl border border-line bg-paper">
+              <dl className="mt-8 divide-y divide-line overflow-hidden rounded-[3px] border border-line bg-paper">
                 {[
                   ['Gewenste dienst', values.service, 0],
                   ['Locatie', values.location, 1],
@@ -351,7 +351,7 @@ export function QuoteForm({
         ) : (
           <span />
         )}
-        <button type="submit" disabled={status === 'submitting'} className={buttonClass('primary', 'pr-2.5')} aria-live="polite">
+        <button type="submit" disabled={status === 'submitting'} className={buttonClass('primary')} aria-live="polite">
           {status === 'submitting' ? (
             <>
               <span>Versturen…</span>

@@ -35,7 +35,7 @@ export function Logo({
       <LogoMark className="h-9 w-9 shrink-0" />
       {!compact && (
         <span className="flex flex-col leading-none">
-          <span className="text-[1.05rem] font-semibold tracking-[-0.02em]">Dedicated</span>
+          <span className="text-[1.05rem] font-semibold tracking-[-0.02em]">Dedicated</span>{' '}
           <span className={`mt-1 font-mono text-[0.56rem] tracking-[0.22em] uppercase ${tone === 'light' ? 'text-white/60' : 'text-muted'}`}>
             Security Management
           </span>

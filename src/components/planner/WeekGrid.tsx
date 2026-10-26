@@ -85,7 +85,7 @@ export function WeekGrid({ value, onChange, readOnly = false, tone = 'light' }: 
             {DAYS.map((day, d) => {
               const on = value[p][d];
               const label = `${DAYS_LONG[d]} ${part.label.toLowerCase()} (${part.hours} uur)`;
-              const base = readOnly ? 'h-3.5 rounded-[3px]' : 'h-10 rounded-lg sm:h-12';
+              const base = readOnly ? 'h-3.5 rounded-[3px]' : 'h-10 rounded-[2px] sm:h-12';
               const color = on
                 ? dark
                   ? 'bg-steel-soft'

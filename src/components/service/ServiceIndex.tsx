@@ -34,7 +34,7 @@ export function ServiceIndex({ items }: { items: ServiceContent[] }) {
                 >
                   {item.title}
                 </h2>
-                <p className="accent mt-3 text-[1.35rem] leading-snug text-navy-soft">{item.tagline}</p>
+                <p className="accent mt-3 text-[1.35rem] leading-snug">{item.tagline}</p>
               </div>
               <div className="flex flex-col gap-5 md:col-span-5 lg:col-span-4 lg:col-start-8">
                 <p className="text-[1rem] leading-relaxed text-muted">{item.summary}</p>
@@ -43,12 +43,12 @@ export function ServiceIndex({ items }: { items: ServiceContent[] }) {
                 </span>
               </div>
               {/* Touch: always-visible image */}
-              <div className="relative aspect-[16/9] overflow-hidden rounded-[1.1rem] bg-navy md:hidden">
+              <div className="relative aspect-[16/9] overflow-hidden rounded-[3px] bg-navy md:hidden">
                 <Photo image={item.image} sizes="92vw" />
               </div>
               {/* Desktop: hover reveal */}
               <motion.div
-                className="relative hidden overflow-hidden rounded-[1.1rem] bg-navy md:col-span-12 md:block lg:col-span-11 lg:col-start-2"
+                className="relative hidden overflow-hidden rounded-[3px] bg-navy md:col-span-12 md:block lg:col-span-11 lg:col-start-2"
                 initial={false}
                 animate={{ height: isOpen ? 260 : 0, opacity: isOpen ? 1 : 0 }}
                 transition={{ duration: 0.8, ease: EASE }}

@@ -38,9 +38,9 @@ export const defaultContent: SiteContent = {
       titleAccent: 'onze verantwoordelijkheid.',
       lead: 'Professionele beveiligingsoplossingen voor bedrijven, organisaties, evenementen en uiteenlopende locaties.',
       body: 'Wij begrijpen dat iedere situatie vraagt om een passende aanpak. Daarom denken wij met onze opdrachtgevers mee en bieden wij beveiligingsdiensten die aansluiten op hun specifieke wensen en veiligheidsbehoeften.',
-      primaryCta: { label: 'Bekijk onze diensten', href: '/diensten' },
-      secondaryCta: { label: 'Vraag vrijblijvend een offerte aan', href: '/offerte' },
-      image: photos.lobbyGates,
+      primaryCta: { label: 'Offerte aanvragen', href: '/offerte' },
+      secondaryCta: { label: 'Ontdek onze diensten', href: '/diensten' },
+      image: photos.heroEarpiece,
       caption: 'Toegang, overzicht en verantwoordelijkheid',
     },
     experience: {
@@ -69,8 +69,8 @@ export const defaultContent: SiteContent = {
           text: 'Een volgende fase waarin professionaliteit, kwaliteit en een toekomstgerichte aanpak centraal staan.',
         },
       ],
-      imagePrimary: photos.officerAtGates,
-      imageSecondary: photos.turnstiles,
+      imagePrimary: photos.lobbyMotion,
+      imageSecondary: photos.lobbyGates,
     },
     philosophy: {
       eyebrow: 'Veiligheid begint bij een doordachte aanpak',
@@ -86,7 +86,31 @@ export const defaultContent: SiteContent = {
         'Een professionele en representatieve uitstraling.',
         'Beveiligingsoplossingen afgestemd op de locatie en organisatie.',
       ],
-      image: photos.darkEntrance,
+      image: photos.streetPatrol,
+    },
+    why: {
+      eyebrow: 'Waarom DSM',
+      title: 'Ervaring uit de praktijk. Verantwoordelijkheid als uitgangspunt.',
+      text: 'Wat Dedicated Security Management B.V. onderscheidt, is de combinatie van operationele beveiligingservaring en verantwoordelijkheid voor security en safety binnen een corporate omgeving.',
+      items: [
+        {
+          title: 'Praktijkervaring',
+          text: 'Gebouwd op jarenlange ervaring met beveiligingswerkzaamheden, receptiediensten en hospitality vanuit Dedicated Solution Services.',
+        },
+        {
+          title: 'Corporate security & safety',
+          text: 'Ervaring als Security Specialist binnen een grote internationale corporate omgeving, met verantwoordelijkheid rondom personeel en bedrijfsmiddelen.',
+        },
+        {
+          title: 'Preventief en vooruitkijkend',
+          text: 'Wij kijken niet alleen naar de beveiligingsbehoefte van vandaag, maar ook naar risico’s die zich in de toekomst kunnen voordoen.',
+        },
+        {
+          title: 'Maatwerk en betrokkenheid',
+          text: 'Persoonlijk contact, heldere communicatie en een aanpak die aansluit op uw locatie, organisatie en wensen.',
+        },
+      ],
+      image: photos.glassDoor,
     },
     servicesIntro: {
       eyebrow: 'Onze diensten',
@@ -160,9 +184,9 @@ export const defaultContent: SiteContent = {
       text: 'Onze dienstverlening kan aansluiten op de beveiligingsbehoeften van verschillende branches.',
       items: [
         { title: 'Bouw en vastgoed', text: 'Bescherming van bouwlocaties, vastgoedobjecten en bedrijfsterreinen.', image: photos.cranesDusk },
-        { title: 'Zakelijke dienstverlening', text: 'Toegangscontrole, receptiediensten en beveiliging van kantooromgevingen.', image: photos.receptionWarm },
+        { title: 'Zakelijke dienstverlening', text: 'Toegangscontrole, receptiediensten en beveiliging van kantooromgevingen.', image: photos.receptionMinimal },
         { title: 'Retail en winkelcentra', text: 'Toezicht en preventieve beveiliging in winkels en commerciële ruimtes.', image: photos.retailInterior },
-        { title: 'Evenementen en bijeenkomsten', text: 'Beveiliging bij zakelijke evenementen, festivals, beurzen en besloten bijeenkomsten.', image: photos.eventLobby },
+        { title: 'Evenementen en bijeenkomsten', text: 'Beveiliging bij zakelijke evenementen, festivals, beurzen en besloten bijeenkomsten.', image: photos.eventSecurity },
         { title: 'Recreatie en vrijetijdsbesteding', text: 'Toezicht op recreatieterreinen, vakantieparken en bezoekerslocaties.', image: photos.parkAerial },
       ],
     },
@@ -182,7 +206,7 @@ export const defaultContent: SiteContent = {
         'De doelstellingen en het beschikbare budget',
       ],
       closing: 'Wilt u met ons in gesprek over de mogelijkheden? Neem dan geheel vrijblijvend contact met ons op.',
-      image: photos.glassFacade,
+      image: photos.towerLattice,
     },
     closing: {
       title: 'Veiligheid vraagt om de juiste partner.',
@@ -192,7 +216,7 @@ export const defaultContent: SiteContent = {
       ],
       primaryCta: { label: 'Vraag een offerte aan', href: '/offerte' },
       secondaryCta: { label: 'Neem contact op', href: '/contact' },
-      image: photos.towers,
+      image: photos.lobbyMotion,
     },
   },
 
@@ -204,7 +228,7 @@ export const defaultContent: SiteContent = {
       title: 'Gebouwd op ervaring.',
       titleAccent: 'Gericht op veiligheid.',
       lead: 'Een beveiligingsorganisatie die voortbouwt op jarenlange praktijkervaring binnen de beveiligingsbranche.',
-      image: photos.towers,
+      image: photos.facadeGrid,
     },
     intro: {
       title: 'Veiligheid vraagt om aandacht, deskundigheid en de juiste aanpak.',
@@ -233,7 +257,7 @@ export const defaultContent: SiteContent = {
           text: 'De overgang naar Dedicated Security Management B.V. markeert een nieuwe fase. Met behoud van de opgedane kennis, praktijkervaring en persoonlijke betrokkenheid bouwen wij verder aan een organisatie die klaar is voor de beveiligingsvraagstukken van vandaag en morgen.',
         },
       ],
-      image: photos.officerAtGates,
+      image: photos.corridorLight,
     },
     expertise: {
       eyebrow: 'Professionele expertise',
@@ -280,7 +304,7 @@ export const defaultContent: SiteContent = {
         'Dedicated Security Management B.V. wil zich verder ontwikkelen als een professionele en betrokken beveiligingspartner voor organisaties die waarde hechten aan kwaliteit, betrouwbaarheid en een persoonlijke aanpak.',
       ],
     },
-    gallery: [photos.lobbyGates, photos.cranesDusk, photos.reception, photos.cameraFacade],
+    gallery: [photos.lobbyGates, photos.cranesDusk, photos.receptionMinimal, photos.cameraWhiteWall],
     closing: {
       title: 'Samen zorgen we voor een veilige omgeving.',
       text: 'Bent u op zoek naar een betrouwbare beveiligingspartner? Dedicated Security Management B.V. denkt graag met u mee. Neem vrijblijvend contact met ons op en ontdek welke beveiligingsoplossing het beste aansluit bij uw situatie.',
@@ -331,14 +355,14 @@ export const defaultContent: SiteContent = {
       title: 'Samen zorgen we voor',
       titleAccent: 'een veilige omgeving.',
       lead: 'Bent u op zoek naar een betrouwbare beveiligingspartner? Dedicated Security Management B.V. denkt graag met u mee.',
-      image: photos.meetingRoom,
+      image: photos.glassDoor,
     },
     formTitle: 'Stuur ons een bericht',
     formIntro: 'Heeft u een vraag of wilt u de mogelijkheden bespreken? Laat uw gegevens achter, dan nemen wij contact met u op.',
     quoteTitle: 'Vraag vrijblijvend een offerte aan',
     quoteIntro:
       'Geef aan welke beveiligingsdienst u zoekt en waar de opdracht plaatsvindt. Op basis van uw aanvraag bespreken wij welke aanpak passend is.',
-    quoteImage: photos.facadeLight,
+    quoteImage: photos.facadeCameras,
     confirmationTitle: 'Bedankt voor uw aanvraag.',
     confirmationText: 'Wij hebben uw aanvraag ontvangen en nemen zo snel mogelijk contact met u op om de mogelijkheden te bespreken.',
     privacyNote:

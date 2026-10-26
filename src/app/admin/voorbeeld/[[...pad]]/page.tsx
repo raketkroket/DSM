@@ -14,6 +14,7 @@ import { Header } from '@/components/site/Header';
 import { requireAdmin } from '@/lib/admin/auth';
 import { getDraftSite } from '@/lib/admin/content';
 import type { SiteContent } from '@/lib/content/types';
+import { STOCK_PREFIX } from '@/lib/content/photos';
 
 export const metadata: Metadata = { title: 'Voorbeeld', robots: { index: false, follow: false } };
 
@@ -54,7 +55,7 @@ async function Preview({ params }: { params: PageProps<'/admin/voorbeeld/[[...pa
       <main id="inhoud">
         <View site={site} path={pad} />
       </main>
-      <Footer settings={site.settings} services={site.services.items} />
+      <Footer settings={site.settings} services={site.services.items} stockPhotos={JSON.stringify(site).includes(STOCK_PREFIX)} />
     </>
   );
 }

@@ -32,7 +32,7 @@ export default async function PlannerPage() {
               </span>
             </span>
             <span className="block overflow-hidden pb-[0.1em]">
-              <span className="intro-rise accent block text-navy-soft" style={delay(380)}>
+              <span className="intro-rise accent block" style={delay(380)}>
                 in één minuut samen.
               </span>
             </span>

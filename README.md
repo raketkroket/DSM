@@ -113,7 +113,18 @@ See `.env.example`.
 
 ## Photography
 
-The site ships with temporary Unsplash photography (see `src/lib/content/photos.ts`), chosen to show security work in modern business settings. Replace them with the company's own photos via the admin; the defaults are only used where nothing else is set.
+The site ships with temporary, self-hosted stock photography from Pexels and Unsplash (`public/images/stock/`). Sources,
+photographers and licences are listed in [PHOTO_CREDITS.md](./PHOTO_CREDITS.md). People and places shown are not DSM
+staff, clients or locations; the footer says so automatically while any stock photo is published.
+
+To replace them: **Beheer → Foto’s vervangen** lists every image slot that still shows a temporary photo. Upload a company
+photo straight into a slot (it is optimised to WebP and placed as a concept), then publish.
+
+## Design system
+
+- Palette: warm off-white `#F6F5F2`, white, soft grey `#E9EAEB`, deep navy `#14243A`, anthracite `#24282D` (tokens in `src/app/globals.css`).
+- Type: Instrument Sans for headlines, Inter for text and labels.
+- Motion: CSS load sequence (headline rises word by word, photography settles), scroll-triggered reveals and parallax via Motion; all of it respects `prefers-reduced-motion`.
 
 ## Project structure
 

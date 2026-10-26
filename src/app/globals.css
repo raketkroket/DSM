@@ -1,34 +1,35 @@
 @import "tailwindcss";
 
 @theme {
-  --color-paper: #f6f7f9;
+  /* Warm, restrained corporate palette (light ≈70%, navy/anthracite/photography ≈30%). */
+  --color-paper: #f6f5f2;
   --color-surface: #ffffff;
-  --color-mist: #ebeff3;
-  --color-line: #dde4ea;
-  --color-line-strong: #c9d3dc;
-  --color-navy: #112b46;
-  --color-navy-deep: #0b1e33;
-  --color-navy-soft: #1d3a5a;
-  --color-ink: #252b32;
-  --color-muted: #5b6876;
-  --color-steel: #6e91ac;
-  --color-steel-soft: #a9bdcc;
-  --color-steel-wash: #dfe8ef;
+  --color-mist: #e9eaeb;
+  --color-line: #dfddd8;
+  --color-line-strong: #c9c6bf;
+  --color-navy: #14243a;
+  --color-navy-deep: #0c1726;
+  --color-navy-soft: #3a4a60;
+  --color-ink: #24282d;
+  --color-muted: #676b70;
+  --color-steel: #65686d;
+  --color-steel-soft: #b9bbbc;
+  --color-steel-wash: #eeede9;
   --color-success: #2f6b55;
   --color-warning: #8a6420;
   --color-danger: #a23b3b;
 
-  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-instrument), ui-serif, Georgia, serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-instrument-sans), var(--font-inter), ui-sans-serif, sans-serif;
+  /* Labels and numerals use Inter with tabular figures instead of a monospace. */
+  --font-mono: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
   --ease-arch: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-soft: cubic-bezier(0.65, 0, 0.35, 1);
 
-  --shadow-soft: 0 1px 2px rgb(17 43 70 / 0.04), 0 14px 34px -16px rgb(17 43 70 / 0.16);
-  --shadow-panel: 0 2px 4px rgb(17 43 70 / 0.03), 0 30px 60px -30px rgb(17 43 70 / 0.28),
-    0 60px 120px -60px rgb(17 43 70 / 0.22);
-  --shadow-lift: 0 50px 100px -40px rgb(11 30 51 / 0.45);
+  --shadow-soft: 0 1px 2px rgb(20 36 58 / 0.04), 0 18px 40px -24px rgb(20 36 58 / 0.18);
+  --shadow-panel: 0 2px 4px rgb(20 36 58 / 0.03), 0 40px 80px -40px rgb(20 36 58 / 0.3);
+  --shadow-lift: 0 50px 100px -40px rgb(12 23 38 / 0.45);
 
   --breakpoint-xs: 26rem;
 }
@@ -44,7 +45,7 @@
     background: var(--color-paper);
     color: var(--color-ink);
     font-family: var(--font-sans);
-    font-feature-settings: "ss01", "cv11";
+    font-feature-settings: "cv11", "ss03";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: clip;
@@ -56,12 +57,13 @@
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-steel);
+    outline: 2px solid var(--color-navy);
     outline-offset: 3px;
     border-radius: 2px;
   }
 
   h1, h2, h3, h4 {
+    font-family: var(--font-display);
     text-wrap: balance;
     /* Long Dutch compounds may only break when they genuinely do not fit. */
     overflow-wrap: break-word;
@@ -84,17 +86,18 @@
     display: inline-flex;
     align-items: center;
     gap: 0.75rem;
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
     font-weight: 500;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--color-steel);
+    color: var(--color-muted);
+    font-variant-numeric: tabular-nums;
   }
 
   .eyebrow::before {
     content: "";
-    width: 1.75rem;
+    width: 2.25rem;
     height: 1px;
     background: currentColor;
     opacity: 0.7;
@@ -105,38 +108,41 @@
   }
 
   .display-xl {
-    font-size: clamp(2.75rem, 7.4vw, 7.25rem);
-    line-height: 0.96;
-    letter-spacing: -0.045em;
-    font-weight: 500;
-  }
-
-  .display-lg {
-    font-size: clamp(2.25rem, 5.2vw, 5rem);
-    line-height: 1;
+    font-family: var(--font-display);
+    font-size: clamp(2.75rem, 7.6vw, 7.75rem);
+    line-height: 0.94;
     letter-spacing: -0.04em;
     font-weight: 500;
   }
 
-  .display-md {
-    font-size: clamp(1.9rem, 3.6vw, 3.4rem);
-    line-height: 1.04;
+  .display-lg {
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 5.4vw, 5.25rem);
+    line-height: 0.98;
     letter-spacing: -0.035em;
     font-weight: 500;
   }
 
-  .display-sm {
-    font-size: clamp(1.5rem, 2.3vw, 2.15rem);
-    line-height: 1.12;
-    letter-spacing: -0.028em;
+  .display-md {
+    font-family: var(--font-display);
+    font-size: clamp(1.9rem, 3.6vw, 3.5rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
     font-weight: 500;
   }
 
+  .display-sm {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 2.3vw, 2.2rem);
+    line-height: 1.1;
+    letter-spacing: -0.022em;
+    font-weight: 500;
+  }
+
+  /* Secondary line of a headline: same typeface, lower tonal weight. */
   .accent {
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-weight: 400;
-    letter-spacing: -0.015em;
+    font-style: normal;
+    color: var(--color-muted);
   }
 
   .lead {
@@ -146,10 +152,12 @@
   }
 
   .mono-label {
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    letter-spacing: 0.14em;
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
   }
 
   .hairline {
@@ -157,19 +165,10 @@
     background: var(--color-line);
   }
 
-  /* Architectural blueprint grid, used sparingly as a texture. */
-  .blueprint {
-    background-image:
-      linear-gradient(to right, rgb(17 43 70 / 0.055) 1px, transparent 1px),
-      linear-gradient(to bottom, rgb(17 43 70 / 0.055) 1px, transparent 1px);
-    background-size: 64px 64px;
-  }
-
+  /* Former grid textures: retired in favour of clean surfaces (classes kept as no-ops). */
+  .blueprint,
   .blueprint-dark {
-    background-image:
-      linear-gradient(to right, rgb(255 255 255 / 0.05) 1px, transparent 1px),
-      linear-gradient(to bottom, rgb(255 255 255 / 0.05) 1px, transparent 1px);
-    background-size: 64px 64px;
+    background-image: none;
   }
 
   .grain::after {
@@ -184,7 +183,7 @@
 
   /* Cinematic grade for temporary stock photography. */
   .photo-grade {
-    filter: saturate(0.78) contrast(1.04) brightness(0.98);
+    filter: saturate(0.72) contrast(1.03);
   }
 
   .prose-dsm p + p {
@@ -245,7 +244,7 @@
   to { opacity: 1; transform: none; }
 }
 
-.intro-rise { animation: dsm-rise 1.15s var(--ease-arch) both; animation-delay: var(--d, 0ms); }
+.intro-rise { animation: dsm-rise 0.95s var(--ease-arch) both; animation-delay: var(--d, 0ms); }
 .intro-fade-up { animation: dsm-fade-up 1s var(--ease-arch) both; animation-delay: var(--d, 0ms); }
 .intro-fade { animation: dsm-fade 1.2s var(--ease-soft) both; animation-delay: var(--d, 0ms); }
 .intro-unveil { animation: dsm-unveil 1.5s var(--ease-arch) both; animation-delay: var(--d, 0ms); }
@@ -276,10 +275,30 @@
   font-size: clamp(1.5rem, calc(var(--fit-w, 165vw) / var(--chars, 12)), var(--fit-max, 7rem));
 }
 
-/* Route change: a short, quiet entrance shared by every public page. */
-/* Opacity only: a transform here would trap fixed/sticky descendants during the animation. */
-@keyframes dsm-page-enter {
-  from { opacity: 0; }
-  to { opacity: 1; }
+
+
+/* Hero scroll cue: a short line travelling down a hairline. */
+@keyframes dsm-scroll-cue {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(200%); }
 }
-.page-enter { animation: dsm-page-enter 0.6s var(--ease-arch) both; }
+
+/* Accordions: native <details>, animated where the browser supports it. */
+@supports (interpolate-size: allow-keywords) {
+  :root {
+    interpolate-size: allow-keywords;
+  }
+  details::details-content {
+    block-size: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition:
+      block-size 0.55s var(--ease-arch),
+      opacity 0.45s var(--ease-soft),
+      content-visibility 0.55s allow-discrete;
+  }
+  details[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+  }
+}

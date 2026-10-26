@@ -2,6 +2,8 @@
 
 import Image from 'next/image';
 import { AlertTriangle, Crosshair, ImagePlus, Trash2 } from 'lucide-react';
+import { isTemporaryPhoto } from '@/lib/content/photos';
+import { Badge } from '../ui';
 import { useState, type MouseEvent } from 'react';
 import type { MediaItem } from '@/lib/admin/actions/media';
 import type { ImageRef } from '@/lib/content/types';
@@ -43,6 +45,7 @@ export function ImageField({
           <p className="text-[0.9rem] font-medium text-navy">{label}</p>
           {help && <p className="mt-0.5 text-[0.8rem] text-muted">{help}</p>}
         </div>
+        {isTemporaryPhoto(value.src) && <Badge tone="warning">Tijdelijke stockfoto</Badge>}
       </div>
       <div className={`mt-3 grid gap-4 ${compact ? '' : 'md:grid-cols-[minmax(0,15rem)_1fr]'}`}>
         <div>

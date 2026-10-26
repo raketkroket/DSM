@@ -41,7 +41,7 @@ export function Header({ services, logo, email, phone }: HeaderProps) {
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, 'change', (y) => {
-    setScrolled(y > 24);
+    setScrolled(y > 40);
     const goingDown = y > lastY.current;
     setHidden(goingDown && y > 420 && !megaOpen && !mobileOpen);
     lastY.current = y;
@@ -82,6 +82,9 @@ export function Header({ services, logo, email, phone }: HeaderProps) {
   };
 
   const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href));
+  // Pages that open with a full-bleed photograph get a transparent header with white type.
+  const darkHero = pathname === '/' || pathname === '/admin/voorbeeld';
+  const overlay = darkHero && !scrolled && !megaOpen && !mobileOpen;
 
   return (
     <>
@@ -93,85 +96,74 @@ export function Header({ services, logo, email, phone }: HeaderProps) {
       </a>
 
       <header
-        className={`intro-nav fixed inset-x-0 top-0 z-50 transition-transform duration-700 ease-[var(--ease-arch)] ${
-          hidden ? '-translate-y-[120%]' : 'translate-y-0'
-        }`}
+        className={`intro-nav fixed inset-x-0 top-0 z-50 transition-[transform,background-color,border-color,color] duration-700 ease-[var(--ease-arch)] ${
+          hidden ? '-translate-y-full' : 'translate-y-0'
+        } ${overlay ? 'border-b border-white/15 bg-transparent text-white' : 'border-b border-line bg-paper/92 text-ink backdrop-blur-xl'}`}
         style={{ '--d': '80ms' } as React.CSSProperties}
+        onMouseLeave={scheduleClose}
       >
-        <div className="shell pt-3 md:pt-4">
-          <div
-            className={`relative flex h-16 items-center justify-between rounded-full border pr-2 pl-5 transition-all duration-700 ease-[var(--ease-arch)] md:h-[4.25rem] md:pl-6 ${
-              scrolled || megaOpen
-                ? 'border-line/80 bg-white/90 shadow-soft backdrop-blur-xl'
-                : 'border-white/60 bg-white/75 backdrop-blur-md'
-            }`}
-            onMouseLeave={scheduleClose}
-          >
-            <Link href="/" aria-label="Dedicated Security Management — naar de homepage" className="shrink-0">
-              <Logo image={logo} />
+        <div className="shell">
+          <div className="relative flex h-[4.5rem] items-center justify-between gap-6 md:h-20">
+            <Link href="/" className="shrink-0">
+              <Logo image={logo} tone={overlay ? 'light' : 'dark'} />
+              <span className="sr-only"> (naar de homepage)</span>
             </Link>
 
             <nav aria-label="Hoofdnavigatie" className="hidden items-center gap-1 lg:flex">
-              {links.map((link) =>
-                link.mega ? (
-                  <div key={link.href} className="relative" onMouseEnter={openMega}>
-                    <div className="flex items-center">
-                      <Link
-                        href={link.href}
-                        className={`relative rounded-full py-2.5 pr-1 pl-4 text-[0.92rem] transition-colors ${
-                          isActive(link.href) ? 'text-navy' : 'text-ink/70 hover:text-navy'
-                        }`}
-                      >
-                        {link.label}
-                      </Link>
-                      <button
-                        type="button"
-                        aria-expanded={megaOpen}
-                        aria-controls={megaId}
-                        aria-label="Toon alle diensten"
-                        onClick={() => setMegaOpen((open) => !open)}
-                        className="grid h-8 w-8 place-items-center rounded-full text-ink/60 hover:text-navy"
-                      >
-                        <ChevronDown className={`h-4 w-4 transition-transform duration-500 ${megaOpen ? 'rotate-180' : ''}`} />
-                      </button>
-                    </div>
-                    {isActive(link.href) && <ActiveDot />}
+              {links.map((link) => {
+                const active = isActive(link.href);
+                const tone = overlay ? (active ? 'text-white' : 'text-white/70 hover:text-white') : active ? 'text-navy' : 'text-ink/65 hover:text-navy';
+                return link.mega ? (
+                  <div key={link.href} className="relative flex items-center" onMouseEnter={openMega}>
+                    <Link href={link.href} aria-current={active ? 'page' : undefined} className={`py-3 pr-1 pl-4 text-[0.92rem] transition-colors ${tone}`}>
+                      {link.label}
+                    </Link>
+                    <button
+                      type="button"
+                      aria-expanded={megaOpen}
+                      aria-controls={megaId}
+                      aria-label="Toon alle diensten"
+                      onClick={() => setMegaOpen((open) => !open)}
+                      className={`grid h-8 w-7 place-items-center transition-colors ${overlay ? 'text-white/70 hover:text-white' : 'text-ink/50 hover:text-navy'}`}
+                    >
+                      <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-500 ${megaOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    {active && <ActiveLine />}
                   </div>
                 ) : (
                   <div key={link.href} className="relative" onMouseEnter={scheduleClose}>
-                    <Link
-                      href={link.href}
-                      aria-current={isActive(link.href) ? 'page' : undefined}
-                      className={`block rounded-full px-4 py-2.5 text-[0.92rem] transition-colors ${
-                        isActive(link.href) ? 'text-navy' : 'text-ink/70 hover:text-navy'
-                      }`}
-                    >
+                    <Link href={link.href} aria-current={active ? 'page' : undefined} className={`block px-4 py-3 text-[0.92rem] transition-colors ${tone}`}>
                       {link.label}
                     </Link>
-                    {isActive(link.href) && <ActiveDot />}
+                    {active && <ActiveLine />}
                   </div>
-                ),
-              )}
+                );
+              })}
             </nav>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <span className="hidden sm:block">
-                <Link href="/offerte" className={buttonClass('primary', 'min-h-11! pr-2! text-[0.88rem] whitespace-nowrap')}>
+                <Link
+                  href="/offerte"
+                  className={buttonClass(overlay ? 'light' : 'primary', 'min-h-11! px-5! text-[0.88rem] whitespace-nowrap')}
+                >
                   <span>Offerte aanvragen</span>
                   <ArrowBadge />
                 </Link>
               </span>
               <button
                 type="button"
-                className="relative grid h-11 w-11 place-items-center rounded-full bg-navy text-white lg:hidden"
+                className={`relative grid h-11 w-11 place-items-center rounded-[2px] border transition-colors lg:hidden ${
+                  overlay ? 'border-white/40 text-white' : 'border-ink/20 text-ink'
+                }`}
                 aria-expanded={mobileOpen}
                 aria-controls="mobiel-menu"
                 aria-label={mobileOpen ? 'Menu sluiten' : 'Menu openen'}
                 onClick={() => setMobileOpen((open) => !open)}
               >
-                <span className="relative block h-3 w-4">
-                  <span className={`absolute left-0 h-px w-4 bg-current transition-all duration-500 ${mobileOpen ? 'top-1.5 rotate-45' : 'top-0'}`} />
-                  <span className={`absolute left-0 h-px w-4 bg-current transition-all duration-500 ${mobileOpen ? 'top-1.5 -rotate-45' : 'top-3'}`} />
+                <span className="relative block h-3 w-5">
+                  <span className={`absolute left-0 h-px w-5 bg-current transition-all duration-500 ${mobileOpen ? 'top-1.5 rotate-45' : 'top-0'}`} />
+                  <span className={`absolute left-0 h-px w-5 bg-current transition-all duration-500 ${mobileOpen ? 'top-1.5 -rotate-45' : 'top-3'}`} />
                 </span>
               </button>
             </div>
@@ -181,11 +173,11 @@ export function Header({ services, logo, email, phone }: HeaderProps) {
                 <motion.div
                   id={megaId}
                   onMouseEnter={openMega}
-                  initial={{ opacity: 0, y: -8, clipPath: 'inset(0 0 100% 0 round 28px)' }}
-                  animate={{ opacity: 1, y: 0, clipPath: 'inset(0 0 0% 0 round 28px)' }}
-                  exit={{ opacity: 0, y: -6, clipPath: 'inset(0 0 100% 0 round 28px)' }}
+                  initial={{ opacity: 0, clipPath: 'inset(0 0 100% 0)' }}
+                  animate={{ opacity: 1, clipPath: 'inset(0 0 0% 0)' }}
+                  exit={{ opacity: 0, clipPath: 'inset(0 0 100% 0)' }}
                   transition={{ duration: 0.6, ease: EASE }}
-                  className="absolute top-[calc(100%+0.6rem)] right-0 left-0 hidden overflow-hidden rounded-[28px] border border-line bg-white shadow-panel lg:block"
+                  className="absolute top-full right-0 left-0 hidden overflow-hidden border border-line bg-white text-ink shadow-panel lg:block"
                 >
                   <div className="grid grid-cols-[1.35fr_1fr]">
                     <div className="p-8">
@@ -300,7 +292,7 @@ export function Header({ services, logo, email, phone }: HeaderProps) {
                 transition={{ duration: 0.8, ease: EASE, delay: 0.55 }}
                 className="mt-auto pt-10"
               >
-                <Link href="/offerte" className={buttonClass('light', 'w-full pr-2.5')}>
+                <Link href="/offerte" className={buttonClass('light', 'w-full')}>
                   <span>Vraag vrijblijvend een offerte aan</span>
                   <ArrowBadge variant="light" />
                 </Link>
@@ -327,11 +319,11 @@ export function Header({ services, logo, email, phone }: HeaderProps) {
   );
 }
 
-function ActiveDot() {
+function ActiveLine() {
   return (
     <motion.span
       layoutId="nav-active"
-      className="absolute -bottom-0.5 left-1/2 -ml-0.5 h-1 w-1 rounded-full bg-steel"
+      className="absolute right-4 -bottom-px left-4 h-px bg-current"
       transition={{ duration: 0.6, ease: EASE }}
     />
   );

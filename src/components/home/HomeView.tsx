@@ -1,55 +1,34 @@
-import { Faq } from '@/components/site/Faq';
 import { ClosingCta } from '@/components/site/ClosingCta';
-import { Reveal } from '@/components/motion/Reveal';
-import { ButtonLink } from '@/components/site/Button';
+import { Faq } from '@/components/site/Faq';
 import type { SiteContent } from '@/lib/content/types';
-import { Bespoke } from './Bespoke';
-import { Experience } from './Experience';
+import { AboutStory } from './AboutStory';
 import { Hero } from './Hero';
-import { Philosophy } from './Philosophy';
+import { Intro } from './Intro';
 import { PlannerTeaser } from './PlannerTeaser';
-import { ProcessTimeline } from './ProcessTimeline';
-import { Sectors } from './Sectors';
-import { SecurityLayers } from './SecurityLayers';
-import { ServicesDirectory } from './ServicesDirectory';
+import { ProcessStrip } from './ProcessStrip';
+import { ServicesShowcase } from './ServicesShowcase';
+import { StatementBand } from './StatementBand';
+import { WhyDsm } from './WhyDsm';
 
+/**
+ * Homepage rhythm: photographic hero → light editorial intro → services → photographic pause →
+ * why DSM → process → story → planner → questions → closing invitation.
+ */
 export function HomeView({ site }: { site: SiteContent }) {
   const { home, services, faq } = site;
   return (
     <>
-      <Hero hero={home.hero} layers={home.layers.items} />
-      <Experience experience={home.experience} />
-      <Philosophy philosophy={home.philosophy} />
-
-      <section aria-labelledby="diensten-titel" className="py-24 md:py-36">
-        <div className="shell">
-          <div className="mb-14 grid grid-cols-1 gap-8 md:mb-20 lg:grid-cols-12 lg:gap-6">
-            <Reveal className="lg:col-span-7">
-              <p className="eyebrow">{home.servicesIntro.eyebrow}</p>
-              <h2 id="diensten-titel" className="display-lg mt-6 max-w-[15ch] text-navy">
-                {home.servicesIntro.title}
-              </h2>
-            </Reveal>
-            <Reveal delay={0.1} className="lg:col-span-4 lg:col-start-9 lg:self-end">
-              <p className="text-[1.05rem] leading-relaxed text-muted">{home.servicesIntro.text}</p>
-              <div className="mt-6">
-                <ButtonLink href="/diensten" variant="secondary">
-                  Alle diensten
-                </ButtonLink>
-              </div>
-            </Reveal>
-          </div>
-          <ServicesDirectory
-            items={services.items.map(({ slug, title, tagline, summary, image }) => ({ slug, title, tagline, summary, image }))}
-          />
-        </div>
-      </section>
-
+      <Hero hero={home.hero} />
+      <Intro experience={home.experience} />
+      <ServicesShowcase
+        intro={home.servicesIntro}
+        items={services.items.map(({ slug, title, tagline, image }) => ({ slug, title, tagline, image }))}
+      />
+      <StatementBand eyebrow={home.philosophy.eyebrow} statement={home.philosophy.statement} image={home.philosophy.image} />
+      <WhyDsm why={home.why} />
+      <ProcessStrip process={home.process} />
+      <AboutStory experience={home.experience} />
       <PlannerTeaser />
-      <SecurityLayers layers={home.layers} />
-      <ProcessTimeline process={home.process} />
-      <Sectors sectors={home.sectors} />
-      <Bespoke bespoke={home.bespoke} />
       <div className="border-t border-line bg-white">
         <Faq faq={faq} />
       </div>

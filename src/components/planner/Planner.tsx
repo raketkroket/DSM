@@ -132,7 +132,7 @@ export function Planner({ services }: { services: ServiceInfo[] }) {
 
   /* ── Live profile (right column on desktop, after the steps on mobile) ── */
   const profile = (
-    <div className="relative overflow-hidden rounded-[1.75rem] bg-navy-deep p-6 text-white sm:p-8">
+    <div className="relative overflow-hidden rounded-[3px] bg-navy-deep p-6 text-white sm:p-8">
       <div className="blueprint-dark pointer-events-none absolute inset-0" aria-hidden />
       <div className="relative">
         <div className="flex items-center justify-between gap-4">
@@ -194,7 +194,7 @@ export function Planner({ services }: { services: ServiceInfo[] }) {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -8 }}
                     transition={{ duration: 0.45, ease: EASE }}
-                    className="flex items-center gap-3 rounded-xl bg-white/[0.06] px-3 py-2.5"
+                    className="flex items-center gap-3 rounded-[2px] bg-white/[0.06] px-3 py-2.5"
                   >
                     <span className="font-mono text-[0.66rem] text-steel-soft">{String(index + 1).padStart(2, '0')}</span>
                     <span className="text-[0.92rem]">{byslug[item.slug]?.title ?? item.slug}</span>
@@ -223,7 +223,7 @@ export function Planner({ services }: { services: ServiceInfo[] }) {
                 onClick={() => index < step && goTo(index)}
                 disabled={index > step}
                 aria-current={index === step ? 'step' : undefined}
-                aria-label={`Stap ${index + 1}: ${label}`}
+                aria-label={`${String(index + 1).padStart(2, '0')} ${label}`}
                 className="w-full text-left disabled:cursor-default"
               >
                 <span className="block h-[3px] overflow-hidden rounded-full bg-line">
@@ -265,11 +265,11 @@ export function Planner({ services }: { services: ServiceInfo[] }) {
                           role="radio"
                           aria-checked={selected}
                           onClick={() => chooseLocation(location.id)}
-                          className={`group relative flex min-h-[9.5rem] flex-col items-start justify-between rounded-2xl border p-4 text-left transition-[border-color,background-color,transform,box-shadow] duration-500 ease-[var(--ease-arch)] hover:-translate-y-0.5 sm:p-5 ${
+                          className={`group relative flex min-h-[9.5rem] flex-col items-start justify-between rounded-[3px] border p-4 text-left transition-[border-color,background-color,transform,box-shadow] duration-500 ease-[var(--ease-arch)] hover:-translate-y-0.5 sm:p-5 ${
                             selected ? 'border-navy bg-navy text-white shadow-panel' : 'border-line bg-white text-ink hover:border-navy/40 hover:shadow-soft'
                           }`}
                         >
-                          <span className={`grid h-11 w-11 place-items-center rounded-xl transition-colors ${selected ? 'bg-white/10 text-white' : 'bg-mist text-navy group-hover:bg-steel-wash'}`}>
+                          <span className={`grid h-11 w-11 place-items-center rounded-[2px] transition-colors ${selected ? 'bg-white/10 text-white' : 'bg-mist text-navy group-hover:bg-steel-wash'}`}>
                             <Icon className="h-5 w-5" strokeWidth={1.6} aria-hidden />
                           </span>
                           <span>
@@ -343,7 +343,7 @@ export function Planner({ services }: { services: ServiceInfo[] }) {
                       Wissen
                     </button>
                   </div>
-                  <div className="mt-6 rounded-2xl border border-line bg-white p-3 sm:p-5">
+                  <div className="mt-6 rounded-[3px] border border-line bg-white p-3 sm:p-5">
                     <WeekGrid value={input.schedule} onChange={(schedule) => setInput((current) => ({ ...current, schedule }))} />
                   </div>
                   <p className="mt-3 text-[0.88rem] text-muted" aria-live="polite">
@@ -357,7 +357,7 @@ export function Planner({ services }: { services: ServiceInfo[] }) {
                         return (
                           <label
                             key={period.id}
-                            className={`cursor-pointer rounded-xl border px-4 py-3 transition-colors ${selected ? 'border-navy bg-navy text-white' : 'border-line-strong bg-white hover:border-navy/50'}`}
+                            className={`cursor-pointer rounded-[2px] border px-4 py-3 transition-colors ${selected ? 'border-navy bg-navy text-white' : 'border-line-strong bg-white hover:border-navy/50'}`}
                           >
                             <input
                               type="radio"
@@ -385,7 +385,7 @@ export function Planner({ services }: { services: ServiceInfo[] }) {
                     Op basis van uw keuzes sluiten deze diensten het beste aan. Tijdens een eerste gesprek kijken wij samen naar de details.
                   </p>
                   {recommendations.length === 0 ? (
-                    <p className="mt-8 rounded-2xl border border-line bg-white p-6 text-muted">
+                    <p className="mt-8 rounded-[3px] border border-line bg-white p-6 text-muted">
                       Maak in de vorige stappen een paar keuzes om passende diensten te zien.
                     </p>
                   ) : (
@@ -402,9 +402,9 @@ export function Planner({ services }: { services: ServiceInfo[] }) {
                           >
                             <Link
                               href={`/diensten/${service.slug}`}
-                              className="group grid grid-cols-[5.5rem_1fr] gap-4 rounded-2xl border border-line bg-white p-3 transition-[border-color,box-shadow] hover:border-navy/40 hover:shadow-soft sm:grid-cols-[8rem_1fr_auto] sm:items-center sm:p-4"
+                              className="group grid grid-cols-[5.5rem_1fr] gap-4 rounded-[3px] border border-line bg-white p-3 transition-[border-color,box-shadow] hover:border-navy/40 hover:shadow-soft sm:grid-cols-[8rem_1fr_auto] sm:items-center sm:p-4"
                             >
-                              <span className="relative aspect-square overflow-hidden rounded-xl bg-mist sm:aspect-[4/3]">
+                              <span className="relative aspect-square overflow-hidden rounded-[2px] bg-mist sm:aspect-[4/3]">
                                 <Photo image={service.image} sizes="128px" />
                               </span>
                               <span className="min-w-0 self-center">
@@ -424,7 +424,7 @@ export function Planner({ services }: { services: ServiceInfo[] }) {
                     </ol>
                   )}
                   <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                    <button type="button" onClick={toQuote} className={buttonClass('primary', 'pr-2.5')}>
+                    <button type="button" onClick={toQuote} className={buttonClass('primary')}>
                       <span>Vraag offerte aan met dit profiel</span>
                       <ArrowBadge />
                     </button>
@@ -447,7 +447,7 @@ export function Planner({ services }: { services: ServiceInfo[] }) {
             ) : (
               <span className="text-[0.85rem] text-muted">Ongeveer één minuut</span>
             )}
-            <button type="button" onClick={() => goTo(step + 1)} disabled={!canNext} className={buttonClass('primary', 'pr-2.5')}>
+            <button type="button" onClick={() => goTo(step + 1)} disabled={!canNext} className={buttonClass('primary')}>
               <span>{step === 2 ? 'Bekijk mijn profiel' : 'Volgende'}</span>
               <ArrowBadge />
             </button>

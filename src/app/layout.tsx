@@ -1,19 +1,12 @@
 import type { Metadata, Viewport } from 'next';
-import { Geist, Geist_Mono, Instrument_Serif } from 'next/font/google';
+import { Instrument_Sans, Inter } from 'next/font/google';
 import { MotionProvider } from '@/components/motion/MotionProvider';
 import { getPublishedSite } from '@/lib/content/get';
 import { env } from '@/lib/env';
 import './globals.css';
 
-const geist = Geist({ variable: '--font-geist', subsets: ['latin'], display: 'swap' });
-const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'], display: 'swap' });
-const instrument = Instrument_Serif({
-  variable: '--font-instrument',
-  subsets: ['latin'],
-  weight: '400',
-  style: ['normal', 'italic'],
-  display: 'swap',
-});
+const inter = Inter({ variable: '--font-inter', subsets: ['latin'], display: 'swap' });
+const instrumentSans = Instrument_Sans({ variable: '--font-instrument-sans', subsets: ['latin'], display: 'swap' });
 
 export async function generateMetadata(): Promise<Metadata> {
   const { settings } = await getPublishedSite();
@@ -38,14 +31,14 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#f6f7f9',
+  themeColor: '#f6f5f2',
   width: 'device-width',
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="nl" className={`${geist.variable} ${geistMono.variable} ${instrument.variable}`}>
+    <html lang="nl" className={`${inter.variable} ${instrumentSans.variable}`}>
       <body>
         <MotionProvider>{children}</MotionProvider>
       </body>

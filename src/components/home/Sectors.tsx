@@ -40,7 +40,7 @@ export function Sectors({ sectors }: { sectors: HomeContent['sectors'] }) {
                 onClick={() => setOpen(index)}
                 animate={{ flexGrow: isOpen ? 4.2 : 1 }}
                 transition={{ duration: 0.9, ease: EASE }}
-                className="group relative min-w-0 basis-0 overflow-hidden rounded-[1.25rem] bg-navy text-left text-white"
+                className="group relative min-w-0 basis-0 overflow-hidden rounded-[3px] bg-navy text-left text-white"
               >
                 <Photo image={sector.image} sizes="(min-width: 1024px) 50vw, 0px" className={`transition-transform duration-[1.4s] ease-[var(--ease-arch)] ${isOpen ? 'scale-100' : 'scale-110'}`} />
                 <span
@@ -73,7 +73,7 @@ export function Sectors({ sectors }: { sectors: HomeContent['sectors'] }) {
         {/* Mobile list */}
         <ul className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:hidden">
           {sectors.items.map((sector, index) => (
-            <Reveal as="li" key={sector.title} className="overflow-hidden rounded-[1.25rem] bg-white shadow-soft">
+            <Reveal as="li" key={sector.title} className="overflow-hidden rounded-[3px] bg-white shadow-soft">
               <div className="relative aspect-[16/10] bg-navy">
                 <Photo image={sector.image} sizes="(min-width: 640px) 46vw, 92vw" />
                 <span className="absolute top-4 left-4 rounded-full bg-white/90 px-3 py-1 font-mono text-[0.66rem] text-navy">

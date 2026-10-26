@@ -16,6 +16,8 @@ export function allowedImageHosts() {
 
 export function isAllowedImageSrc(src: string) {
   if (src === '') return true;
+  // Bundled photography (temporary stock and brand assets) served from /public/images.
+  if (/^\/images\/[a-z0-9/_-]+\.(jpe?g|png|webp|avif)$/i.test(src)) return true;
   try {
     const url = new URL(src);
     return url.protocol === 'https:' && allowedImageHosts().includes(url.hostname);

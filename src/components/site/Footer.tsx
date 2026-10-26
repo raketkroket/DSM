@@ -4,7 +4,7 @@ import { ArrowBadge } from './Button';
 import { CurrentYear } from './CurrentYear';
 import type { ServiceContent, SettingsContent } from '@/lib/content/types';
 
-export function Footer({ settings, services }: { settings: SettingsContent; services: ServiceContent[] }) {
+export function Footer({ settings, services, stockPhotos = false }: { settings: SettingsContent; services: ServiceContent[]; stockPhotos?: boolean }) {
   const socials = [
     { label: 'LinkedIn', href: settings.linkedin },
     { label: 'Instagram', href: settings.instagram },
@@ -12,31 +12,30 @@ export function Footer({ settings, services }: { settings: SettingsContent; serv
   ].filter((social) => social.href);
 
   return (
-    <footer className="relative overflow-hidden bg-navy-deep text-white">
-      <div className="blueprint-dark pointer-events-none absolute inset-0 opacity-60" aria-hidden />
-      <div className="shell relative pt-20 pb-10 md:pt-28">
+    <footer className="relative overflow-hidden bg-paper text-ink">
+            <div className="shell relative pt-20 pb-10 md:pt-28">
         <div className="grid grid-cols-1 gap-14 lg:grid-cols-[1.3fr_1fr]">
           <div>
-            <p className="eyebrow text-steel-soft!">{settings.companyName}</p>
-            <p className="display-lg mt-6 max-w-[14ch] text-white">
-              Uw veiligheid, <span className="accent text-steel-soft">onze verantwoordelijkheid.</span>
+            <p className="eyebrow">{settings.companyName}</p>
+            <p className="display-lg mt-6 max-w-[14ch] text-navy">
+              Uw veiligheid, <span className="accent">onze verantwoordelijkheid.</span>
             </p>
             <Link
               href="/offerte"
-              className="group mt-10 inline-flex items-center gap-4 border-b border-white/25 pb-3 text-lg transition-colors hover:border-white"
+              className="group mt-10 inline-flex items-center gap-4 border-b border-navy pb-3 text-lg text-navy"
             >
               Vraag vrijblijvend een offerte aan
-              <ArrowBadge variant="ghost-light" />
+              <ArrowBadge variant="text" />
             </Link>
           </div>
 
           <div className="grid grid-cols-1 gap-10 sm:grid-cols-2">
             <div>
-              <p className="mono-label text-white/45">Diensten</p>
+              <p className="mono-label text-muted">Diensten</p>
               <ul className="mt-5 space-y-2.5 text-[0.95rem]">
                 {services.map((service) => (
                   <li key={service.slug}>
-                    <Link href={`/diensten/${service.slug}`} className="text-white/75 transition-colors hover:text-white">
+                    <Link href={`/diensten/${service.slug}`} className="text-ink transition-colors hover:text-navy">
                       {service.title}
                     </Link>
                   </li>
@@ -45,7 +44,7 @@ export function Footer({ settings, services }: { settings: SettingsContent; serv
             </div>
             <div className="space-y-10">
               <div>
-                <p className="mono-label text-white/45">Navigatie</p>
+                <p className="mono-label text-muted">Navigatie</p>
                 <ul className="mt-5 space-y-2.5 text-[0.95rem]">
                   {[
                     ['/', 'Home'],
@@ -56,7 +55,7 @@ export function Footer({ settings, services }: { settings: SettingsContent; serv
                     ['/offerte', 'Offerte aanvragen'],
                   ].map(([href, label]) => (
                     <li key={href}>
-                      <Link href={href} className="text-white/75 transition-colors hover:text-white">
+                      <Link href={href} className="text-ink transition-colors hover:text-navy">
                         {label}
                       </Link>
                     </li>
@@ -65,15 +64,15 @@ export function Footer({ settings, services }: { settings: SettingsContent; serv
               </div>
               {(settings.email || settings.phone || settings.address) && (
                 <address className="not-italic">
-                  <p className="mono-label text-white/45">Contact</p>
-                  <div className="mt-5 space-y-2 text-[0.95rem] text-white/75">
+                  <p className="mono-label text-muted">Contact</p>
+                  <div className="mt-5 space-y-2 text-[0.95rem] text-ink">
                     {settings.phone && (
-                      <a className="block hover:text-white" href={`tel:${settings.phone.replace(/\s/g, '')}`}>
+                      <a className="block hover:text-navy" href={`tel:${settings.phone.replace(/\s/g, '')}`}>
                         {settings.phone}
                       </a>
                     )}
                     {settings.email && (
-                      <a className="block hover:text-white" href={`mailto:${settings.email}`}>
+                      <a className="block hover:text-navy" href={`mailto:${settings.email}`}>
                         {settings.email}
                       </a>
                     )}
@@ -86,7 +85,7 @@ export function Footer({ settings, services }: { settings: SettingsContent; serv
                 <ul className="flex flex-wrap gap-4 text-sm">
                   {socials.map((social) => (
                     <li key={social.label}>
-                      <a href={social.href} target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white">
+                      <a href={social.href} target="_blank" rel="noopener noreferrer" className="text-ink hover:text-navy">
                         {social.label}
                       </a>
                     </li>
@@ -97,17 +96,23 @@ export function Footer({ settings, services }: { settings: SettingsContent; serv
           </div>
         </div>
 
-        <div className="mt-20 flex flex-col gap-6 border-t border-white/10 pt-8 md:flex-row md:items-center md:justify-between">
-          <Logo tone="light" />
-          <p className="max-w-md text-sm text-white/50">{settings.footerText}</p>
-          <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-white/45">
+        <div className="mt-20 flex flex-col gap-6 border-t border-line pt-8 md:flex-row md:items-center md:justify-between">
+          <Logo />
+          <p className="max-w-md text-sm text-muted">{settings.footerText}</p>
+          <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted">
             <span>© <CurrentYear /> {settings.companyName}</span>
             {settings.kvk && <span>KvK {settings.kvk}</span>}
-            <Link href="/privacy" className="hover:text-white">
+            <Link href="/privacy" className="hover:text-navy">
               Privacyverklaring
             </Link>
           </div>
         </div>
+        {stockPhotos && (
+          <p className="mt-8 max-w-[52rem] text-[0.75rem] leading-relaxed text-muted">
+            Een deel van de foto’s op deze website is tijdelijk stockbeeld (Pexels en Unsplash). Afgebeelde personen en locaties zijn
+            niet verbonden aan Dedicated Security Management B.V.
+          </p>
+        )}
       </div>
     </footer>
   );

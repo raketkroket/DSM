@@ -1,108 +1,88 @@
 import Link from 'next/link';
-import { ArrowDown } from 'lucide-react';
 import { ArrowBadge, buttonClass } from '@/components/site/Button';
 import { Photo } from '@/components/site/Photo';
 import type { HomeContent } from '@/lib/content/types';
 import { HeroParallax } from './HeroParallax';
+import { fitTitle } from '@/lib/fit';
 
 const delay = (ms: number) => ({ '--d': `${ms}ms` }) as React.CSSProperties;
 
-/** Inverted fillet that makes the editorial panel read as carved out of the photograph. */
-function Fillet({ className }: { className: string }) {
-  return (
-    <span
-      aria-hidden
-      className={`absolute h-7 w-7 ${className}`}
-      style={{ background: 'radial-gradient(circle at 100% 0, transparent 27.5px, var(--color-paper) 28px)' }}
-    />
-  );
+/** Splits a line into words that each rise from their own mask (pure CSS, so it plays before hydration). */
+function RisingWords({ text, start, step = 45 }: { text: string; start: number; step?: number }) {
+  return text
+    .split(' ')
+    .filter(Boolean)
+    .map((word, index, words) => (
+      <span key={index} className="inline-block overflow-hidden pb-[0.08em] align-bottom">
+        <span className="intro-rise inline-block" style={delay(start + index * step)}>
+          {word}
+          {index < words.length - 1 ? ' ' : ''}
+        </span>
+      </span>
+    ));
 }
 
-export function Hero({ hero, layers }: { hero: HomeContent['hero']; layers: HomeContent['layers']['items'] }) {
+/**
+ * Full-bleed editorial hero. The photograph settles from a slight zoom and drifts on scroll;
+ * the headline rises word by word; supporting copy and actions follow in a measured sequence.
+ */
+export function Hero({ hero }: { hero: HomeContent['hero'] }) {
   return (
-    <section aria-labelledby="hero-titel" className="relative overflow-hidden pt-[5.5rem] md:pt-24">
-      <div className="shell">
-        <div className="relative">
-          {/* Photograph */}
-          <div
-            className="intro-unveil-up relative h-[46svh] min-h-[18rem] overflow-hidden rounded-[1.75rem] bg-navy md:h-[calc(100svh-7.5rem)] md:min-h-[38rem] md:max-h-[58rem]"
-            style={delay(120)}
-          >
-            <HeroParallax>
-              <div className="intro-settle absolute inset-0" style={delay(120)}>
-                <Photo image={hero.image} sizes="(min-width: 1472px) 1400px, 96vw" priority />
-              </div>
-            </HeroParallax>
-            <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/45 via-transparent to-navy-deep/10" aria-hidden />
-
-            {/* Caption card */}
-            <div
-              className="intro-fade-up absolute top-24 right-4 hidden max-w-[17rem] rounded-2xl border border-white/20 bg-white/10 p-5 text-white backdrop-blur-md md:top-auto md:right-6 md:bottom-6 md:block"
-              style={delay(1300)}
-            >
-              <p className="mono-label text-white/60">Dedicated Security Management</p>
-              <p className="mt-2 text-[0.95rem] leading-snug">{hero.caption}</p>
-            </div>
+    <section aria-labelledby="hero-titel" className="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-navy-deep text-white">
+      {/* On wide screens the portrait photograph keeps its composition on the right two-thirds. */}
+      <div className="absolute inset-y-0 right-0 left-0 -z-10 overflow-hidden lg:left-[30%]">
+        <HeroParallax>
+          <div className="intro-settle absolute inset-0" style={delay(0)}>
+            <Photo image={hero.image} sizes="(min-width: 1024px) 70vw, 100vw" priority grade={false} className="grayscale-[35%]" />
           </div>
+        </HeroParallax>
+        <div className="absolute inset-y-0 left-0 hidden w-1/2 bg-gradient-to-r from-navy-deep to-transparent lg:block" aria-hidden />
+      </div>
+      {/* Legibility: a calm left-to-right falloff plus a floor gradient, no colour tint. */}
+      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-navy-deep/80 via-navy-deep/35 to-transparent lg:from-navy-deep/60" aria-hidden />
+      <div className="absolute inset-x-0 bottom-0 -z-10 h-2/3 bg-gradient-to-t from-navy-deep/90 via-navy-deep/30 to-transparent" aria-hidden />
 
-          {/* Editorial panel */}
-          <div className="relative z-10 -mt-14 rounded-t-[1.75rem] bg-paper pt-7 md:absolute md:bottom-0 md:left-0 md:mt-0 md:w-[min(64%,58rem)] md:rounded-tl-none md:rounded-tr-[1.75rem] md:pt-10 md:pr-12">
-            <Fillet className="-top-7 left-0 hidden md:block" />
-            <Fillet className="bottom-0 left-full hidden md:block" />
+      <div className="shell flex flex-1 flex-col justify-end pt-32 pb-10 md:pb-14">
+        <p className="intro-fade mono-label text-white/65" style={delay(80)}>
+          {hero.eyebrow}
+        </p>
+        <h1
+          id="hero-titel"
+          className="fit-title mt-6 max-w-[15ch] font-display leading-[0.92] font-medium tracking-[-0.045em] [--fit-w:178vw] lg:[--fit-w:min(176vw,2600px)]"
+          style={fitTitle(`${hero.title} ${hero.titleAccent}`, 8.5)}
+        >
+          <span className="block">
+            <RisingWords text={hero.title} start={120} />
+          </span>
+          <span className="block text-white/55">
+            <RisingWords text={hero.titleAccent} start={220} />
+          </span>
+        </h1>
 
-            <p className="intro-fade eyebrow" style={delay(380)}>
-              {hero.eyebrow}
-            </p>
-            <h1 id="hero-titel" className="mt-5 text-[clamp(2.6rem,6.1vw,6.1rem)] leading-[0.95] font-medium tracking-[-0.045em] text-navy">
-              <span className="block overflow-hidden pb-[0.06em]">
-                <span className="intro-rise block" style={delay(460)}>
-                  {hero.title}
-                </span>
-              </span>
-              <span className="block overflow-hidden pb-[0.1em]">
-                <span className="intro-rise accent block text-navy-soft" style={delay(580)}>
-                  {hero.titleAccent}
-                </span>
-              </span>
-            </h1>
-
-            <div className="mt-6 grid grid-cols-1 gap-6 md:mt-8 md:grid-cols-[1fr_auto] md:items-end md:gap-10">
-              <p className="intro-fade-up lead max-w-[34rem] text-muted" style={delay(820)}>
-                {hero.lead}
-              </p>
-            </div>
-            <div className="intro-fade-up mt-7 flex flex-col gap-3 xs:flex-row xs:flex-wrap" style={delay(960)}>
-              <Link href={hero.primaryCta.href} className={buttonClass('primary', 'pr-2.5')}>
-                <span>{hero.primaryCta.label}</span>
-                <ArrowBadge />
-              </Link>
-              <Link href={hero.secondaryCta.href} className={buttonClass('secondary')}>
-                {hero.secondaryCta.label}
-              </Link>
-            </div>
+        <div className="mt-10 grid grid-cols-1 gap-8 md:mt-12 lg:grid-cols-12 lg:items-end">
+          <p className="intro-fade-up max-w-[34rem] text-[1.08rem] leading-relaxed text-white/78 md:text-[1.2rem] lg:col-span-6" style={delay(600)}>
+            {hero.lead}
+          </p>
+          <div className="intro-fade-up flex flex-col gap-3 sm:flex-row lg:col-span-6 lg:justify-end" style={delay(720)}>
+            <Link href={hero.primaryCta.href} className={buttonClass('light')}>
+              <span>{hero.primaryCta.label}</span>
+              <ArrowBadge />
+            </Link>
+            <Link href={hero.secondaryCta.href} className={buttonClass('ghost-light')}>
+              <span>{hero.secondaryCta.label}</span>
+            </Link>
           </div>
         </div>
 
-        {/* Lower band */}
-        <div className="grid grid-cols-1 gap-10 border-b border-line py-12 md:mt-14 md:grid-cols-12 md:py-14">
-          <div className="intro-fade md:col-span-6 lg:col-span-5" style={delay(1150)}>
-            <p className="text-[1.05rem] leading-relaxed text-ink/80">{hero.body}</p>
-          </div>
-          <nav aria-label="Beveiliging in lagen" className="intro-fade md:col-span-6 md:col-start-7 lg:col-span-6 lg:col-start-7" style={delay(1250)}>
-            <ol className="grid grid-cols-3 gap-px overflow-hidden rounded-2xl border border-line bg-line">
-              {layers.map((layer, index) => (
-                <li key={layer.title} className="bg-paper">
-                  <a href="#lagen" className="group flex h-full flex-col justify-between gap-6 p-4 transition-colors hover:bg-white md:p-5">
-                    <span className="font-mono text-[0.68rem] text-steel">{String(index + 1).padStart(2, '0')}</span>
-                    <span className="text-[0.8rem] font-medium break-words text-navy xs:text-[0.95rem] md:text-base">{layer.title}</span>
-                  </a>
-                </li>
-              ))}
-            </ol>
-            <a href="#ervaring" className="mt-5 inline-flex items-center gap-2 font-mono text-[0.68rem] tracking-[0.16em] text-muted uppercase hover:text-navy">
-              <ArrowDown className="h-3.5 w-3.5 animate-bounce" /> Scroll verder
-            </a>
-          </nav>
+        <div className="intro-fade mt-12 flex items-center justify-between gap-6 border-t border-white/20 pt-5 text-[0.8rem] text-white/60 md:mt-16" style={delay(950)}>
+          <span className="flex items-center gap-3">
+            <span className="relative block h-8 w-px overflow-hidden bg-white/25" aria-hidden>
+              <span className="absolute inset-x-0 top-0 h-1/2 animate-[dsm-scroll-cue_2.2s_var(--ease-soft)_infinite] bg-white" />
+            </span>
+            Scroll
+          </span>
+          <span className="hidden sm:block">{hero.caption}</span>
+          <span className="hidden tracking-[0.12em] uppercase md:block">Professioneel · Alert · Betrokken</span>
         </div>
       </div>
     </section>

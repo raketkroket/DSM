@@ -71,6 +71,17 @@ export const EDITOR_SPEC: Record<SectionKey, PanelSpec[]> = {
       label: 'Meer dan aanwezigheid',
       fields: [t('eyebrow', 'Bovenregel'), ta('statement', 'Statement', 2), paragraphs(), bullets('principles', 'Uitgangspunten', 'Uitgangspunt'), img('image', 'Brede foto')],
     },
+    {
+      key: 'why',
+      label: 'Waarom DSM',
+      fields: [
+        t('eyebrow', 'Bovenregel'),
+        t('title', 'Kop'),
+        ta('text', 'Introductie', 3),
+        { type: 'list', key: 'items', label: 'Onderscheidende punten', itemLabel: 'Punt', titleKey: 'title', item: [t('title', 'Titel'), ta('text', 'Tekst', 3)] },
+        img('image', 'Foto'),
+      ],
+    },
     { key: 'servicesIntro', label: 'Diensten-introductie', fields: [t('eyebrow', 'Bovenregel'), t('title', 'Kop'), ta('text', 'Tekst', 3)] },
     {
       key: 'layers',

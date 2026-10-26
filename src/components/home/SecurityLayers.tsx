@@ -213,7 +213,7 @@ export function SecurityLayers({ layers }: { layers: HomeContent['layers'] }) {
                     tabIndex={selected ? 0 : -1}
                     onClick={() => setActive(index)}
                     onKeyDown={(event) => onKeyDown(event, index)}
-                    className={`group relative flex flex-col items-start gap-2 rounded-2xl border px-4 py-4 text-left transition-colors duration-500 lg:flex-row lg:items-baseline lg:gap-5 lg:rounded-none lg:border-x-0 lg:border-t-0 lg:px-0 lg:py-6 ${
+                    className={`group relative flex flex-col items-start gap-2 rounded-[3px] border px-4 py-4 text-left transition-colors duration-500 lg:flex-row lg:items-baseline lg:gap-5 lg:rounded-none lg:border-x-0 lg:border-t-0 lg:px-0 lg:py-6 ${
                       selected ? 'border-navy bg-navy text-white lg:bg-transparent lg:text-navy' : 'border-line text-ink/50 hover:text-ink'
                     }`}
                   >
@@ -271,7 +271,7 @@ export function SecurityLayers({ layers }: { layers: HomeContent['layers'] }) {
 
           {/* Visualization */}
           <div className="order-1 lg:order-2 lg:col-span-8">
-            <div className="blueprint relative overflow-hidden rounded-[1.5rem] border border-line bg-paper">
+            <div className="blueprint relative overflow-hidden rounded-[3px] border border-line bg-paper">
               <div className="absolute top-4 left-5 z-10 flex items-center gap-3 md:top-6 md:left-7" aria-hidden>
                 <span className="font-mono text-[0.66rem] tracking-[0.18em] text-steel uppercase">Laag</span>
                 <span className="font-mono text-[0.66rem] text-navy">

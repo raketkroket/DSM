@@ -3,6 +3,7 @@ import { Header } from '@/components/site/Header';
 import { getPublishedSite } from '@/lib/content/get';
 import { organizationJsonLd } from '@/lib/seo';
 import { JsonLd } from '@/components/site/JsonLd';
+import { STOCK_PREFIX } from '@/lib/content/photos';
 
 export default async function SiteLayout({ children }: LayoutProps<'/'>) {
   const site = await getPublishedSite();
@@ -17,7 +18,7 @@ export default async function SiteLayout({ children }: LayoutProps<'/'>) {
         phone={settings.phone}
       />
       <main id="inhoud">{children}</main>
-      <Footer settings={settings} services={services.items} />
+      <Footer settings={settings} services={services.items} stockPhotos={JSON.stringify(site).includes(STOCK_PREFIX)} />
     </>
   );
 }

@@ -1,4 +1,8 @@
 import { ProcessTimeline } from '@/components/home/ProcessTimeline';
+import { Sectors } from '@/components/home/Sectors';
+import { SecurityLayers } from '@/components/home/SecurityLayers';
+import { Photo } from '@/components/site/Photo';
+import { photos } from '@/lib/content/photos';
 import { ClosingCta } from '@/components/site/ClosingCta';
 import { Faq } from '@/components/site/Faq';
 import { Breadcrumbs } from '@/components/site/Breadcrumbs';
@@ -40,7 +44,7 @@ export function ServicesOverview({ site }: { site: SiteContent }) {
               </span>
             </span>
             <span className="block overflow-hidden pb-[0.1em]">
-              <span className="intro-rise accent block text-navy-soft" style={delay(380)}>
+              <span className="intro-rise accent block" style={delay(380)}>
                 {services.titleAccent}
               </span>
             </span>
@@ -56,14 +60,26 @@ export function ServicesOverview({ site }: { site: SiteContent }) {
         </div>
       </section>
 
-      <section aria-label="Overzicht van diensten" className="pb-24 md:pb-36">
+      <div className="shell">
+        <div className="intro-unveil-up relative aspect-[16/9] overflow-hidden bg-mist md:aspect-[21/8]" style={delay(500)}>
+          <div className="intro-settle absolute inset-0" style={delay(500)}>
+            <Photo image={photos.facadeCameras} sizes="(min-width: 1472px) 1360px, 92vw" priority />
+          </div>
+        </div>
+      </div>
+
+      <section aria-label="Overzicht van diensten" className="pt-20 pb-24 md:pt-28 md:pb-36">
         <div className="shell">
           <ServiceIndex items={services.items} />
         </div>
       </section>
 
+      <SecurityLayers layers={home.layers} />
       <div className="border-t border-line">
         <ProcessTimeline process={home.process} />
+      </div>
+      <div className="border-t border-line bg-white">
+        <Sectors sectors={home.sectors} />
       </div>
       <div className="border-t border-line bg-white">
         <Faq faq={faq} />

@@ -55,6 +55,13 @@ export type HomeContent = {
     image: ImageRef;
   };
   servicesIntro: { eyebrow: string; title: string; text: string };
+  why: {
+    eyebrow: string;
+    title: string;
+    text: string;
+    items: { title: string; text: string }[];
+    image: ImageRef;
+  };
   layers: {
     eyebrow: string;
     title: string;

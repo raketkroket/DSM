@@ -5,6 +5,7 @@ import { CONTENT_TAG } from '@/lib/content/get';
 import { sanitizeSection } from '@/lib/content/sanitize';
 import { SECTION_KEYS, type SectionKey } from '@/lib/content/types';
 import { getAdmin } from '../auth';
+import { getSectionStates } from '../content';
 import type { ActionResult } from './types';
 
 const MAX_BYTES = 400_000;
@@ -81,4 +82,32 @@ export async function discardDraft(section: SectionKey): Promise<ActionResult> {
   const { error } = await admin.supabase.from('content_drafts').delete().eq('key', section);
   if (error) return { ok: false, message: `Verwerpen mislukt: ${error.message}` };
   return { ok: true, message: 'Concept verworpen. De gepubliceerde versie is hersteld.' };
+}
+
+/**
+ * Puts a photo into one image slot of a section's concept (used by "Foto's vervangen").
+ * The path is validated by re-shaping the whole section afterwards.
+ */
+export async function setSlotImage(section: SectionKey, path: (string | number)[], image: { src: string; alt: string }): Promise<ActionResult> {
+  const admin = await getAdmin();
+  if (!admin) return expired;
+  if (!isSection(section)) return { ok: false, message: 'Onbekend onderdeel.' };
+  if (!Array.isArray(path) || path.length === 0 || path.length > 8 || !path.every((part) => typeof part === 'number' || /^[a-zA-Z]+$/.test(String(part)))) {
+    return { ok: false, message: 'Ongeldige plek.' };
+  }
+  const states = await getSectionStates(admin.supabase);
+  const draft = structuredClone(states[section].draft) as unknown as Record<string | number, unknown>;
+
+  let node: Record<string | number, unknown> = draft;
+  for (const part of path.slice(0, -1)) {
+    const next = node[part];
+    if (!next || typeof next !== 'object') return { ok: false, message: 'Deze plek bestaat niet meer. Vernieuw de pagina.' };
+    node = next as Record<string | number, unknown>;
+  }
+  const last = path[path.length - 1];
+  const current = node[last] as { src?: unknown } | undefined;
+  if (!current || typeof current !== 'object' || typeof current.src !== 'string') return { ok: false, message: 'Op deze plek staat geen foto.' };
+  node[last] = { src: image.src, alt: image.alt.slice(0, 300) };
+
+  return saveDraft(section, draft);
 }

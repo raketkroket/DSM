@@ -39,13 +39,13 @@ function HeroFrame({ service, index, total }: { service: ServiceContent; index: 
     <section className="pt-[5.5rem] md:pt-24">
       <div className="shell">
         <div className="relative">
-          <div className="intro-unveil-up relative h-[56svh] min-h-[22rem] overflow-hidden rounded-[1.75rem] bg-navy md:h-[78svh] md:max-h-[50rem]" style={delay(100)}>
+          <div className="intro-unveil-up relative h-[56svh] min-h-[22rem] overflow-hidden rounded-[3px] bg-navy md:h-[78svh] md:max-h-[50rem]" style={delay(100)}>
             <div className="intro-settle absolute inset-0" style={delay(100)}>
               <Photo image={service.image} sizes="96vw" priority />
             </div>
             <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/40 to-transparent" aria-hidden />
           </div>
-          <div className="relative z-10 -mt-12 rounded-t-[1.75rem] bg-paper pt-7 md:absolute md:bottom-0 md:left-0 md:mt-0 md:max-w-[52rem] md:rounded-tl-none md:rounded-tr-[1.75rem] md:pt-9 md:pr-12">
+          <div className="relative z-10 -mt-12 rounded-t-[3px] bg-paper pt-7 md:absolute md:bottom-0 md:left-0 md:mt-0 md:max-w-[52rem] md:rounded-tl-none md:rounded-tr-[3px] md:pt-9 md:pr-12">
             <div className="intro-fade" style={delay(300)}>
               <Breadcrumbs items={crumbs(service)} />
             </div>
@@ -56,7 +56,7 @@ function HeroFrame({ service, index, total }: { service: ServiceContent; index: 
                 </span>
               </span>
             </h1>
-            <p className="intro-fade-up accent mt-4 text-[clamp(1.4rem,2.4vw,2.2rem)] leading-tight text-navy-soft" style={delay(650)}>
+            <p className="intro-fade-up accent mt-4 text-[clamp(1.4rem,2.4vw,2.2rem)] leading-tight" style={delay(650)}>
               {service.tagline}
             </p>
             <div className="intro-fade mt-6" style={delay(800)}>
@@ -85,7 +85,7 @@ function HeroSplit({ service, index, total }: { service: ServiceContent; index: 
               </span>
             </span>
           </h1>
-          <p className="intro-fade-up accent mt-5 max-w-[22ch] text-[clamp(1.5rem,2.6vw,2.4rem)] leading-tight text-navy-soft" style={delay(560)}>
+          <p className="intro-fade-up accent mt-5 max-w-[22ch] text-[clamp(1.5rem,2.6vw,2.4rem)] leading-tight" style={delay(560)}>
             {service.tagline}
           </p>
           <p className="intro-fade-up lead mt-8 max-w-[34rem] text-muted" style={delay(700)}>
@@ -97,12 +97,12 @@ function HeroSplit({ service, index, total }: { service: ServiceContent; index: 
           </div>
         </div>
         <div className="relative lg:col-span-5 lg:col-start-8">
-          <div className="intro-unveil-up relative aspect-[4/5] overflow-hidden rounded-[1.5rem] bg-navy" style={delay(150)}>
+          <div className="intro-unveil-up relative aspect-[4/5] overflow-hidden rounded-[3px] bg-navy" style={delay(150)}>
             <div className="intro-settle absolute inset-0" style={delay(150)}>
               <Photo image={service.image} sizes="(min-width: 1024px) 40vw, 92vw" priority />
             </div>
           </div>
-          <div className="intro-unveil absolute -bottom-8 -left-4 hidden aspect-[4/3] w-[52%] overflow-hidden rounded-[1.1rem] border-[6px] border-paper bg-mist shadow-panel sm:block lg:-left-[22%]" style={delay(700)}>
+          <div className="intro-unveil absolute -bottom-8 -left-4 hidden aspect-[4/3] w-[52%] overflow-hidden rounded-[3px] border-[6px] border-paper bg-mist shadow-panel sm:block lg:-left-[22%]" style={delay(700)}>
             <Photo image={service.detailImage} sizes="22vw" />
           </div>
         </div>
@@ -133,14 +133,14 @@ function HeroType({ service, index, total }: { service: ServiceContent; index: n
           </span>
         </h1>
         <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-12">
-          <p className="intro-fade-up accent text-[clamp(1.5rem,2.6vw,2.4rem)] leading-tight text-navy-soft md:col-span-6" style={delay(560)}>
+          <p className="intro-fade-up accent text-[clamp(1.5rem,2.6vw,2.4rem)] leading-tight md:col-span-6" style={delay(560)}>
             {service.tagline}
           </p>
           <p className="intro-fade-up lead text-muted md:col-span-5 md:col-start-8" style={delay(700)}>
             {service.summary}
           </p>
         </div>
-        <div className="intro-unveil relative mt-14 aspect-[16/10] overflow-hidden rounded-[1.75rem] bg-navy md:aspect-[21/8]" style={delay(500)}>
+        <div className="intro-unveil relative mt-14 aspect-[16/10] overflow-hidden rounded-[3px] bg-navy md:aspect-[21/8]" style={delay(500)}>
           <div className="intro-settle absolute inset-0" style={delay(500)}>
             <Photo image={service.image} sizes="96vw" priority />
           </div>
@@ -204,11 +204,10 @@ function ActivitiesCards({ service }: { service: ServiceContent }) {
             <RevealItem
               as="li"
               key={activity}
-              className="group relative flex min-h-[11rem] flex-col justify-between overflow-hidden rounded-[1.25rem] border border-white bg-white p-6 shadow-soft transition-[transform,box-shadow] duration-700 ease-[var(--ease-arch)] hover:-translate-y-1 hover:shadow-panel"
+              className="group relative flex min-h-[11rem] flex-col justify-between overflow-hidden rounded-[3px] border border-white bg-white p-6 shadow-soft transition-[transform,box-shadow] duration-700 ease-[var(--ease-arch)] hover:-translate-y-1 hover:shadow-panel"
             >
               <span className="font-mono text-[0.7rem] text-steel">{String(i + 1).padStart(2, '0')}</span>
               <span className="mt-8 text-[1.1rem] leading-snug tracking-[-0.015em] text-navy">{activity}</span>
-              <span className="absolute top-0 right-0 h-16 w-16 translate-x-8 -translate-y-8 rounded-full bg-steel-wash transition-transform duration-700 group-hover:translate-x-5 group-hover:-translate-y-5" aria-hidden />
             </RevealItem>
           ))}
         </RevealGroup>
@@ -229,7 +228,7 @@ function ActivitiesDark({ service }: { service: ServiceContent }) {
               {service.activitiesTitle}
             </h2>
           </Reveal>
-          <ImageReveal parallax={6} className="mt-12 hidden aspect-[4/3] rounded-[1.25rem] bg-navy lg:block">
+          <ImageReveal parallax={6} className="mt-12 hidden aspect-[4/3] rounded-[3px] bg-navy lg:block">
             <Photo image={service.detailImage} sizes="36vw" />
           </ImageReveal>
         </div>
@@ -322,7 +321,7 @@ export function ServiceView({ service, index, site }: Props) {
             </Reveal>
             <WordReveal id="doelgroep" className="display-sm mt-6 max-w-[24ch] text-navy" parts={[{ text: service.audience }]} stagger={0.025} />
             {service.note && (
-              <Reveal delay={0.15} className="mt-10 flex gap-4 rounded-[1.25rem] border border-line bg-white p-6 shadow-soft">
+              <Reveal delay={0.15} className="mt-10 flex gap-4 rounded-[3px] border border-line bg-white p-6 shadow-soft">
                 <Info className="mt-0.5 h-5 w-5 shrink-0 text-steel" aria-hidden />
                 <p className="text-[0.98rem] leading-relaxed text-ink">{service.note}</p>
               </Reveal>
@@ -330,12 +329,12 @@ export function ServiceView({ service, index, site }: Props) {
           </div>
           <div className={`lg:col-span-5 ${variant === 2 ? 'lg:col-start-1 lg:row-start-1' : 'lg:col-start-8'}`}>
             {variant === 2 ? (
-              <ImageReveal parallax={6} className="aspect-[4/3] rounded-[1.5rem] bg-mist">
-                <Photo image={service.image} sizes="(min-width: 1024px) 40vw, 92vw" />
+              <ImageReveal parallax={6} className="aspect-[4/3] rounded-[3px] bg-mist">
+                <Photo image={service.detailImage} sizes="(min-width: 1024px) 40vw, 92vw" />
               </ImageReveal>
             ) : (
-              <ImageReveal parallax={6} className="aspect-[4/5] rounded-[1.5rem] bg-mist">
-                <Photo image={variant === 0 ? service.detailImage : service.image} sizes="(min-width: 1024px) 40vw, 92vw" />
+              <ImageReveal parallax={6} className="aspect-[4/5] rounded-[3px] bg-mist">
+                <Photo image={service.detailImage} sizes="(min-width: 1024px) 40vw, 92vw" />
               </ImageReveal>
             )}
           </div>
@@ -345,7 +344,7 @@ export function ServiceView({ service, index, site }: Props) {
       {/* Quote CTA */}
       <section aria-labelledby="dienst-cta" className="pb-24 md:pb-32">
         <div className="shell">
-          <Reveal className="relative overflow-hidden rounded-[1.75rem] bg-navy px-6 py-14 text-white sm:px-12 md:px-16 md:py-20">
+          <Reveal className="relative overflow-hidden rounded-[3px] bg-navy px-6 py-14 text-white sm:px-12 md:px-16 md:py-20">
             <div className="blueprint-dark pointer-events-none absolute inset-0" aria-hidden />
             <div className="relative grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-end">
               <div className="lg:col-span-7">
@@ -394,7 +393,7 @@ export function ServiceView({ service, index, site }: Props) {
             {related.map((item) => (
               <RevealItem as="li" key={item.slug}>
                 <Link href={`/diensten/${item.slug}`} className="group block">
-                  <div className="relative aspect-[4/3] overflow-hidden rounded-[1.25rem] bg-navy">
+                  <div className="relative aspect-[4/3] overflow-hidden rounded-[3px] bg-navy">
                     <Photo image={item.image} sizes="(min-width: 768px) 30vw, 92vw" className="transition-transform duration-[1.2s] ease-[var(--ease-arch)] group-hover:scale-105" />
                   </div>
                   <div className="mt-5 flex items-start justify-between gap-4">

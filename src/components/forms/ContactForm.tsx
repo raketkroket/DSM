@@ -23,7 +23,7 @@ export function ContactForm({ privacyNote }: { privacyNote: string }) {
 
   if (status === 'success') {
     return (
-      <div role="status" className="flex flex-col items-start rounded-[1.5rem] border border-line bg-white p-8 shadow-soft md:p-10">
+      <div role="status" className="flex flex-col items-start rounded-[3px] border border-line bg-white p-8 shadow-soft md:p-10">
         <span className="grid h-12 w-12 place-items-center rounded-full bg-navy text-white">
           <Check className="h-5 w-5" />
         </span>
@@ -75,7 +75,7 @@ export function ContactForm({ privacyNote }: { privacyNote: string }) {
         </div>
       )}
       <div className="sm:col-span-2">
-        <button type="submit" disabled={status === 'submitting'} className={buttonClass('primary', 'pr-2.5')}>
+        <button type="submit" disabled={status === 'submitting'} className={buttonClass('primary')}>
           {status === 'submitting' ? (
             <>
               <span>Versturen…</span>
