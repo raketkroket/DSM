@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 export function Breadcrumbs({ items, tone = 'dark' }: { items: { name: string; href?: string }[]; tone?: 'dark' | 'light' }) {
-  const muted = tone === 'light' ? 'text-white/55' : 'text-muted';
+  const muted = tone === 'light' ? 'text-white/65' : 'text-muted';
   const strong = tone === 'light' ? 'text-white' : 'text-navy';
   const hover = tone === 'light' ? 'hover:text-white' : 'hover:text-navy';
   return (

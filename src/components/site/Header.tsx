@@ -261,7 +261,7 @@ export function Header({ services, logo, email, phone }: HeaderProps) {
                         aria-current={isActive(link.href) ? 'page' : undefined}
                       >
                         {link.label}
-                        <span className="font-mono text-xs text-white/40">{String(index + 1).padStart(2, '0')}</span>
+                        <span className="font-mono text-xs text-white/60">{String(index + 1).padStart(2, '0')}</span>
                       </Link>
                     </motion.li>
                   ))}
@@ -274,7 +274,7 @@ export function Header({ services, logo, email, phone }: HeaderProps) {
                 transition={{ duration: 0.8, delay: 0.45 }}
                 className="mt-10"
               >
-                <p className="mono-label text-white/50">Diensten</p>
+                <p className="mono-label text-white/65">Diensten</p>
                 <ul className="mt-4 grid grid-cols-1 gap-x-6 xs:grid-cols-2">
                   {services.map((service) => (
                     <li key={service.slug}>

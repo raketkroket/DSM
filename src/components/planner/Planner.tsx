@@ -137,7 +137,7 @@ export function Planner({ services }: { services: ServiceInfo[] }) {
       <div className="relative">
         <div className="flex items-center justify-between gap-4">
           <p className="mono-label text-steel-soft">Uw beveiligingsprofiel</p>
-          <span className="font-mono text-[0.66rem] text-white/50">{String(Math.min(step + 1, 4)).padStart(2, '0')} / 04</span>
+          <span className="font-mono text-[0.66rem] text-white/65">{String(Math.min(step + 1, 4)).padStart(2, '0')} / 04</span>
         </div>
         <AnimatePresence mode="wait" initial={false}>
           <motion.p
@@ -148,12 +148,12 @@ export function Planner({ services }: { services: ServiceInfo[] }) {
             transition={{ duration: 0.4, ease: EASE }}
             className="mt-4 text-[1.6rem] leading-tight font-medium tracking-[-0.03em]"
           >
-            {locationLabel ?? <span className="text-white/40">Kies een locatie</span>}
+            {locationLabel ?? <span className="text-white/60">Kies een locatie</span>}
           </motion.p>
         </AnimatePresence>
 
         <div className="mt-7">
-          <p className="mono-label text-white/45">Momenten</p>
+          <p className="mono-label text-white/60">Momenten</p>
           <div className="mt-3">
             <WeekGrid value={input.schedule} readOnly tone="dark" />
           </div>
@@ -161,7 +161,7 @@ export function Planner({ services }: { services: ServiceInfo[] }) {
         </div>
 
         <div className="mt-7">
-          <p className="mono-label text-white/45">Aandachtsverdeling</p>
+          <p className="mono-label text-white/60">Aandachtsverdeling</p>
           <ul className="mt-3 space-y-2.5">
             {(['mensen', 'eigendommen', 'processen'] as const).map((layer) => (
               <li key={layer} className="grid grid-cols-[6.5rem_1fr] items-center gap-3 text-[0.82rem]">
@@ -180,9 +180,9 @@ export function Planner({ services }: { services: ServiceInfo[] }) {
         </div>
 
         <div className="mt-7">
-          <p className="mono-label text-white/45">Passende diensten</p>
+          <p className="mono-label text-white/60">Passende diensten</p>
           {recommendations.length === 0 ? (
-            <p className="mt-3 text-[0.88rem] text-white/50">Verschijnen zodra u keuzes maakt.</p>
+            <p className="mt-3 text-[0.88rem] text-white/65">Verschijnen zodra u keuzes maakt.</p>
           ) : (
             <motion.ol layout className="mt-3 space-y-2">
               <AnimatePresence initial={false}>
@@ -204,7 +204,7 @@ export function Planner({ services }: { services: ServiceInfo[] }) {
             </motion.ol>
           )}
         </div>
-        <p className="mt-7 border-t border-white/10 pt-4 text-[0.75rem] leading-relaxed text-white/45">
+        <p className="mt-7 border-t border-white/10 pt-4 text-[0.75rem] leading-relaxed text-white/60">
           Geen automatische prijs: iedere situatie wordt eerst samen met u besproken.
         </p>
       </div>

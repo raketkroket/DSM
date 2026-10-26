@@ -72,7 +72,7 @@ export function WeekGrid({ value, onChange, readOnly = false, tone = 'light' }: 
       <div className="grid grid-cols-[auto_repeat(7,minmax(0,1fr))] gap-1 sm:gap-1.5">
         <span />
         {DAYS.map((day, index) => (
-          <span key={day} className={`pb-1 text-center font-mono text-[0.62rem] tracking-[0.1em] uppercase ${dark ? 'text-white/55' : 'text-muted'} ${index >= 5 ? 'opacity-80' : ''}`}>
+          <span key={day} className={`pb-1 text-center font-mono text-[0.62rem] tracking-[0.1em] uppercase ${dark ? 'text-white/65' : 'text-muted'} ${index >= 5 ? 'opacity-80' : ''}`}>
             {day}
           </span>
         ))}

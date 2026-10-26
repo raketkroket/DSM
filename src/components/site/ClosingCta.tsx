@@ -31,7 +31,7 @@ export function ClosingCta({
       <div className="shell grid grid-cols-1 gap-14 py-24 md:py-32 lg:grid-cols-12 lg:gap-6">
         <div className="lg:col-span-7 lg:pr-10">
           <Reveal>
-            <p className="mono-label text-white/55">Dedicated Security Management B.V.</p>
+            <p className="mono-label text-white/65">Dedicated Security Management B.V.</p>
           </Reveal>
           <WordReveal id="afsluiting-titel" className="display-lg mt-7 max-w-[14ch]" parts={[{ text: title }]} />
           <Reveal delay={0.2}>
@@ -68,7 +68,7 @@ export function ClosingCta({
             >
               <span>
                 <span className="block font-display text-[1.25rem] font-medium tracking-[-0.02em]">{route.label}</span>
-                <span className="mt-1 block text-[0.9rem] text-white/55">{route.text}</span>
+                <span className="mt-1 block text-[0.9rem] text-white/65">{route.text}</span>
               </span>
               <span className="grid h-10 w-10 shrink-0 place-items-center border border-white/25 transition-colors duration-500 group-hover:bg-white group-hover:text-navy">
                 <ArrowBadge />

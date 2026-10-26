@@ -214,7 +214,7 @@ export function SecurityLayers({ layers }: { layers: HomeContent['layers'] }) {
                     onClick={() => setActive(index)}
                     onKeyDown={(event) => onKeyDown(event, index)}
                     className={`group relative flex flex-col items-start gap-2 rounded-[3px] border px-4 py-4 text-left transition-colors duration-500 lg:flex-row lg:items-baseline lg:gap-5 lg:rounded-none lg:border-x-0 lg:border-t-0 lg:px-0 lg:py-6 ${
-                      selected ? 'border-navy bg-navy text-white lg:bg-transparent lg:text-navy' : 'border-line text-ink/50 hover:text-ink'
+                      selected ? 'border-navy bg-navy text-white lg:bg-transparent lg:text-navy' : 'border-line text-ink/70 hover:text-ink'
                     }`}
                   >
                     <span className={`font-mono text-[0.7rem] ${selected ? 'text-steel-soft lg:text-steel' : 'text-steel'}`}>
