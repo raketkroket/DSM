@@ -24,6 +24,8 @@ export type SettingsContent = {
   seoTitle: string;
   seoDescription: string;
   ogImage: ImageRef;
+  /** Brand colours as #rrggbb; empty means the built-in default. */
+  theme: { primaryColor: string; deepColor: string; textColor: string; backgroundColor: string };
 };
 
 export type HomeContent = {

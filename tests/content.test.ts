@@ -49,18 +49,35 @@ describe('mergeWithDefault', () => {
 });
 
 describe('mergeSection("services")', () => {
-  it('locks slugs and order to the fixed URLs while taking edited copy', () => {
+  it('uses the default nine services until the owner saves a list', () => {
+    expect(mergeSection('services', undefined).items.map((item) => item.slug)).toEqual(SERVICE_SLUGS);
+  });
+
+  it('lets the owner remove and reorder services while keeping known copy', () => {
+    const merged = mergeSection('services', { items: [{ slug: 'cameratoezicht' }, { slug: 'objectbewaking', title: 'Objectbeveiliging' }] });
+    expect(merged.items.map((item) => item.slug)).toEqual(['cameratoezicht', 'objectbewaking']);
+    expect(merged.items[0].title).toBe('Cameratoezicht');
+    expect(merged.items[1].title).toBe('Objectbeveiliging');
+  });
+
+  it('adds a new service with a slug made from its title and empty lists', () => {
+    const merged = mergeSection('services', { items: [{ slug: '', title: 'Mobiele surveillance & alarmopvolging' }] });
+    expect(merged.items[0].slug).toBe('mobiele-surveillance-alarmopvolging');
+    expect(merged.items[0].activities).toEqual([]);
+    expect(merged.items[0].intro).toEqual([]);
+    expect(merged.items[0].summary).toBe('');
+  });
+
+  it('makes slugs URL-safe and unique', () => {
     const merged = mergeSection('services', {
-      title: 'Nieuw',
-      items: [
-        { slug: 'cameratoezicht', title: 'Camerabewaking' },
-        { slug: 'onbekend', title: 'Mag niet verschijnen' },
-      ],
+      items: [{ slug: '../Évènement Beveiliging!' }, { slug: 'evenement-beveiliging' }, { title: 'Evenement beveiliging' }],
     });
-    expect(merged.title).toBe('Nieuw');
-    expect(merged.items.map((item) => item.slug)).toEqual(SERVICE_SLUGS);
-    expect(merged.items.find((item) => item.slug === 'cameratoezicht')?.title).toBe('Camerabewaking');
-    expect(merged.items.some((item) => item.title === 'Mag niet verschijnen')).toBe(false);
+    expect(merged.items.map((item) => item.slug)).toEqual(['evenement-beveiliging', 'evenement-beveiliging-2', 'evenement-beveiliging-3']);
+  });
+
+  it('type-checks list items of new services', () => {
+    const merged = mergeSection('services', { items: [{ title: 'Nieuw', activities: ['Toezicht', 42, { x: 1 }] }] });
+    expect(merged.items[0].activities).toEqual(['Toezicht', '', '']);
   });
 
   it('returns the full default site when nothing is stored', () => {

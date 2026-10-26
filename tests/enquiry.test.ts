@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { toDay } from '@/lib/availability';
 import { mergeSite } from '@/lib/content/merge';
 import { contactSchema, quoteSchema } from '@/lib/enquiry/schema';
 
@@ -128,6 +129,25 @@ describe('handleEnquiry', () => {
     expect(response.status).toBe(422);
     const body = await response.json();
     expect(Object.keys(body.errors)).toEqual(expect.arrayContaining(['email', 'location']));
+  });
+
+  it('stores an optional preferred start date and rejects past dates', async () => {
+    const future = await handleEnquiry('quote', post({ ...validQuote(), preferredDate: '2099-01-05' }));
+    expect(future.status).toBe(422); // more than two years ahead
+    const past = await handleEnquiry('quote', post({ ...validQuote(), preferredDate: '2020-01-05' }));
+    expect(past.status).toBe(422);
+    expect((await past.json()).errors.preferredDate).toBeTruthy();
+    const soon = new Date();
+    soon.setDate(soon.getDate() + 10);
+    const day = toDay(soon);
+    const ok = await handleEnquiry('quote', post({ ...validQuote(), preferredDate: day }));
+    expect(ok.status).toBe(201);
+    expect(db.inserts.at(-1)).toMatchObject({ preferred_date: day });
+  });
+
+  it('stores no start date when none was chosen', async () => {
+    await handleEnquiry('quote', post(validQuote()));
+    expect(db.inserts.at(-1)).toMatchObject({ preferred_date: null });
   });
 
   it('rejects services that are not offered', async () => {

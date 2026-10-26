@@ -3,6 +3,8 @@ import type { SectionKey } from '@/lib/content/types';
 export type FieldSpec =
   | { type: 'text' | 'textarea' | 'email' | 'url'; key: string; label: string; help?: string; rows?: number }
   | { type: 'image'; key: string; label: string; help?: string }
+  /** Brand colour; `against` is a sibling key or a fixed colour it must stay readable on. */
+  | { type: 'color'; key: string; label: string; help?: string; fallback: string; against: string; againstLabel: string }
   | { type: 'cta'; key: string; label: string; help?: string }
   | { type: 'group'; key: string; label: string; help?: string; fields: FieldSpec[] }
   | {
@@ -131,7 +133,7 @@ export const EDITOR_SPEC: Record<SectionKey, PanelSpec[]> = {
     {
       key: null,
       label: 'Dienstpagina’s',
-      help: 'De negen diensten hebben vaste webadressen. Alle teksten en foto’s zijn aanpasbaar.',
+      help: 'Voeg diensten toe, verwijder ze of verander de volgorde. Elke dienst krijgt een eigen pagina op /diensten/<webadres>.',
       fields: [
         {
           type: 'list',
@@ -139,9 +141,9 @@ export const EDITOR_SPEC: Record<SectionKey, PanelSpec[]> = {
           label: 'Diensten',
           itemLabel: 'Dienst',
           titleKey: 'title',
-          fixed: true,
           item: [
             t('title', 'Naam'),
+            t('slug', 'Webadres', 'Laat leeg bij een nieuwe dienst: het adres wordt dan uit de naam gemaakt. Wijzig het bij een bestaande dienst liever niet, want oude links werken dan niet meer.'),
             t('shortTitle', 'Korte naam', 'Gebruikt in het kruimelpad en knoppen.'),
             t('tagline', 'Ondertitel'),
             ta('summary', 'Samenvatting', 3, 'Wordt getoond in overzichten.'),
@@ -218,6 +220,17 @@ export const EDITOR_SPEC: Record<SectionKey, PanelSpec[]> = {
       label: 'Bedrijfsgegevens',
       help: 'Lege velden worden niet getoond op de website.',
       fields: [t('companyName', 'Bedrijfsnaam'), t('tagline', 'Slogan'), { type: 'email', key: 'email', label: 'E-mailadres' }, t('phone', 'Telefoonnummer'), t('address', 'Adres'), t('postalCity', 'Postcode en plaats'), t('kvk', 'KvK-nummer')],
+    },
+    {
+      key: 'theme',
+      label: 'Kleuren',
+      help: 'Kies de huisstijlkleuren. Laat een kleur leeg (Standaard) om de oorspronkelijke kleur te gebruiken. Bekijk het resultaat met Voorbeeld voordat u publiceert.',
+      fields: [
+        { type: 'color', key: 'primaryColor', label: 'Hoofdkleur', help: 'Knoppen, koppen en accenten.', fallback: '#14243a', against: 'backgroundColor', againstLabel: 'de achtergrond' },
+        { type: 'color', key: 'deepColor', label: 'Donkere vlakken', help: 'Donkere secties met witte tekst, zoals de afsluiting.', fallback: '#0c1726', against: '#ffffff', againstLabel: 'witte tekst' },
+        { type: 'color', key: 'textColor', label: 'Tekstkleur', help: 'Lopende tekst.', fallback: '#24282d', against: 'backgroundColor', againstLabel: 'de achtergrond' },
+        { type: 'color', key: 'backgroundColor', label: 'Achtergrond', help: 'De lichte basiskleur van de pagina’s.', fallback: '#f6f5f2', against: 'textColor', againstLabel: 'de tekstkleur' },
+      ],
     },
     {
       key: null,

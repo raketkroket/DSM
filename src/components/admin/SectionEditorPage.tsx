@@ -4,7 +4,7 @@ import { ContentEditor } from '@/components/admin/editor/ContentEditor';
 import { PageHeader } from '@/components/admin/ui';
 import { requireAdmin } from '@/lib/admin/auth';
 import { getSectionStates } from '@/lib/admin/content';
-import { INTERNAL_PAGES, SECTION_PREVIEWS } from '@/lib/admin/editor-pages';
+import { internalPages, sectionPreviews } from '@/lib/admin/editor-pages';
 import { EDITOR_SPEC, SECTION_META } from '@/lib/admin/editor-spec';
 import type { MediaItem } from '@/lib/admin/actions/media';
 import type { SectionKey } from '@/lib/content/types';
@@ -34,8 +34,8 @@ export async function SectionEditorPage({ section, back = true }: { section: Sec
         publishedAt={state.publishedAt}
         draftUpdatedAt={state.draftUpdatedAt}
         media={(media ?? []) as MediaItem[]}
-        previews={SECTION_PREVIEWS[section]}
-        internalPages={INTERNAL_PAGES}
+        previews={sectionPreviews(section, states.services.draft.items)}
+        internalPages={internalPages(states.services.draft.items)}
       />
     </div>
   );

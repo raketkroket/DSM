@@ -207,7 +207,9 @@ export function plannerSummary(input: PlannerInput, serviceTitles: Record<string
   const location = LOCATIONS.find((item) => item.id === input.location)?.label ?? '—';
   const concerns = input.concerns.map((id) => CONCERNS.find((item) => item.id === id)!.label);
   const period = PERIODS.find((item) => item.id === input.period)?.label ?? '—';
-  const services = recommend(input).map((item) => serviceTitles[item.slug] ?? item.slug);
+  const services = recommend(input)
+    .filter((item) => serviceTitles[item.slug])
+    .map((item) => serviceTitles[item.slug]);
   return [
     'Samengesteld met de beveiligingsplanner:',
     `• Type locatie: ${location}`,

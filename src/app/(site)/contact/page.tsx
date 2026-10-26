@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { ContactView } from '@/components/contact/ContactView';
+import { getPublicAvailability } from '@/lib/availability-server';
 import { getPublishedSite } from '@/lib/content/get';
 
 export const metadata: Metadata = {
@@ -10,6 +11,6 @@ export const metadata: Metadata = {
 };
 
 export default async function ContactPage() {
-  const site = await getPublishedSite();
-  return <ContactView site={site} />;
+  const [site, availability] = await Promise.all([getPublishedSite(), getPublicAvailability()]);
+  return <ContactView site={site} availability={availability} />;
 }

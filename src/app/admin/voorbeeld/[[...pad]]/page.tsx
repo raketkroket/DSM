@@ -13,12 +13,15 @@ import { Footer } from '@/components/site/Footer';
 import { Header } from '@/components/site/Header';
 import { requireAdmin } from '@/lib/admin/auth';
 import { getDraftSite } from '@/lib/admin/content';
+import { getPublicAvailability } from '@/lib/availability-server';
+import type { AvailabilityDay } from '@/lib/availability';
 import type { SiteContent } from '@/lib/content/types';
 import { STOCK_PREFIX } from '@/lib/content/photos';
+import { themeCss } from '@/lib/theme';
 
 export const metadata: Metadata = { title: 'Voorbeeld', robots: { index: false, follow: false } };
 
-function View({ site, path }: { site: SiteContent; path: string[] }) {
+function View({ site, path, availability }: { site: SiteContent; path: string[]; availability: AvailabilityDay[] }) {
   const [first, second] = path;
   if (!first) return <HomeView site={site} />;
   if (first === 'diensten' && !second) return <ServicesOverview site={site} />;
@@ -28,17 +31,19 @@ function View({ site, path }: { site: SiteContent; path: string[] }) {
     return <ServiceView service={site.services.items[index]} index={index} site={site} />;
   }
   if (first === 'over-ons') return <AboutView site={site} />;
-  if (first === 'contact') return <ContactView site={site} />;
-  if (first === 'offerte') return <QuoteView site={site} />;
+  if (first === 'contact') return <ContactView site={site} availability={availability} />;
+  if (first === 'offerte') return <QuoteView site={site} availability={availability} />;
   notFound();
 }
 
 async function Preview({ params }: { params: PageProps<'/admin/voorbeeld/[[...pad]]'>['params'] }) {
   const { pad = [] } = await params;
   const { supabase } = await requireAdmin();
-  const site = await getDraftSite(supabase);
+  const [site, availability] = await Promise.all([getDraftSite(supabase), getPublicAvailability()]);
+  const brand = themeCss(site.settings.theme);
   return (
     <>
+      {brand ? <style>{brand}</style> : null}
       <div className="fixed bottom-4 left-1/2 z-[70] flex -translate-x-1/2 items-center gap-3 rounded-full bg-navy-deep py-2 pr-2 pl-4 text-[0.82rem] text-white shadow-panel">
         <Eye className="h-4 w-4 text-steel-soft" aria-hidden />
         <span>Voorbeeld met niet-gepubliceerde wijzigingen</span>
@@ -53,7 +58,7 @@ async function Preview({ params }: { params: PageProps<'/admin/voorbeeld/[[...pa
         phone={site.settings.phone}
       />
       <main id="inhoud">
-        <View site={site} path={pad} />
+        <View site={site} path={pad} availability={availability} />
       </main>
       <Footer settings={site.settings} services={site.services.items} stockPhotos={JSON.stringify(site).includes(STOCK_PREFIX)} />
     </>

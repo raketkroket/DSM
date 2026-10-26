@@ -6,6 +6,7 @@ import { ArrowLeft, Mail, Phone } from 'lucide-react';
 import { EnquiryControls } from '@/components/admin/EnquiryControls';
 import { AdminSkeleton, Badge, Card, CardHeader, KIND_LABEL, PageHeader, STATUS_LABEL, STATUS_TONE, adminButton, formatDate } from '@/components/admin/ui';
 import { requireAdmin } from '@/lib/admin/auth';
+import { formatDay } from '@/lib/availability';
 import { getPublishedSite } from '@/lib/content/get';
 
 export const metadata: Metadata = { title: 'Aanvraag' };
@@ -36,6 +37,7 @@ async function Detail({ params }: { params: PageProps<'/admin/aanvragen/[id]'>['
     ['Telefoonnummer', enquiry.phone],
     ['Gewenste dienst', enquiry.service],
     ['Locatie van de opdracht', enquiry.location],
+    ['Gewenste startdatum', enquiry.preferred_date ? formatDay(enquiry.preferred_date) : ''],
   ].filter(([, value]) => value);
 
   return (

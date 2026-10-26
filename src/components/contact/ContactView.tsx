@@ -1,16 +1,18 @@
 import Link from 'next/link';
 import { Mail, MapPin, Phone } from 'lucide-react';
+import { AvailabilityCalendar } from '@/components/availability/AvailabilityCalendar';
 import { ContactForm } from '@/components/forms/ContactForm';
 import { Reveal } from '@/components/motion/Reveal';
 import { ArrowBadge } from '@/components/site/Button';
 import { Breadcrumbs } from '@/components/site/Breadcrumbs';
 import { Faq } from '@/components/site/Faq';
 import { Photo } from '@/components/site/Photo';
+import type { AvailabilityDay } from '@/lib/availability';
 import type { SiteContent } from '@/lib/content/types';
 
 const delay = (ms: number) => ({ '--d': `${ms}ms` }) as React.CSSProperties;
 
-export function ContactView({ site }: { site: SiteContent }) {
+export function ContactView({ site, availability = [] }: { site: SiteContent; availability?: AvailabilityDay[] }) {
   const { contact, settings, faq } = site;
   const hasDetails = settings.email || settings.phone || settings.address;
   return (
@@ -112,6 +114,25 @@ export function ContactView({ site }: { site: SiteContent }) {
           </div>
         </div>
       </section>
+
+      {availability.length > 0 && (
+        <section aria-labelledby="beschikbaarheid" className="border-t border-line py-20 md:py-28">
+          <div className="shell grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-6">
+            <Reveal className="lg:col-span-4">
+              <p className="eyebrow">Planning</p>
+              <h2 id="beschikbaarheid" className="mt-5 display-md text-navy">
+                Beschikbaarheid
+              </h2>
+              <p className="mt-4 max-w-[26rem] text-[1.02rem] leading-relaxed text-muted">
+                Een actuele indicatie van onze planning. Staat een dag niet ingevuld, dan is die op aanvraag. Neem gerust contact op om de mogelijkheden te bespreken.
+              </p>
+            </Reveal>
+            <Reveal delay={0.1} className="rounded-[3px] border border-line bg-white p-5 sm:p-8 lg:col-span-7 lg:col-start-6">
+              <AvailabilityCalendar days={availability} />
+            </Reveal>
+          </div>
+        </section>
+      )}
 
       <div className="border-t border-line bg-white">
         <Faq faq={faq} />

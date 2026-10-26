@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { QuoteView } from '@/components/contact/QuoteView';
+import { getPublicAvailability } from '@/lib/availability-server';
 import { getPublishedSite } from '@/lib/content/get';
 
 export const metadata: Metadata = {
@@ -10,6 +11,6 @@ export const metadata: Metadata = {
 };
 
 export default async function QuotePage() {
-  const site = await getPublishedSite();
-  return <QuoteView site={site} />;
+  const [site, availability] = await Promise.all([getPublishedSite(), getPublicAvailability()]);
+  return <QuoteView site={site} availability={availability} />;
 }

@@ -3,6 +3,7 @@ import { Instrument_Sans, Inter } from 'next/font/google';
 import { MotionProvider } from '@/components/motion/MotionProvider';
 import { getPublishedSite } from '@/lib/content/get';
 import { env } from '@/lib/env';
+import { themeCss } from '@/lib/theme';
 import './globals.css';
 
 const inter = Inter({ variable: '--font-inter', subsets: ['latin'], display: 'swap' });
@@ -36,9 +37,12 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({ children }: LayoutProps<'/'>) {
+export default async function RootLayout({ children }: LayoutProps<'/'>) {
+  const { settings } = await getPublishedSite();
+  const brand = themeCss(settings.theme);
   return (
     <html lang="nl" className={`${inter.variable} ${instrumentSans.variable}`}>
+      <head>{brand ? <style id="merkkleuren">{brand}</style> : null}</head>
       <body>
         <MotionProvider>{children}</MotionProvider>
       </body>

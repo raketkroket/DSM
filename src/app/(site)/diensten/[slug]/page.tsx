@@ -2,10 +2,11 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { ServiceView } from '@/components/service/ServiceView';
 import { getPublishedSite } from '@/lib/content/get';
-import { SERVICE_SLUGS } from '@/lib/content/services';
 
-export function generateStaticParams() {
-  return SERVICE_SLUGS.map((slug) => ({ slug }));
+/** Prerenders every published service; services added later render on first visit and are cached. */
+export async function generateStaticParams() {
+  const { services } = await getPublishedSite();
+  return services.items.map(({ slug }) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: PageProps<'/diensten/[slug]'>): Promise<Metadata> {

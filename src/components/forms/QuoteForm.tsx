@@ -6,8 +6,10 @@ import { AnimatePresence, motion } from 'motion/react';
 import { ArrowLeft, Check, Loader2 } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { z } from 'zod';
+import { StartDatePicker } from '@/components/availability/StartDatePicker';
 import { EASE } from '@/components/motion/ease';
 import { ArrowBadge, buttonClass } from '@/components/site/Button';
+import { formatDay, preferredDateIssue, toDay, type AvailabilityDay } from '@/lib/availability';
 import { fieldErrors, OTHER_SERVICE, quoteFields, type FieldErrors } from '@/lib/enquiry/schema';
 import { PLANNER_STORAGE_KEY } from '@/lib/planner';
 import { Consent, Field, FormAlert, Honeypot, TextArea, TextInput } from './fields';
@@ -18,6 +20,7 @@ type ServiceOption = { slug: string; title: string; shortTitle: string };
 type Values = {
   service: string;
   location: string;
+  preferredDate: string;
   message: string;
   company: string;
   name: string;
@@ -29,14 +32,14 @@ type Values = {
 
 const STEPS = [
   { title: 'Dienst', fields: ['service'] as const },
-  { title: 'Opdracht', fields: ['location', 'message'] as const },
+  { title: 'Opdracht', fields: ['location', 'preferredDate', 'message'] as const },
   { title: 'Gegevens', fields: ['company', 'name', 'email', 'phone', 'consent'] as const },
   { title: 'Controle', fields: [] as const },
 ];
 
 const stepSchemas = [
   z.object({ service: quoteFields.service }),
-  z.object({ location: quoteFields.location, message: quoteFields.message }),
+  z.object({ location: quoteFields.location, preferredDate: quoteFields.preferredDate, message: quoteFields.message }),
   z.object({
     company: quoteFields.company,
     name: quoteFields.name,
@@ -66,11 +69,13 @@ export function QuoteForm({
   privacyNote,
   confirmationTitle,
   confirmationText,
+  availability = [],
 }: {
   services: ServiceOption[];
   privacyNote: string;
   confirmationTitle: string;
   confirmationText: string;
+  availability?: AvailabilityDay[];
 }) {
   const params = useSearchParams();
   const preset = services.find((service) => service.slug === params.get('dienst'))?.title ?? '';
@@ -80,6 +85,7 @@ export function QuoteForm({
   const [values, setValues] = useState<Values>(() => ({
     service: preset,
     location: '',
+    preferredDate: '',
     message: fromPlanner ? readPlannerMessage() : '',
     company: '',
     name: '',
@@ -109,8 +115,9 @@ export function QuoteForm({
     const schema = stepSchemas[index];
     if (!schema) return true;
     const result = schema.safeParse(values);
-    if (result.success) return true;
-    setErrors(fieldErrors(result.error));
+    const dateIssue = index === 1 ? preferredDateIssue(values.preferredDate, toDay(new Date())) : null;
+    if (result.success && !dateIssue) return true;
+    setErrors({ ...(result.success ? {} : fieldErrors(result.error)), ...(dateIssue ? { preferredDate: dateIssue } : {}) });
     requestAnimationFrame(() => {
       const first = document.querySelector<HTMLElement>('[aria-invalid="true"]');
       first?.focus();
@@ -282,6 +289,7 @@ export function QuoteForm({
                 <Field id="location" label="Locatie van de opdracht" error={allErrors.location} hint="Bijvoorbeeld plaats, adres of type locatie.">
                   <TextInput id="location" value={values.location} onChange={(event) => set('location', event.target.value)} error={allErrors.location} hint="Bijvoorbeeld plaats, adres of type locatie." autoComplete="address-level2" />
                 </Field>
+                <StartDatePicker value={values.preferredDate} onChange={(value) => set('preferredDate', value)} days={availability} error={allErrors.preferredDate} />
                 <Field id="message" label="Omschrijving van de aanvraag" error={allErrors.message} hint="Denk aan de periode, gewenste tijden, aantal bezoekers of bijzonderheden.">
                   <TextArea id="message" value={values.message} onChange={(event) => set('message', event.target.value)} error={allErrors.message} hint="Denk aan de periode, gewenste tijden, aantal bezoekers of bijzonderheden." maxLength={5000} />
                 </Field>
@@ -317,6 +325,7 @@ export function QuoteForm({
                 {[
                   ['Gewenste dienst', values.service, 0],
                   ['Locatie', values.location, 1],
+                  ['Gewenste startdatum', values.preferredDate ? formatDay(values.preferredDate) : 'Geen voorkeur', 1],
                   ['Omschrijving', values.message, 1],
                   ['Bedrijfsnaam', values.company, 2],
                   ['Contactpersoon', values.name, 2],

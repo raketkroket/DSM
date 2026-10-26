@@ -7,8 +7,15 @@ import type { FieldSpec } from '@/lib/admin/editor-spec';
 import type { Cta, ImageRef } from '@/lib/content/types';
 import { ImageField } from './ImageField';
 import { blankLike } from './path';
+import { contrastRatio } from '@/lib/theme';
 
-export type FieldContext = { media: MediaItem[]; onMediaAdded: (items: MediaItem[]) => void; internalPages: { href: string; label: string }[] };
+export type FieldContext = {
+  media: MediaItem[];
+  onMediaAdded: (items: MediaItem[]) => void;
+  internalPages: { href: string; label: string }[];
+  /** Values of the current panel, for fields that depend on a sibling (colour contrast). */
+  panelValue?: Record<string, unknown>;
+};
 
 const inputClass =
   'mt-1.5 block w-full rounded-xl border border-line-strong bg-white px-3.5 text-[0.95rem] text-ink outline-none transition focus:border-navy focus:shadow-[0_0_0_4px_rgba(110,145,172,0.15)]';
@@ -44,6 +51,59 @@ function TextField({ spec, value, onChange }: { spec: Extract<FieldSpec, { type:
           className={`${inputClass} h-11`}
         />
       )}
+    </div>
+  );
+}
+
+const HEX = /^#[0-9a-f]{6}$/i;
+
+function ColorField({ spec, value, onChange, panel }: { spec: Extract<FieldSpec, { type: 'color' }>; value: string; onChange: (value: string) => void; panel?: Record<string, unknown> }) {
+  const id = useId();
+  const effective = HEX.test(value) ? value : spec.fallback;
+  const siblingSpec = spec.against.startsWith('#') ? null : spec.against;
+  const siblingValue = siblingSpec ? panel?.[siblingSpec] : undefined;
+  const fallbackFor: Record<string, string> = { backgroundColor: '#f6f5f2', textColor: '#24282d' };
+  const against = siblingSpec ? (typeof siblingValue === 'string' && HEX.test(siblingValue) ? siblingValue : fallbackFor[siblingSpec] ?? '#ffffff') : spec.against;
+  const ratio = contrastRatio(effective, against);
+  const ok = ratio >= 4.5;
+  return (
+    <div className="rounded-2xl border border-line bg-paper p-4">
+      <Label label={spec.label} help={spec.help} htmlFor={id} />
+      <div className="mt-3 flex flex-wrap items-center gap-3">
+        <input
+          type="color"
+          aria-label={`${spec.label} kiezen`}
+          value={effective}
+          onChange={(event) => onChange(event.target.value)}
+          className="h-11 w-14 cursor-pointer rounded-lg border border-line-strong bg-white p-1"
+        />
+        <input
+          id={id}
+          value={value}
+          placeholder={spec.fallback}
+          onChange={(event) => onChange(event.target.value.trim())}
+          className={`${inputClass} mt-0 h-11 w-36 font-mono uppercase`}
+          maxLength={7}
+        />
+        <button type="button" onClick={() => onChange('')} disabled={!value} className="rounded-lg px-3 py-2 text-[0.82rem] text-muted hover:bg-mist hover:text-navy disabled:opacity-40">
+          Standaard
+        </button>
+        <span
+          className={`rounded-full px-2.5 py-1 text-[0.75rem] font-medium ${ok ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'}`}
+          aria-live="polite"
+        >
+          Contrast met {spec.againstLabel}: {ratio.toFixed(1)}:1 {ok ? '— goed leesbaar' : '— te laag (minimaal 4,5:1)'}
+        </span>
+      </div>
+      {value && !HEX.test(value) && <p className="mt-2 text-[0.8rem] text-danger">Gebruik een kleurcode zoals #14243A.</p>}
+      <div className="mt-3 flex h-10 overflow-hidden rounded-lg border border-line" aria-hidden>
+        <span className="flex flex-1 items-center px-3 text-[0.8rem] font-medium" style={{ background: against, color: effective }}>
+          Voorbeeldtekst
+        </span>
+        <span className="flex flex-1 items-center px-3 text-[0.8rem] font-medium" style={{ background: effective, color: against }}>
+          Voorbeeldtekst
+        </span>
+      </div>
     </div>
   );
 }
@@ -253,6 +313,8 @@ export function FieldRenderer({ spec, value, onChange, context }: { spec: FieldS
           onMediaAdded={context.onMediaAdded}
         />
       );
+    case 'color':
+      return <ColorField spec={spec} value={typeof value === 'string' ? value : ''} onChange={onChange} panel={context.panelValue} />;
     case 'cta':
       return <CtaField spec={spec} value={(value as Cta) ?? { label: '', href: '/' }} onChange={onChange} pages={context.internalPages} />;
     case 'group':

@@ -2,11 +2,12 @@ import { Suspense } from 'react';
 import { QuoteForm } from '@/components/forms/QuoteForm';
 import { Breadcrumbs } from '@/components/site/Breadcrumbs';
 import { Photo } from '@/components/site/Photo';
+import type { AvailabilityDay } from '@/lib/availability';
 import type { SiteContent } from '@/lib/content/types';
 
 const delay = (ms: number) => ({ '--d': `${ms}ms` }) as React.CSSProperties;
 
-export function QuoteView({ site }: { site: SiteContent }) {
+export function QuoteView({ site, availability = [] }: { site: SiteContent; availability?: AvailabilityDay[] }) {
   const { contact, home, services, settings } = site;
   return (
     <section className="pt-[5.5rem] pb-16 md:pt-24 md:pb-24">
@@ -67,6 +68,7 @@ export function QuoteView({ site }: { site: SiteContent }) {
               privacyNote={contact.privacyNote}
               confirmationTitle={contact.confirmationTitle}
               confirmationText={contact.confirmationText}
+              availability={availability}
             />
           </Suspense>
         </div>

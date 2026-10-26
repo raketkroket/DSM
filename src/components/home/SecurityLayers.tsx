@@ -139,7 +139,16 @@ function Annotation({ note, index }: { note: Note; index: number }) {
   );
 }
 
-export function SecurityLayers({ layers }: { layers: HomeContent['layers'] }) {
+export function SecurityLayers({ layers, services }: { layers: HomeContent['layers']; services?: { slug: string; title: string }[] }) {
+  // Link only to services that exist, using their current names.
+  const links = LAYER_LINKS.map((group) =>
+    services
+      ? group.flatMap((link) => {
+          const match = services.find((service) => link.href === `/diensten/${service.slug}`);
+          return match ? [{ href: link.href, label: match.title }] : [];
+        })
+      : group,
+  );
   const [active, setActive] = useState(0);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const items = layers.items.slice(0, 3);
@@ -254,7 +263,7 @@ export function SecurityLayers({ layers }: { layers: HomeContent['layers'] }) {
                     ))}
                   </ul>
                   <div className="mt-8 flex flex-wrap gap-2">
-                    {LAYER_LINKS[active].map((link) => (
+                    {links[active].map((link) => (
                       <Link
                         key={link.href}
                         href={link.href}

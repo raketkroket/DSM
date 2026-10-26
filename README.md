@@ -46,7 +46,7 @@ npm run build       # production build
 ## Supabase setup
 
 1. Create a Supabase project (region EU recommended).
-2. Apply the schema: either `supabase db push` with the Supabase CLI, or paste `supabase/migrations/20261019120000_initial_schema.sql` into **SQL editor** and run it. This creates the tables, row-level security policies, the enquiry-protection trigger and the public `media` storage bucket.
+2. Apply the schema: either `supabase db push` with the Supabase CLI, or paste every file in `supabase/migrations/` into **SQL editor** in date order and run them. This creates the tables, row-level security policies, the enquiry-protection trigger, the public `media` storage bucket and the `availability` calendar table.
 3. **Create the administrator account** in **Authentication → Users → Add user** (e-mail + strong password, "Auto confirm"). Then grant admin rights in the SQL editor:
 
    ```sql
@@ -109,7 +109,9 @@ See `.env.example`.
 - **Photos**: choose from the media library inside the editor, upload directly from the picker, set alt text and click the preview to set the focal point (how the photo is cropped on different screens).
 - **Mediabibliotheek**: upload (drag & drop, max 15 MB, optimised to WebP), edit alt text, see where a photo is used, replace a photo everywhere it is used, reorder, and delete photos that are no longer in use.
 - **Aanvragen**: filter by status, type, service or search; open a request to change its status (nieuw / gecontacteerd / afgerond), keep internal notes, reply by e-mail (pre-filled) or call.
-- The nine service pages have fixed URLs (`/diensten/<slug>`); their copy, photos and SEO fields are editable.
+- **Diensten**: services can be added, removed and reordered (Content → Diensten). Each service gets its own page at `/diensten/<webadres>`; new ones start empty, so fill in the copy and photo before publishing. Removed services disappear from the menu, sitemap, planner and quote form.
+- **Kleuren** (Instellingen → Kleuren): primary, deep, text and background colour. Each picker shows the contrast against its counterpart and warns below 4.5 : 1; *Standaard* restores the original palette.
+- **Beschikbaarheid**: a calendar where the owner marks days as *Beschikbaar*, *Beperkt beschikbaar* or *Volgeboekt*, optionally with a short note. Click a day, drag across a range or Ctrl/Shift-click to add days, then pick a status. Changes are live immediately: the contact page shows the calendar (only while future days are filled in) and the quote form offers an optional *Gewenste startdatum*, which is stored with the request and shown in the e-mail and the admin.
 
 ## Photography
 

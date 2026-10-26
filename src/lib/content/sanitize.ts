@@ -47,6 +47,10 @@ function clean(value: unknown, key: string, problems: string[], path: string): u
       return '/';
     }
     if (key === 'focus' && trimmed !== '' && !FOCUS.test(trimmed)) return '';
+    if (key.endsWith('Color') && trimmed !== '' && !/^#[0-9a-f]{6}$/i.test(trimmed)) {
+      problems.push(`${path}: gebruik een kleurcode zoals #14243A`);
+      return '';
+    }
     if (['email', 'notificationEmail'].includes(key) && trimmed && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
       problems.push(`${path}: ongeldig e-mailadres`);
       return '';

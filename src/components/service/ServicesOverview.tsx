@@ -74,7 +74,7 @@ export function ServicesOverview({ site }: { site: SiteContent }) {
         </div>
       </section>
 
-      <SecurityLayers layers={home.layers} />
+      <SecurityLayers layers={home.layers} services={services.items.map(({ slug, title }) => ({ slug, title }))} />
       <div className="border-t border-line">
         <ProcessTimeline process={home.process} />
       </div>

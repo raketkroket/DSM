@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ExternalLink, FileText, Image as ImageIcon, ImageUp, Inbox, LayoutDashboard, Menu, Settings, X } from 'lucide-react';
+import { CalendarDays, ExternalLink, FileText, Image as ImageIcon, ImageUp, Inbox, LayoutDashboard, Menu, Settings, X } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { LogoMark } from '@/components/brand/Logo';
 
@@ -10,6 +10,7 @@ const NAV = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
   { href: '/admin/aanvragen', label: 'Aanvragen', icon: Inbox },
   { href: '/admin/content', label: 'Content', icon: FileText },
+  { href: '/admin/beschikbaarheid', label: 'Beschikbaarheid', icon: CalendarDays },
   { href: '/admin/fotos', label: 'Foto’s vervangen', icon: ImageUp },
   { href: '/admin/media', label: 'Mediabibliotheek', icon: ImageIcon },
   { href: '/admin/instellingen', label: 'Instellingen', icon: Settings },

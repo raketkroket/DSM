@@ -218,13 +218,14 @@ export function ContentEditor({ section, panels, initial, published, pending, pu
           <div className="mt-6 space-y-6">
             {current.fields.map((field) => {
               const path = [...basePath, field.key];
+              const panelValue = (getAt(value, basePath) ?? {}) as Record<string, unknown>;
               return (
                 <FieldRenderer
                   key={`${panel}-${field.key}`}
                   spec={field}
                   value={getAt(value, path)}
                   onChange={(next) => setValue((existing: unknown) => setAt(existing, path, next))}
-                  context={context}
+                  context={{ ...context, panelValue }}
                 />
               );
             })}

@@ -87,7 +87,8 @@ export function Planner({ services }: { services: ServiceInfo[] }) {
   }, [input, step]);
 
   const byslug = useMemo(() => Object.fromEntries(services.map((service) => [service.slug, service])), [services]);
-  const recommendations = useMemo(() => recommend(input), [input]);
+  // Only suggest services that are currently published.
+  const recommendations = useMemo(() => recommend(input).filter((item) => byslug[item.slug]), [input, byslug]);
   const focus = useMemo(() => layerFocus(input.concerns), [input.concerns]);
   const stats = scheduleStats(input.schedule);
   const scheduleText = describeSchedule(input.schedule);

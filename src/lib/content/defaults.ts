@@ -29,6 +29,7 @@ export const defaultContent: SiteContent = {
     seoDescription:
       'Dedicated Security Management B.V. biedt professionele beveiligingsoplossingen voor bedrijven, organisaties, evenementen en uiteenlopende locaties: van objectbewaking tot risicoanalyses.',
     ogImage: emptyImage,
+    theme: { primaryColor: '', deepColor: '', textColor: '', backgroundColor: '' },
   },
 
   home: {

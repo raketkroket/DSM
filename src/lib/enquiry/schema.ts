@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { isValidDay } from '@/lib/availability';
 
 export const OTHER_SERVICE = 'Combinatie of anders';
 
@@ -21,6 +22,12 @@ const meta = {
 export const quoteFields = {
   service: text(2, 120, 'Kies de gewenste beveiligingsdienst.'),
   location: text(2, 200, 'Vul de locatie van de opdracht in.'),
+  preferredDate: z
+    .string()
+    .trim()
+    .refine((value) => value === '' || isValidDay(value), 'Kies een geldige datum.')
+    .optional()
+    .default(''),
   message: text(10, 5000, 'Omschrijf uw aanvraag in minimaal 10 tekens.'),
   company: text(2, 160, 'Vul de bedrijfsnaam in.'),
   name: text(2, 120, 'Vul de naam van de contactpersoon in.'),

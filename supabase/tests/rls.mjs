@@ -106,5 +106,20 @@ check('anon cannot list the media table', r.rows?.length === 0, r);
 r = await as('service_role', null, `insert into public.enquiries (kind, name, email, message, submission_token, fingerprint) values ('contact','Jan','j@x.nl','Bericht met voldoende tekst', gen_random_uuid(), 'f3')`);
 check('service role (server) can store enquiries', !r.error, r);
 
+// Availability calendar
+r = await as('authenticated', ADMIN, `insert into public.availability (day, status, note) values ('2026-11-02', 'available', ''), ('2026-11-03', 'limited', 'Alleen avond')`);
+check('admin sets availability', !r.error, r);
+r = await as('anon', null, 'select day, status from public.availability order by day');
+check('anon reads availability', r.rows?.length === 2, r);
+r = await as('anon', null, `insert into public.availability (day, status) values ('2026-11-04', 'available')`);
+check('anon cannot write availability', Boolean(r.error), r);
+r = await as('authenticated', USER, `update public.availability set status = 'unavailable'`);
+check('non-admin user cannot change availability', r.affected === 0 || Boolean(r.error), r);
+r = await as('authenticated', ADMIN, `insert into public.availability (day, status) values ('2026-11-05', 'maybe')`);
+check('invalid availability status rejected', Boolean(r.error), r);
+r = await as('authenticated', ADMIN, `update public.enquiries set preferred_date = '2030-01-01' returning preferred_date`);
+check('admin cannot alter a submitted preferred date', r.rows?.length > 0 && r.rows.every((row) => row.preferred_date === null), r);
+
 console.log(failures ? `\n${failures} check(s) failed` : '\nAll RLS checks passed');
-process.exit(failures ? 1 : 0);
+await db.close();
+process.exitCode = failures ? 1 : 0;

@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import { Resend } from 'resend';
 import { getPublishedSite } from '@/lib/content/get';
 import { env } from '@/lib/env';
+import { formatDay, preferredDateIssue, todayInAmsterdam } from '@/lib/availability';
 import { createServiceClient } from '@/lib/supabase/service';
 import { confirmationEmail, notificationEmail } from './email';
 import { contactSchema, fieldErrors, MIN_FILL_MS, OTHER_SERVICE, quoteSchema } from './schema';
@@ -58,6 +59,9 @@ export async function handleEnquiry(kind: Kind, request: Request): Promise<Respo
   const data = parsed.data;
   const service = 'service' in data ? String(data.service) : '';
   const location = 'location' in data ? String(data.location) : '';
+  const preferredDate = 'preferredDate' in data ? String(data.preferredDate ?? '') : '';
+  const dateIssue = preferredDateIssue(preferredDate, todayInAmsterdam());
+  if (dateIssue) return json(422, { message: 'Controleer de gemarkeerde velden.', errors: { preferredDate: dateIssue } });
 
   const site = await getPublishedSite();
   if (kind === 'quote') {
@@ -112,6 +116,7 @@ export async function handleEnquiry(kind: Kind, request: Request): Promise<Respo
     phone: data.phone ?? '',
     service,
     location,
+    preferred_date: preferredDate || null,
     message: data.message,
     submission_token: data.token,
     fingerprint,
@@ -134,7 +139,7 @@ export async function handleEnquiry(kind: Kind, request: Request): Promise<Respo
 
 async function sendEmails(
   kind: Kind,
-  record: { company: string; name: string; email: string; phone: string; service: string; location: string; message: string },
+  record: { company: string; name: string; email: string; phone: string; service: string; location: string; preferred_date: string | null; message: string },
   id: string,
   settings: { companyName: string; notificationEmail: string; email: string },
 ): Promise<'sent' | 'failed' | 'not_configured'> {
@@ -150,6 +155,7 @@ async function sendEmails(
     { label: 'Telefoonnummer', value: record.phone },
     { label: 'Gewenste dienst', value: record.service },
     { label: 'Locatie', value: record.location },
+    { label: 'Gewenste startdatum', value: record.preferred_date ? formatDay(record.preferred_date) : '' },
     { label: kind === 'quote' ? 'Omschrijving' : 'Bericht', value: record.message },
   ];
   const resend = new Resend(apiKey);
