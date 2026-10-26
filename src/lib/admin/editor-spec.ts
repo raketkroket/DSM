@@ -235,7 +235,7 @@ export const EDITOR_SPEC: Record<SectionKey, PanelSpec[]> = {
     {
       key: null,
       label: 'Meldingen',
-      fields: [{ type: 'email', key: 'notificationEmail', label: 'E-mailadres voor nieuwe aanvragen', help: 'Nieuwe offerteaanvragen en berichten worden naar dit adres gestuurd.' }],
+      fields: [{ type: 'email', key: 'notificationEmail', label: 'E-mailadres voor nieuwe aanvragen', help: 'Nieuwe offerteaanvragen en berichten worden naar dit adres gemaild. Ze worden nergens anders bewaard, dus kies een adres dat u dagelijks leest.' }],
     },
     { key: null, label: 'Sociale media', fields: [{ type: 'url', key: 'linkedin', label: 'LinkedIn' }, { type: 'url', key: 'instagram', label: 'Instagram' }, { type: 'url', key: 'facebook', label: 'Facebook' }] },
     { key: null, label: 'Logo en footer', fields: [img('logo', 'Logo', 'Laat leeg om het standaard woordmerk te gebruiken. Gebruik bij voorkeur een liggend logo.'), ta('footerText', 'Footertekst', 2)] },

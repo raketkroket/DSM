@@ -1,9 +1,8 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { Suspense } from 'react';
 import { KeyRound } from 'lucide-react';
 import { SectionEditorPage } from '@/components/admin/SectionEditorPage';
-import { AdminSkeleton, adminButton } from '@/components/admin/ui';
+import { AdminSkeleton } from '@/components/admin/ui';
 
 export const metadata: Metadata = { title: 'Instellingen' };
 
@@ -17,12 +16,11 @@ export default function SettingsPage() {
         <h2 id="account" className="text-[1.1rem] font-medium text-navy">
           Account en beveiliging
         </h2>
-        <p className="mt-1 max-w-[40rem] text-[0.9rem] text-muted">
-          Wijzig uw wachtwoord via een herstellink per e-mail. Beheerders worden toegevoegd in Supabase (zie README).
+        <p className="mt-1 flex max-w-[44rem] gap-3 text-[0.9rem] leading-relaxed text-muted">
+          <KeyRound className="mt-1 h-4 w-4 shrink-0 text-steel" aria-hidden />
+          Uw wachtwoord wordt niet op de website zelf bewaard, alleen een versleutelde versie bij de hosting. Wilt u een nieuw wachtwoord, of denkt u dat iemand anders
+          het kent? Vraag uw websitebouwer om het te wijzigen; alle bestaande sessies worden dan direct beëindigd.
         </p>
-        <Link href="/admin/wachtwoord-vergeten" className={adminButton('secondary', 'mt-4')}>
-          <KeyRound className="h-4 w-4" aria-hidden /> Wachtwoord wijzigen
-        </Link>
       </section>
     </div>
   );

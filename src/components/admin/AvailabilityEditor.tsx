@@ -198,7 +198,7 @@ export function AvailabilityEditor({ initial, serverToday }: { initial: Availabi
                 Wissen (op aanvraag)
               </button>
             </div>
-            <p className="text-[0.8rem] leading-relaxed text-muted">Wijzigingen staan direct op de website. Dagen zonder status tonen “Op aanvraag”.</p>
+            <p className="text-[0.8rem] leading-relaxed text-muted">Wijzigingen worden direct bewaard en staan binnen enkele minuten op de website. Dagen zonder status tonen “Op aanvraag”.</p>
           </div>
         </Card>
 

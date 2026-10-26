@@ -5,19 +5,15 @@ const MAX_TEXT = 6000;
 
 /** Hosts that next/image is configured for; anything else would break rendering. */
 export function allowedImageHosts() {
-  const hosts = ['images.unsplash.com'];
-  try {
-    if (process.env.NEXT_PUBLIC_SUPABASE_URL) hosts.push(new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname);
-  } catch {
-    // ignore malformed env
-  }
-  return hosts;
+  return ['images.unsplash.com'];
 }
 
 export function isAllowedImageSrc(src: string) {
   if (src === '') return true;
   // Bundled photography (temporary stock and brand assets) served from /public/images.
   if (/^\/images\/[a-z0-9/_-]+\.(jpe?g|png|webp|avif)$/i.test(src)) return true;
+  // Photos uploaded in the admin (public/uploads/, see src/lib/admin/actions/media.ts).
+  if (/^\/uploads\/[a-z0-9-]+\.webp$/.test(src)) return true;
   try {
     const url = new URL(src);
     return url.protocol === 'https:' && allowedImageHosts().includes(url.hostname);

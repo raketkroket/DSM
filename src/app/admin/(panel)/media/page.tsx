@@ -2,16 +2,15 @@ import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import { MediaLibrary } from '@/components/admin/MediaLibrary';
 import { AdminSkeleton, PageHeader } from '@/components/admin/ui';
-import { requireAdmin } from '@/lib/admin/auth';
-import type { MediaItem } from '@/lib/admin/actions/media';
+import { requireEditor } from '@/lib/admin/auth';
+import { readLibrary } from '@/lib/admin/media';
 
 export const metadata: Metadata = { title: 'Mediabibliotheek' };
 
 async function Library() {
-  const { supabase } = await requireAdmin();
-  const { data, error } = await supabase.from('media').select('*').order('sort_order', { ascending: true }).order('created_at', { ascending: false });
-  if (error) return <p className="text-danger">Mediabibliotheek laden mislukt: {error.message}</p>;
-  return <MediaLibrary initial={(data ?? []) as MediaItem[]} />;
+  const { storage } = await requireEditor();
+  const { items } = await readLibrary(storage);
+  return <MediaLibrary initial={items} />;
 }
 
 export default function MediaPage() {

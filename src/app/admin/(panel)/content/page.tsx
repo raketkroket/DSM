@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { PublishAllButton } from '@/components/admin/PublishAllButton';
 import { AdminSkeleton, Badge, PageHeader, formatDate } from '@/components/admin/ui';
-import { requireAdmin } from '@/lib/admin/auth';
+import { requireEditor } from '@/lib/admin/auth';
 import { getSectionStates } from '@/lib/admin/content';
 import { SECTION_META } from '@/lib/admin/editor-spec';
 import { SECTION_KEYS } from '@/lib/content/types';
@@ -12,8 +12,8 @@ import { SECTION_KEYS } from '@/lib/content/types';
 export const metadata: Metadata = { title: 'Content' };
 
 async function Overview() {
-  const { supabase } = await requireAdmin();
-  const states = await getSectionStates(supabase);
+  const { storage } = await requireEditor();
+  const states = await getSectionStates(storage);
   const pending = SECTION_KEYS.filter((key) => states[key].pending).length;
   return (
     <div className="space-y-8">

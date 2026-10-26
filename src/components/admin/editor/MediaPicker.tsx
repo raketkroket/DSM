@@ -3,7 +3,8 @@
 import Image from 'next/image';
 import { Check, Loader2, Search, Upload, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, useTransition } from 'react';
-import { uploadMedia, type MediaItem } from '@/lib/admin/actions/media';
+import type { MediaItem } from '@/lib/admin/actions/media';
+import { uploadPhotos } from '@/lib/admin/upload-client';
 import { useToast } from '../Toaster';
 import { adminButton } from '../ui';
 
@@ -52,12 +53,11 @@ export function MediaPicker({
 
   const upload = (files: FileList | null) => {
     if (!files?.length) return;
-    const data = new FormData();
-    [...files].forEach((file) => data.append('files', file));
+    const list = [...files];
     start(async () => {
-      const result = await uploadMedia(data);
+      const result = await uploadPhotos(list);
       notify(result.ok ? 'success' : 'error', result.message, result.problems);
-      if (result.ok && 'items' in result && result.items) onMediaAdded(result.items);
+      if (result.items.length) onMediaAdded(result.items);
     });
   };
 

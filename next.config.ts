@@ -1,13 +1,5 @@
 import type { NextConfig } from 'next';
 
-const supabaseHost = (() => {
-  try {
-    return process.env.NEXT_PUBLIC_SUPABASE_URL ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname : null;
-  } catch {
-    return null;
-  }
-})();
-
 const securityHeaders = [
   { key: 'X-Content-Type-Options', value: 'nosniff' },
   { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
@@ -35,11 +27,13 @@ const nextConfig: NextConfig = {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },
-      ...(supabaseHost ? [{ protocol: 'https' as const, hostname: supabaseHost, pathname: '/storage/v1/object/public/**' }] : []),
     ],
   },
+  // Published content is read from content/live/ at runtime too (cache refreshes), so ship it with every function.
+  outputFileTracingIncludes: { '/**': ['./content/live/**/*'] },
   experimental: {
-    serverActions: { bodySizeLimit: '16mb' },
+    // Photos are shrunk in the browser first; Vercel accepts request bodies up to 4.5 MB.
+    serverActions: { bodySizeLimit: '4mb' },
   },
   async headers() {
     return [

@@ -40,9 +40,10 @@ export default async function PrivacyPage() {
           <div>
             <h2 className="text-[1.3rem] font-medium tracking-[-0.02em] text-navy">Opslag en beveiliging</h2>
             <p className="mt-3">
-              Aanvragen worden opgeslagen in een beveiligde database die alleen toegankelijk is voor geautoriseerde beheerders. Ter
-              bescherming tegen misbruik wordt bij uw aanvraag een onomkeerbaar versleutelde (gehashte) afgeleide van uw IP-adres
-              opgeslagen, zodat herhaalde verzendingen kunnen worden beperkt. Het IP-adres zelf wordt niet opgeslagen.
+              Uw aanvraag wordt niet op de website bewaard, maar via een beveiligde verbinding per e-mail naar ons verstuurd (met de
+              e-maildienst Resend). Ter bescherming tegen misbruik wordt een onomkeerbaar versleutelde (gehashte) afgeleide van uw
+              IP-adres maximaal een dag tijdelijk bijgehouden, zodat herhaalde verzendingen kunnen worden beperkt. Het IP-adres zelf
+              wordt niet opgeslagen.
             </p>
           </div>
           <div>

@@ -11,9 +11,7 @@ async function Account() {
   const admin = await getAdmin();
   return (
     <div className="px-2">
-      <p className="truncate text-[0.82rem] text-muted" title={admin?.user.email}>
-        {admin?.user.email ?? '—'}
-      </p>
+      <p className="truncate text-[0.82rem] text-muted">{admin?.username ?? '—'}</p>
       <form action={signOut} className="mt-2">
         <button type="submit" className="flex items-center gap-2 text-[0.85rem] text-navy hover:underline">
           <LogOut className="h-4 w-4" aria-hidden /> Uitloggen

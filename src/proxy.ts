@@ -1,44 +1,33 @@
-import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import { adminConfig, cookieName, cookieOptions, decodeSession, encodeSession } from '@/lib/server/session';
 
-const PUBLIC_ADMIN_PATHS = ['/admin/login', '/admin/wachtwoord-vergeten', '/admin/auth/bevestigen'];
+const PUBLIC_ADMIN_PATHS = ['/admin/login'];
+const REFRESH_AFTER = 5 * 60; // seconds; keeps the idle timeout rolling while the admin works
 
 /**
- * Keeps the Supabase session cookie fresh for the admin area and sends visitors without a
- * session to the login page. This is only an optimistic check: every admin page, server
- * action and query re-verifies the user and admin role on the server (and RLS in Postgres).
+ * Sends visitors without a valid session to the login page and keeps an active session alive.
+ * This is only the first check: every admin page and server action verifies the cookie again.
  */
-export async function proxy(request: NextRequest) {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !key) return NextResponse.next();
-
-  let response = NextResponse.next({ request });
-  const supabase = createServerClient(url, key, {
-    cookies: {
-      getAll: () => request.cookies.getAll(),
-      setAll: (cookiesToSet, headers) => {
-        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
-        response = NextResponse.next({ request });
-        cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
-        Object.entries(headers ?? {}).forEach(([header, value]) => response.headers.set(header, value));
-      },
-    },
-  });
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+export function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const isPublic = PUBLIC_ADMIN_PATHS.some((publicPath) => path.startsWith(publicPath));
+  const config = adminConfig();
+  const session = decodeSession(config, request.cookies.get(cookieName())?.value);
 
-  if (!user && !isPublic) {
+  if (!session) {
+    if (isPublic) return NextResponse.next();
     const login = request.nextUrl.clone();
     login.pathname = '/admin/login';
     login.search = path === '/admin' ? '' : `?volgende=${encodeURIComponent(path)}`;
     return NextResponse.redirect(login);
   }
+
+  const now = Math.floor(Date.now() / 1000);
+  if (now - session.seen < REFRESH_AFTER) return NextResponse.next();
+  const value = encodeSession(config, { ...session, seen: now });
+  request.cookies.set(cookieName(), value);
+  const response = NextResponse.next({ request });
+  response.cookies.set(cookieName(), value, cookieOptions());
   return response;
 }
 

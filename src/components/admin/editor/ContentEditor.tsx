@@ -64,7 +64,7 @@ export function ContentEditor({ section, panels, initial, published, pending, pu
   );
 
   const publish = () => {
-    if (!window.confirm('Wijzigingen publiceren? Ze worden direct zichtbaar op de website.')) return;
+    if (!window.confirm('Wijzigingen publiceren? Ze zijn binnen enkele minuten zichtbaar op de website.')) return;
     setAction('publish');
     start(async () => {
       const result = await publishSection(section, value);

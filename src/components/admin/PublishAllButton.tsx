@@ -17,7 +17,7 @@ export function PublishAllButton({ count }: { count: number }) {
       disabled={pending}
       className={adminButton('primary')}
       onClick={() => {
-        if (!window.confirm(`Alle ${count} concepten publiceren? De wijzigingen worden direct zichtbaar op de website.`)) return;
+        if (!window.confirm(`Alle ${count} concepten publiceren? De wijzigingen zijn binnen enkele minuten zichtbaar op de website.`)) return;
         start(async () => {
           const result = await publishAll();
           notify(result.ok ? 'success' : 'error', result.message);

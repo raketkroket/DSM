@@ -2,59 +2,24 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { toDay } from '@/lib/availability';
 import { mergeSite } from '@/lib/content/merge';
 import { contactSchema, quoteSchema } from '@/lib/enquiry/schema';
+import { resetMemoryStore } from '@/lib/server/kv';
 
-/* ── Fake Supabase: records operations and answers from simple state ── */
-type Row = Record<string, unknown>;
-const db: { rows: Row[]; inserts: Row[]; updates: Row[] } = { rows: [], inserts: [], updates: [] };
+/* ── Fake Resend: records every e-mail; the owner notification can be made to fail ── */
+type Mail = { from: string; to: string; replyTo?: string; subject: string; html: string };
+const mail: { sent: Mail[]; failNotification: boolean; failConfirmation: boolean } = { sent: [], failNotification: false, failConfirmation: false };
 
-function query(table: string) {
-  const filters: [string, string, unknown][] = [];
-  let mode: 'select' | 'count' = 'select';
-  let pendingInsert: Row | null = null;
-  let pendingUpdate: Row | null = null;
-  const run = () => {
-    if (pendingInsert) {
-      if (db.rows.some((row) => row.submission_token === pendingInsert!.submission_token)) {
-        return { data: null, error: { code: '23505', message: 'duplicate' } };
-      }
-      const row = { id: '00000000-0000-4000-8000-000000000001', created_at: new Date().toISOString(), ...pendingInsert };
-      db.rows.push(row);
-      db.inserts.push(row);
-      return { data: row, error: null };
-    }
-    if (pendingUpdate) {
-      db.updates.push(pendingUpdate);
-      return { data: null, error: null };
-    }
-    const matches = db.rows.filter((row) =>
-      filters.every(([op, column, value]) => (op === 'eq' ? row[column] === value : String(row[column]) >= String(value))),
-    );
-    return mode === 'count' ? { count: matches.length, data: null, error: null } : { data: matches, error: null };
-  };
-  const builder = {
-    select: (_columns?: string, options?: { head?: boolean }) => {
-      if (options?.head) mode = 'count';
-      return builder;
-    },
-    eq: (column: string, value: unknown) => (filters.push(['eq', column, value]), builder),
-    gte: (column: string, value: unknown) => (filters.push(['gte', column, value]), builder),
-    limit: () => builder,
-    insert: (row: Row) => ((pendingInsert = row), builder),
-    update: (row: Row) => ((pendingUpdate = row), builder),
-    single: async () => run(),
-    maybeSingle: async () => {
-      const result = run();
-      const data = Array.isArray(result.data) ? (result.data[0] ?? null) : result.data;
-      return { ...result, data };
-    },
-    then: (resolve: (value: unknown) => void) => resolve(run()),
-  };
-  void table;
-  return builder;
-}
-
-let configured = true;
-vi.mock('@/lib/supabase/service', () => ({ createServiceClient: () => (configured ? { from: query } : null) }));
+vi.mock('resend', () => ({
+  Resend: class {
+    emails = {
+      send: async (message: Mail) => {
+        const toOwner = message.to === 'eigenaar@example.nl';
+        if ((toOwner && mail.failNotification) || (!toOwner && mail.failConfirmation)) return { data: null, error: { message: 'refused' } };
+        mail.sent.push(message);
+        return { data: { id: 'x' }, error: null };
+      },
+    };
+  },
+}));
 vi.mock('@/lib/content/get', () => ({ getPublishedSite: async () => mergeSite({}), CONTENT_TAG: 'site-content' }));
 
 const { handleEnquiry } = await import('@/lib/enquiry/handle');
@@ -80,12 +45,16 @@ const post = (body: unknown, ip = '203.0.113.7') =>
     body: JSON.stringify(body),
   });
 
+const toOwner = () => mail.sent.filter((message) => message.to === 'eigenaar@example.nl');
+
 beforeEach(() => {
-  db.rows = [];
-  db.inserts = [];
-  db.updates = [];
-  configured = true;
-  delete process.env.RESEND_API_KEY;
+  mail.sent = [];
+  mail.failNotification = false;
+  mail.failConfirmation = false;
+  resetMemoryStore();
+  process.env.RESEND_API_KEY = 're_test';
+  process.env.ENQUIRY_NOTIFICATION_EMAIL = 'eigenaar@example.nl';
+  delete process.env.RESEND_FROM_EMAIL;
 });
 
 describe('schemas', () => {
@@ -103,25 +72,53 @@ describe('schemas', () => {
 });
 
 describe('handleEnquiry', () => {
-  it('stores a valid quote and normalises the e-mail address', async () => {
+  it('e-mails a valid quote to the owner, with the customer as reply-to, and confirms to the customer', async () => {
     const response = await handleEnquiry('quote', post(validQuote()));
     expect(response.status).toBe(201);
-    expect(db.inserts).toHaveLength(1);
-    expect(db.inserts[0]).toMatchObject({ kind: 'quote', email: 'test@example.nl', service: 'Objectbewaking', location: 'Amsterdam' });
-    expect(String(db.inserts[0].ip_hash)).toMatch(/^[0-9a-f]{64}$/);
-    expect(db.updates.at(-1)).toEqual({ email_status: 'not_configured' });
+    const [notification] = toOwner();
+    expect(notification.replyTo).toBe('test@example.nl');
+    expect(notification.subject).toContain('Voorbeeld B.V.');
+    expect(notification.html).toContain('Objectbewaking');
+    expect(notification.html).toContain('nergens anders bewaard');
+    expect(notification.from).toContain('onboarding@resend.dev');
+    expect(mail.sent.some((message) => message.to === 'test@example.nl')).toBe(true);
   });
 
-  it('silently drops honeypot submissions', async () => {
-    const response = await handleEnquiry('quote', post({ ...validQuote(), website: 'https://spam.example' }));
-    expect(response.status).toBe(201);
-    expect(db.inserts).toHaveLength(0);
+  it('escapes what visitors type before putting it in the e-mail', async () => {
+    await handleEnquiry('quote', post({ ...validQuote(), message: '<script>alert(1)</script> met voldoende tekst' }));
+    expect(toOwner()[0].html).not.toContain('<script>');
   });
 
-  it('silently drops submissions that are filled in impossibly fast', async () => {
-    const response = await handleEnquiry('quote', post({ ...validQuote(), startedAt: Date.now() }));
+  it('tells the visitor when the e-mail could not be sent, and allows a retry', async () => {
+    mail.failNotification = true;
+    const body = validQuote();
+    const failed = await handleEnquiry('quote', post(body));
+    expect(failed.status).toBe(502);
+    mail.failNotification = false;
+    const retry = await handleEnquiry('quote', post(body));
+    expect(retry.status).toBe(201);
+    expect(toOwner()).toHaveLength(1);
+  });
+
+  it('still succeeds when only the confirmation to the customer is refused', async () => {
+    mail.failConfirmation = true;
+    const response = await handleEnquiry('quote', post(validQuote()));
     expect(response.status).toBe(201);
-    expect(db.inserts).toHaveLength(0);
+    expect(toOwner()).toHaveLength(1);
+  });
+
+  it('explains when the form is not connected yet instead of claiming success', async () => {
+    delete process.env.RESEND_API_KEY;
+    expect((await handleEnquiry('quote', post(validQuote()))).status).toBe(503);
+    process.env.RESEND_API_KEY = 're_test';
+    delete process.env.ENQUIRY_NOTIFICATION_EMAIL;
+    expect((await handleEnquiry('quote', post(validQuote()))).status).toBe(503);
+  });
+
+  it('silently drops honeypot and impossibly fast submissions', async () => {
+    expect((await handleEnquiry('quote', post({ ...validQuote(), website: 'https://spam.example' }))).status).toBe(201);
+    expect((await handleEnquiry('quote', post({ ...validQuote(), startedAt: Date.now() }))).status).toBe(201);
+    expect(mail.sent).toHaveLength(0);
   });
 
   it('returns field errors for invalid input', async () => {
@@ -131,45 +128,38 @@ describe('handleEnquiry', () => {
     expect(Object.keys(body.errors)).toEqual(expect.arrayContaining(['email', 'location']));
   });
 
-  it('stores an optional preferred start date and rejects past dates', async () => {
-    const future = await handleEnquiry('quote', post({ ...validQuote(), preferredDate: '2099-01-05' }));
-    expect(future.status).toBe(422); // more than two years ahead
+  it('rejects services that are not offered', async () => {
+    const response = await handleEnquiry('quote', post({ ...validQuote(), service: 'Persoonsbeveiliging' }));
+    expect(response.status).toBe(422);
+    expect(mail.sent).toHaveLength(0);
+  });
+
+  it('includes an optional preferred start date and rejects past or far-off dates', async () => {
+    expect((await handleEnquiry('quote', post({ ...validQuote(), preferredDate: '2099-01-05' }))).status).toBe(422);
     const past = await handleEnquiry('quote', post({ ...validQuote(), preferredDate: '2020-01-05' }));
     expect(past.status).toBe(422);
     expect((await past.json()).errors.preferredDate).toBeTruthy();
     const soon = new Date();
     soon.setDate(soon.getDate() + 10);
-    const day = toDay(soon);
-    const ok = await handleEnquiry('quote', post({ ...validQuote(), preferredDate: day }));
+    const ok = await handleEnquiry('quote', post({ ...validQuote(), preferredDate: toDay(soon) }));
     expect(ok.status).toBe(201);
-    expect(db.inserts.at(-1)).toMatchObject({ preferred_date: day });
+    expect(toOwner()[0].html).toContain('Gewenste startdatum');
   });
 
-  it('stores no start date when none was chosen', async () => {
-    await handleEnquiry('quote', post(validQuote()));
-    expect(db.inserts.at(-1)).toMatchObject({ preferred_date: null });
-  });
-
-  it('rejects services that are not offered', async () => {
-    const response = await handleEnquiry('quote', post({ ...validQuote(), service: 'Persoonsbeveiliging' }));
-    expect(response.status).toBe(422);
-    expect(db.inserts).toHaveLength(0);
-  });
-
-  it('answers a retried submission without storing it twice', async () => {
+  it('answers a retried submission without sending it twice', async () => {
     const body = validQuote();
     await handleEnquiry('quote', post(body));
     const retry = await handleEnquiry('quote', post(body));
     expect(retry.status).toBe(201);
     expect((await retry.json()).duplicate).toBe(true);
-    expect(db.inserts).toHaveLength(1);
+    expect(toOwner()).toHaveLength(1);
   });
 
   it('treats the same message from the same address as a duplicate', async () => {
     await handleEnquiry('quote', post(validQuote()));
     const second = await handleEnquiry('quote', post(validQuote()));
     expect((await second.json()).duplicate).toBe(true);
-    expect(db.inserts).toHaveLength(1);
+    expect(toOwner()).toHaveLength(1);
   });
 
   it('rate limits repeated submissions from one address', async () => {
@@ -179,12 +169,8 @@ describe('handleEnquiry', () => {
     }
     const blocked = await handleEnquiry('quote', post({ ...validQuote(), message: 'Nog een aanvraag met voldoende tekst.' }));
     expect(blocked.status).toBe(429);
-  });
-
-  it('explains when the form is not connected yet instead of claiming success', async () => {
-    configured = false;
-    const response = await handleEnquiry('quote', post(validQuote()));
-    expect(response.status).toBe(503);
+    const otherAddress = await handleEnquiry('quote', post({ ...validQuote(), message: 'Een aanvraag van iemand anders.' }, '198.51.100.4'));
+    expect(otherAddress.status).toBe(201);
   });
 
   it('rejects oversized and malformed bodies', async () => {

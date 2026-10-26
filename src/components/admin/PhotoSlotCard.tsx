@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import { Check, ImagePlus, Library, Loader2 } from 'lucide-react';
 import { useRef, useState, useTransition } from 'react';
 import { setSlotImage } from '@/lib/admin/actions/content';
-import { uploadMedia, type MediaItem } from '@/lib/admin/actions/media';
+import type { MediaItem } from '@/lib/admin/actions/media';
+import { uploadPhotos } from '@/lib/admin/upload-client';
 import type { SectionKey } from '@/lib/content/types';
 import { MediaPicker } from './editor/MediaPicker';
 import { useToast } from './Toaster';
@@ -43,11 +44,9 @@ export function PhotoSlotCard({ section, path, label, src, alt, temporary, media
 
   const upload = (file: File | undefined) => {
     if (!file) return;
-    const data = new FormData();
-    data.append('files', file);
     start(async () => {
-      const result = await uploadMedia(data);
-      if (!result.ok || !('items' in result) || !result.items?.[0]) {
+      const result = await uploadPhotos([file]);
+      if (!result.items[0]) {
         notify('error', result.message, result.problems);
         return;
       }

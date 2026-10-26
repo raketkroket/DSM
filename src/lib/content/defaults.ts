@@ -5,8 +5,8 @@ import type { SiteContent } from './types';
 const emptyImage = { src: '', alt: '' };
 
 /**
- * Default content, taken from the client's approved document. Supabase stores edited
- * versions of each section; anything missing there falls back to these values.
+ * Default content, taken from the client's approved document. The admin stores edited
+ * versions of each section in content/live/; anything missing there falls back to these values.
  * Contact details are intentionally empty: the document does not supply them.
  */
 export const defaultContent: SiteContent = {

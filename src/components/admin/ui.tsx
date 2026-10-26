@@ -82,9 +82,6 @@ export function AdminSkeleton() {
   );
 }
 
-export const STATUS_LABEL = { new: 'Nieuw', contacted: 'Gecontacteerd', completed: 'Afgerond' } as const;
-export const STATUS_TONE = { new: 'navy', contacted: 'warning', completed: 'success' } as const;
-export const KIND_LABEL = { quote: 'Offerte', contact: 'Bericht' } as const;
 
 export function formatDate(value: string | null | undefined, withTime = true) {
   if (!value) return '—';

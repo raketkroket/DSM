@@ -1,46 +1,66 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Suspense } from 'react';
-import { ArrowRight, CheckCircle2, Circle, FileText, Image as ImageIcon, Inbox, Mail, Settings } from 'lucide-react';
-import { AdminSkeleton, Badge, Card, CardHeader, EmptyState, KIND_LABEL, PageHeader, STATUS_LABEL, STATUS_TONE, formatDate } from '@/components/admin/ui';
+import { AlertTriangle, CalendarDays, CheckCircle2, Circle, FileText, Image as ImageIcon, Mail, Settings } from 'lucide-react';
+import { AdminSkeleton, Badge, Card, CardHeader, PageHeader, formatDate } from '@/components/admin/ui';
 import { PublishAllButton } from '@/components/admin/PublishAllButton';
 import { requireAdmin } from '@/lib/admin/auth';
-import { getSectionStates } from '@/lib/admin/content';
+import { getSectionStates, type SectionStates } from '@/lib/admin/content';
 import { SECTION_META } from '@/lib/admin/editor-spec';
 import { SECTION_KEYS } from '@/lib/content/types';
 import { STOCK_PREFIX } from '@/lib/content/photos';
+import { isRedisConfigured } from '@/lib/server/kv';
 
 export const metadata: Metadata = { title: 'Dashboard' };
 
-type EnquiryRow = { id: string; kind: 'quote' | 'contact'; status: 'new' | 'contacted' | 'completed'; name: string; company: string; service: string; created_at: string };
+type Check = { label: string; ok: boolean; detail: string };
 
-async function Dashboard({ searchParams }: { searchParams: PageProps<'/admin'>['searchParams'] }) {
-  const params = await searchParams;
-  const { supabase } = await requireAdmin();
-  const [states, recent, newQuotes, newMessages, open] = await Promise.all([
-    getSectionStates(supabase),
-    supabase.from('enquiries').select('id, kind, status, name, company, service, created_at').order('created_at', { ascending: false }).limit(6),
-    supabase.from('enquiries').select('id', { count: 'exact', head: true }).eq('kind', 'quote').eq('status', 'new'),
-    supabase.from('enquiries').select('id', { count: 'exact', head: true }).eq('kind', 'contact').eq('status', 'new'),
-    supabase.from('enquiries').select('id', { count: 'exact', head: true }).neq('status', 'completed'),
-  ]);
-  const enquiries = (recent.data ?? []) as EnquiryRow[];
-  const pending = SECTION_KEYS.filter((key) => states[key].pending);
-  const settings = states.settings.published;
+async function Dashboard() {
+  const { storage } = await requireAdmin();
+  let states: SectionStates | null = null;
+  let storageCheck = { read: 'ontbreekt', write: 'ontbreekt' };
+  if (storage) {
+    [states, storageCheck] = await Promise.all([getSectionStates(storage).catch(() => null), storage.check()]);
+  }
+  const pending = states ? SECTION_KEYS.filter((key) => states[key].pending) : [];
+  const settings = states?.settings.published;
+  const recipient = settings?.notificationEmail || process.env.ENQUIRY_NOTIFICATION_EMAIL || '';
+  const storageOk = storageCheck.read === 'ok' && storageCheck.write === 'ok';
 
-  const setup = [
-    { done: Boolean(settings.email || settings.phone), label: 'Contactgegevens ingevuld', href: '/admin/instellingen' },
-    { done: Boolean(settings.notificationEmail || process.env.ENQUIRY_NOTIFICATION_EMAIL), label: 'E-mailadres voor meldingen ingesteld', href: '/admin/instellingen' },
-    { done: Boolean(process.env.RESEND_API_KEY && process.env.RESEND_FROM_EMAIL), label: 'E-mailverzending (Resend) gekoppeld', href: null },
-    { done: Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY), label: 'Formulieren gekoppeld aan de database', href: null },
-    { done: !JSON.stringify(SECTION_KEYS.map((key) => states[key].published)).includes(STOCK_PREFIX), label: 'Tijdelijke stockfoto’s vervangen', href: '/admin/fotos' },
+  const checks: Check[] = [
+    {
+      label: 'Opslag',
+      ok: storageOk,
+      detail: !storage
+        ? 'Niet gekoppeld: stel GITHUB_CONTENT_TOKEN in. Wijzigingen kunnen nu niet worden bewaard.'
+        : storage.kind === 'local'
+          ? 'Lokaal (ontwikkelomgeving): wijzigingen worden in deze map bewaard.'
+          : storageOk
+            ? 'GitHub: elke wijziging wordt bewaard; na publiceren is de website binnen één à twee minuten bijgewerkt.'
+            : `GitHub geeft een fout (lezen: ${storageCheck.read}, schrijven: ${storageCheck.write}). Controleer het token.`,
+    },
+    {
+      label: 'E-mail voor aanvragen',
+      ok: Boolean(process.env.RESEND_API_KEY && recipient),
+      detail: !process.env.RESEND_API_KEY
+        ? 'Niet gekoppeld: stel RESEND_API_KEY in. Bezoekers krijgen nu de melding dat het formulier nog niet werkt.'
+        : recipient
+          ? `Aanvragen worden gemaild naar ${recipient}.`
+          : 'Vul bij Instellingen → Meldingen het e-mailadres voor nieuwe aanvragen in.',
+    },
+    {
+      label: 'Beveiliging tegen misbruik',
+      ok: true,
+      detail: isRedisConfigured()
+        ? 'Upstash Redis: inlogpogingen en formulieren worden over alle servers heen beperkt.'
+        : 'Basisbeveiliging per server. Aanbevolen voor livegang: koppel gratis Upstash Redis.',
+    },
   ];
 
-  const stats = [
-    { label: 'Nieuwe offerteaanvragen', value: newQuotes.count ?? 0, href: '/admin/aanvragen?status=new&soort=quote', icon: Inbox },
-    { label: 'Nieuwe berichten', value: newMessages.count ?? 0, href: '/admin/aanvragen?status=new&soort=contact', icon: Mail },
-    { label: 'Openstaand in behandeling', value: open.count ?? 0, href: '/admin/aanvragen?status=open', icon: CheckCircle2 },
-    { label: 'Onderdelen met concept', value: pending.length, href: '/admin/content', icon: FileText },
+  const setup = [
+    { done: Boolean(settings?.email || settings?.phone), label: 'Contactgegevens ingevuld', href: '/admin/instellingen' },
+    { done: Boolean(recipient), label: 'E-mailadres voor aanvragen ingesteld', href: '/admin/instellingen' },
+    { done: Boolean(states) && !JSON.stringify(SECTION_KEYS.map((key) => states![key].published)).includes(STOCK_PREFIX), label: 'Tijdelijke stockfoto’s vervangen', href: '/admin/fotos' },
   ];
 
   return (
@@ -48,64 +68,33 @@ async function Dashboard({ searchParams }: { searchParams: PageProps<'/admin'>['
       <PageHeader
         eyebrow="Overzicht"
         title="Dashboard"
-        description="Nieuwe aanvragen, wijzigingen die nog gepubliceerd moeten worden en snelkoppelingen."
+        description="De stand van de website, wijzigingen die nog gepubliceerd moeten worden en snelkoppelingen."
         actions={pending.length > 0 ? <PublishAllButton count={pending.length} /> : undefined}
       />
-      {params.wachtwoord === 'gewijzigd' && (
-        <p role="status" className="rounded-xl border border-success/25 bg-success/5 px-4 py-3 text-[0.9rem] text-success">
-          Uw wachtwoord is gewijzigd.
+
+      {!storage && (
+        <p role="alert" className="flex gap-3 rounded-2xl border border-warning/30 bg-warning/5 p-4 text-[0.9rem] text-ink">
+          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-warning" aria-hidden />
+          De opslag is nog niet gekoppeld, dus wijzigingen kunnen niet worden bewaard. Neem contact op met uw websitebouwer.
         </p>
       )}
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {stats.map(({ label, value, href, icon: Icon }) => (
-          <Link key={label} href={href} className="group rounded-2xl border border-line bg-white p-5 transition-colors hover:border-navy">
-            <div className="flex items-center justify-between">
-              <Icon className="h-5 w-5 text-steel" aria-hidden />
-              <ArrowRight className="h-4 w-4 text-muted transition-transform group-hover:translate-x-1" aria-hidden />
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        {checks.map((check) => (
+          <div key={check.label} className="rounded-2xl border border-line bg-white p-5">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-[0.95rem] font-medium text-navy">{check.label}</p>
+              <Badge tone={check.ok ? 'success' : 'warning'}>{check.ok ? 'In orde' : 'Actie nodig'}</Badge>
             </div>
-            <p className="mt-6 text-[2.2rem] leading-none font-medium tracking-[-0.04em] text-navy">{value}</p>
-            <p className="mt-2 text-[0.88rem] text-muted">{label}</p>
-          </Link>
+            <p className="mt-3 text-[0.85rem] leading-relaxed text-muted">{check.detail}</p>
+          </div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.4fr_1fr]">
         <Card>
-          <CardHeader
-            title="Recente aanvragen"
-            description="Offerteaanvragen en contactberichten"
-            action={
-              <Link href="/admin/aanvragen" className="text-[0.85rem] text-steel hover:text-navy">
-                Alles bekijken
-              </Link>
-            }
-          />
-          {enquiries.length === 0 ? (
-            <EmptyState icon={<Inbox className="h-5 w-5" />} title="Nog geen aanvragen" text="Zodra iemand het offerte- of contactformulier invult, verschijnt de aanvraag hier." />
-          ) : (
-            <ul className="divide-y divide-line">
-              {enquiries.map((enquiry) => (
-                <li key={enquiry.id}>
-                  <Link href={`/admin/aanvragen/${enquiry.id}`} className="flex items-center gap-4 px-5 py-4 transition-colors hover:bg-paper">
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-[0.95rem] font-medium text-navy">{enquiry.company || enquiry.name}</p>
-                      <p className="truncate text-[0.82rem] text-muted">
-                        {KIND_LABEL[enquiry.kind]}
-                        {enquiry.service ? ` · ${enquiry.service}` : ''} · {formatDate(enquiry.created_at)}
-                      </p>
-                    </div>
-                    <Badge tone={STATUS_TONE[enquiry.status]}>{STATUS_LABEL[enquiry.status]}</Badge>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
-        </Card>
-
-        <div className="space-y-6">
-          <Card>
-            <CardHeader title="Website-inhoud" description={pending.length ? `${pending.length} onderdeel/onderdelen met niet-gepubliceerde wijzigingen` : 'Alles is gepubliceerd'} />
+          <CardHeader title="Website-inhoud" description={pending.length ? `${pending.length} onderde${pending.length === 1 ? 'el' : 'len'} met niet-gepubliceerde wijzigingen` : 'Alles is gepubliceerd'} />
+          {states ? (
             <ul className="divide-y divide-line">
               {SECTION_KEYS.map((key) => (
                 <li key={key}>
@@ -116,8 +105,12 @@ async function Dashboard({ searchParams }: { searchParams: PageProps<'/admin'>['
                 </li>
               ))}
             </ul>
-          </Card>
+          ) : (
+            <p className="px-5 py-6 text-[0.9rem] text-muted">De inhoud kan niet worden geladen zolang de opslag niet werkt.</p>
+          )}
+        </Card>
 
+        <div className="space-y-6">
           <Card>
             <CardHeader title="Inrichting" description="Controlelijst voor livegang" />
             <ul className="space-y-1 p-3">
@@ -131,7 +124,7 @@ async function Dashboard({ searchParams }: { searchParams: PageProps<'/admin'>['
                 );
                 return (
                   <li key={item.label}>
-                    {item.href && !item.done ? (
+                    {!item.done ? (
                       <Link href={item.href} className="flex items-center gap-3 rounded-lg px-2 py-2 text-[0.88rem] hover:bg-paper">
                         {content}
                       </Link>
@@ -144,9 +137,10 @@ async function Dashboard({ searchParams }: { searchParams: PageProps<'/admin'>['
             </ul>
           </Card>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 xl:grid-cols-2">
             {[
               { href: '/admin/content/home', label: 'Homepagina', icon: FileText },
+              { href: '/admin/beschikbaarheid', label: 'Beschikbaarheid', icon: CalendarDays },
               { href: '/admin/media', label: 'Foto’s', icon: ImageIcon },
               { href: '/admin/instellingen', label: 'Instellingen', icon: Settings },
             ].map(({ href, label, icon: Icon }) => (
@@ -156,16 +150,21 @@ async function Dashboard({ searchParams }: { searchParams: PageProps<'/admin'>['
               </Link>
             ))}
           </div>
+
+          <p className="flex gap-3 text-[0.82rem] leading-relaxed text-muted">
+            <Mail className="mt-0.5 h-4 w-4 shrink-0 text-steel" aria-hidden />
+            Offerteaanvragen en contactberichten komen per e-mail binnen. Met Beantwoorden in uw mailprogramma antwoordt u de klant direct.
+          </p>
         </div>
       </div>
     </div>
   );
 }
 
-export default function DashboardPage({ searchParams }: PageProps<'/admin'>) {
+export default function DashboardPage() {
   return (
     <Suspense fallback={<AdminSkeleton />}>
-      <Dashboard searchParams={searchParams} />
+      <Dashboard />
     </Suspense>
   );
 }

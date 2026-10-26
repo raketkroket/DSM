@@ -1,71 +1,62 @@
 'use server';
 
+import { createHash } from 'node:crypto';
+import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { z } from 'zod';
-import { env, isSupabaseConfigured } from '@/lib/env';
-import { createSessionClient } from '@/lib/supabase/server';
+import { count, hit, release } from '@/lib/server/kv';
+import { verifyPassword } from '@/lib/server/password';
+import { adminConfig, cookieName, cookieOptions, encodeSession, newSession, sameText } from '@/lib/server/session';
 import { safeNext } from '../auth';
 
-export type AuthState = { error?: string; success?: string; email?: string };
+export type AuthState = { error?: string; username?: string };
 
-const notConfigured: AuthState = { error: 'Supabase is nog niet gekoppeld. Zie de installatie-instructies in de README.' };
+const IP_LIMIT = 5; // failed logins per address per 15 minutes
+const ACCOUNT_LIMIT = 20; // failed logins for the account per hour, all addresses together
+// Used when the username is wrong, so a wrong username takes as long as a wrong password.
+const DUMMY_HASH = 'scrypt$32768$8$1$AAAAAAAAAAAAAAAAAAAAAA==$AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==';
+
+async function clientKey() {
+  const list = await headers();
+  const ip = list.get('x-forwarded-for')?.split(',')[0]?.trim() || list.get('x-real-ip') || 'unknown';
+  return createHash('sha256').update(ip).digest('hex').slice(0, 32);
+}
+
+const wait = (seconds: number) => `Te veel mislukte pogingen. Probeer het over ${Math.max(1, Math.ceil(seconds / 60))} minuten opnieuw.`;
 
 export async function signIn(_: AuthState, formData: FormData): Promise<AuthState> {
-  if (!isSupabaseConfigured()) return notConfigured;
-  const parsed = z
-    .object({ email: z.email(), password: z.string().min(1).max(200) })
-    .safeParse({ email: formData.get('email'), password: formData.get('password') });
-  const email = String(formData.get('email') ?? '');
-  if (!parsed.success) return { error: 'Vul een geldig e-mailadres en wachtwoord in.', email };
+  const config = adminConfig();
+  if (!config.ready) return { error: 'Het inloggen is nog niet ingesteld. Neem contact op met uw websitebouwer.' };
+  const username = String(formData.get('username') ?? '').trim().slice(0, 100);
+  const password = String(formData.get('password') ?? '').slice(0, 200);
+  if (!username || !password) return { error: 'Vul uw gebruikersnaam en wachtwoord in.', username };
 
-  const supabase = await createSessionClient();
-  const { data, error } = await supabase.auth.signInWithPassword(parsed.data);
-  if (error || !data.user) {
-    // Same message for unknown accounts and wrong passwords.
-    return { error: 'Onjuist e-mailadres of wachtwoord.', email };
+  const ipKey = `dsm:login:ip:${await clientKey()}`;
+  const accountKey = 'dsm:login:account';
+  try {
+    const [ip, account] = await Promise.all([count(ipKey), count(accountKey)]);
+    if (ip.count >= IP_LIMIT) return { error: wait(ip.retryAfter), username };
+    if (account.count >= ACCOUNT_LIMIT) return { error: wait(account.retryAfter), username };
+  } catch (error) {
+    console.error('Inlogbeveiliging niet bereikbaar:', error instanceof Error ? error.message : error);
+    return { error: 'Inloggen is tijdelijk niet mogelijk. Probeer het over enkele minuten opnieuw.', username };
   }
-  const { data: admin } = await supabase.from('admins').select('user_id').eq('user_id', data.user.id).maybeSingle();
-  if (!admin) {
-    await supabase.auth.signOut();
-    return { error: 'Dit account heeft geen toegang tot het beheer.', email };
+
+  const userOk = sameText(username.toLowerCase(), config.username.toLowerCase());
+  const passwordOk = await verifyPassword(password, userOk ? config.passwordHash : DUMMY_HASH);
+  if (!userOk || !passwordOk) {
+    await Promise.all([hit(ipKey, 15 * 60), hit(accountKey, 60 * 60)]).catch(() => {});
+    // Same message for a wrong username and a wrong password.
+    return { error: 'Onjuiste gebruikersnaam of wachtwoord.', username };
   }
+
+  await release(ipKey).catch(() => {});
+  const jar = await cookies();
+  jar.set(cookieName(), encodeSession(config, newSession(config)), cookieOptions());
   redirect(safeNext(formData.get('volgende')));
 }
 
 export async function signOut() {
-  if (isSupabaseConfigured()) {
-    const supabase = await createSessionClient();
-    await supabase.auth.signOut();
-  }
+  const jar = await cookies();
+  jar.set(cookieName(), '', { ...cookieOptions(), maxAge: 0 });
   redirect('/admin/login?uitgelogd=1');
-}
-
-export async function requestPasswordReset(_: AuthState, formData: FormData): Promise<AuthState> {
-  if (!isSupabaseConfigured()) return notConfigured;
-  const parsed = z.email().safeParse(formData.get('email'));
-  if (!parsed.success) return { error: 'Vul een geldig e-mailadres in.' };
-  const supabase = await createSessionClient();
-  const { error } = await supabase.auth.resetPasswordForEmail(parsed.data, {
-    redirectTo: `${env.siteUrl}/admin/auth/bevestigen?volgende=/admin/wachtwoord-herstellen`,
-  });
-  if (error && error.status !== 429) console.error('Wachtwoordherstel mislukt:', error.message);
-  if (error?.status === 429) return { error: 'Te veel verzoeken. Probeer het over enkele minuten opnieuw.' };
-  // Never reveal whether an account exists.
-  return { success: 'Als dit e-mailadres bij een beheerder hoort, ontvangt u binnen enkele minuten een herstellink.' };
-}
-
-export async function updatePassword(_: AuthState, formData: FormData): Promise<AuthState> {
-  if (!isSupabaseConfigured()) return notConfigured;
-  const password = String(formData.get('password') ?? '');
-  const confirm = String(formData.get('confirm') ?? '');
-  if (password.length < 12) return { error: 'Gebruik minimaal 12 tekens.' };
-  if (password !== confirm) return { error: 'De wachtwoorden komen niet overeen.' };
-  const supabase = await createSessionClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return { error: 'De herstellink is verlopen. Vraag een nieuwe link aan.' };
-  const { error } = await supabase.auth.updateUser({ password });
-  if (error) return { error: error.message.includes('different') ? 'Kies een ander wachtwoord dan het huidige.' : 'Wachtwoord wijzigen mislukt. Probeer het opnieuw.' };
-  redirect('/admin?wachtwoord=gewijzigd');
 }

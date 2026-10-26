@@ -2,20 +2,17 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { ContentEditor } from '@/components/admin/editor/ContentEditor';
 import { PageHeader } from '@/components/admin/ui';
-import { requireAdmin } from '@/lib/admin/auth';
+import { requireEditor } from '@/lib/admin/auth';
 import { getSectionStates } from '@/lib/admin/content';
 import { internalPages, sectionPreviews } from '@/lib/admin/editor-pages';
 import { EDITOR_SPEC, SECTION_META } from '@/lib/admin/editor-spec';
-import type { MediaItem } from '@/lib/admin/actions/media';
+import { readLibrary } from '@/lib/admin/media';
 import type { SectionKey } from '@/lib/content/types';
 
 /** Server part of an editor screen: loads the section and the media library. */
 export async function SectionEditorPage({ section, back = true }: { section: SectionKey; back?: boolean }) {
-  const { supabase } = await requireAdmin();
-  const [states, { data: media }] = await Promise.all([
-    getSectionStates(supabase),
-    supabase.from('media').select('*').order('sort_order', { ascending: true }).order('created_at', { ascending: false }),
-  ]);
+  const { storage } = await requireEditor();
+  const [states, library] = await Promise.all([getSectionStates(storage), readLibrary(storage)]);
   const state = states[section];
   return (
     <div className="space-y-6">
@@ -33,7 +30,7 @@ export async function SectionEditorPage({ section, back = true }: { section: Sec
         pending={state.pending}
         publishedAt={state.publishedAt}
         draftUpdatedAt={state.draftUpdatedAt}
-        media={(media ?? []) as MediaItem[]}
+        media={library.items}
         previews={sectionPreviews(section, states.services.draft.items)}
         internalPages={internalPages(states.services.draft.items)}
       />

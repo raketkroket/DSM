@@ -3,7 +3,8 @@
 import Image from 'next/image';
 import { ArrowDown, ArrowUp, Copy, GripVertical, ImageIcon, Loader2, RefreshCw, Trash2, Upload } from 'lucide-react';
 import { useRef, useState, useTransition, type DragEvent } from 'react';
-import { deleteMedia, getMediaUsage, reorderMedia, replaceMedia, updateMediaAlt, uploadMedia, type MediaItem } from '@/lib/admin/actions/media';
+import { deleteMedia, getMediaUsage, reorderMedia, updateMediaAlt, type MediaItem } from '@/lib/admin/actions/media';
+import { replacePhoto, uploadPhotos } from '@/lib/admin/upload-client';
 import { useToast } from './Toaster';
 import { Badge, EmptyState, adminButton, formatDate } from './ui';
 
@@ -139,11 +140,8 @@ function MediaCard({
               const file = event.target.files?.[0];
               event.target.value = '';
               if (!file) return;
-              const data = new FormData();
-              data.append('id', item.id);
-              data.append('file', file);
               start(async () => {
-                const result = await replaceMedia(data);
+                const result = await replacePhoto(item.id, file);
                 notify(result.ok ? 'success' : 'error', result.message);
                 if (result.ok && 'item' in result && result.item) {
                   onChange(result.item);
@@ -192,12 +190,10 @@ export function MediaLibrary({ initial }: { initial: MediaItem[] }) {
   const upload = (files: FileList | File[]) => {
     const list = [...files];
     if (!list.length) return;
-    const data = new FormData();
-    list.forEach((file) => data.append('files', file));
     startUpload(async () => {
-      const result = await uploadMedia(data);
+      const result = await uploadPhotos(list);
       notify(result.ok ? 'success' : 'error', result.message, result.problems);
-      if (result.ok && 'items' in result && result.items) setItems((current) => [...result.items!, ...current]);
+      if (result.items.length) setItems((current) => [...result.items, ...current]);
     });
   };
 

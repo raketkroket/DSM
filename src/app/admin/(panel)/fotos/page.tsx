@@ -3,10 +3,10 @@ import { Suspense } from 'react';
 import { PhotoSlotCard } from '@/components/admin/PhotoSlotCard';
 import { PublishAllButton } from '@/components/admin/PublishAllButton';
 import { AdminSkeleton, Badge, PageHeader } from '@/components/admin/ui';
-import { requireAdmin } from '@/lib/admin/auth';
+import { requireEditor } from '@/lib/admin/auth';
+import { readLibrary } from '@/lib/admin/media';
 import { getSectionStates } from '@/lib/admin/content';
 import { photoSlots } from '@/lib/admin/photo-slots';
-import type { MediaItem } from '@/lib/admin/actions/media';
 import { SECTION_KEYS, type SectionKey, type SiteContent } from '@/lib/content/types';
 
 export const metadata: Metadata = { title: 'Foto’s vervangen' };
@@ -14,11 +14,8 @@ export const metadata: Metadata = { title: 'Foto’s vervangen' };
 async function Slots({ searchParams }: { searchParams: PageProps<'/admin/fotos'>['searchParams'] }) {
   const params = await searchParams;
   const showAll = params.alle === '1';
-  const { supabase } = await requireAdmin();
-  const [states, { data: media }] = await Promise.all([
-    getSectionStates(supabase),
-    supabase.from('media').select('*').order('sort_order', { ascending: true }).order('created_at', { ascending: false }),
-  ]);
+  const { storage } = await requireEditor();
+  const [states, library] = await Promise.all([getSectionStates(storage), readLibrary(storage)]);
   const drafts = Object.fromEntries(SECTION_KEYS.map((key) => [key, states[key].draft])) as Pick<SiteContent, SectionKey>;
   const slots = photoSlots(drafts).filter((slot) => slot.image.src);
   const temporary = slots.filter((slot) => slot.temporary);
@@ -54,7 +51,7 @@ async function Slots({ searchParams }: { searchParams: PageProps<'/admin/fotos'>
               src={slot.image.src}
               alt={slot.image.alt}
               temporary={slot.temporary}
-              media={(media ?? []) as MediaItem[]}
+              media={library.items}
             />
           ))}
         </ul>

@@ -11,9 +11,9 @@ import { ServiceView } from '@/components/service/ServiceView';
 import { ServicesOverview } from '@/components/service/ServicesOverview';
 import { Footer } from '@/components/site/Footer';
 import { Header } from '@/components/site/Header';
-import { requireAdmin } from '@/lib/admin/auth';
+import { requireEditor } from '@/lib/admin/auth';
 import { getDraftSite } from '@/lib/admin/content';
-import { getPublicAvailability } from '@/lib/availability-server';
+import { readStoredAvailability } from '@/lib/availability-server';
 import type { AvailabilityDay } from '@/lib/availability';
 import type { SiteContent } from '@/lib/content/types';
 import { STOCK_PREFIX } from '@/lib/content/photos';
@@ -38,8 +38,8 @@ function View({ site, path, availability }: { site: SiteContent; path: string[];
 
 async function Preview({ params }: { params: PageProps<'/admin/voorbeeld/[[...pad]]'>['params'] }) {
   const { pad = [] } = await params;
-  const { supabase } = await requireAdmin();
-  const [site, availability] = await Promise.all([getDraftSite(supabase), getPublicAvailability()]);
+  const { storage } = await requireEditor();
+  const [site, availability] = await Promise.all([getDraftSite(storage), readStoredAvailability(storage)]);
   const brand = themeCss(site.settings.theme);
   return (
     <>

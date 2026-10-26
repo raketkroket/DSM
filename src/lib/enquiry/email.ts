@@ -34,13 +34,14 @@ function rows(items: Row[]) {
     .join('')}</table>`;
 }
 
-export function notificationEmail(opts: { kind: 'quote' | 'contact'; rows: Row[]; adminUrl: string; company: string }) {
+export function notificationEmail(opts: { kind: 'quote' | 'contact'; rows: Row[]; replyTo: string; company: string }) {
   const title = opts.kind === 'quote' ? 'Nieuwe offerteaanvraag' : 'Nieuw contactbericht';
   return shell(
     `<p style="margin:0 0 6px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#6e91ac;">${title}</p>
 <h1 style="margin:0 0 24px;font-size:24px;line-height:1.25;color:#112b46;">${escapeHtml(opts.rows.find((row) => row.label === 'Naam')?.value ?? '')}</h1>
 ${rows(opts.rows)}
-<p style="margin:28px 0 0;"><a href="${escapeHtml(opts.adminUrl)}" style="display:inline-block;background:#112b46;color:#ffffff;text-decoration:none;padding:12px 20px;border-radius:999px;font-size:14px;">Bekijk in het beheer</a></p>`,
+<p style="margin:28px 0 0;"><a href="mailto:${escapeHtml(opts.replyTo)}" style="display:inline-block;background:#112b46;color:#ffffff;text-decoration:none;padding:12px 20px;border-radius:999px;font-size:14px;">Beantwoorden</a></p>
+<p style="margin:24px 0 0;font-size:12px;line-height:1.6;color:#5b6876;">Deze aanvraag is alleen per e-mail verstuurd en wordt nergens anders bewaard. Bewaar deze e-mail zolang u de gegevens nodig heeft.</p>`,
     opts.company,
   );
 }

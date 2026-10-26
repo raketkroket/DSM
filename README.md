@@ -2,11 +2,13 @@
 
 Corporate website and content management for Dedicated Security Management B.V.
 
-- **Public site**: homepage, services overview, nine dedicated service pages, about, contact, multi-step quote request, privacy statement.
+- **Public site**: homepage, services overview, a page per service, about, contact, multi-step quote request, privacy statement.
 - **Beveiligingsplanner** (`/beveiligingsplanner`): an interactive tool where visitors choose their location, concerns and the hours they need cover (click-and-drag week grid), see matching services with the reasons, and send the profile straight into a pre-filled quote request. It recommends services only and never shows prices: the client's document contains no rates. Progress is remembered in the visitor's browser.
-- **Admin** (`/admin`): secure login, dashboard, content editor with draft → preview → publish, media library, enquiry management and website settings.
+- **Admin** (`/admin`): login with username and password, dashboard, content editor with draft → preview → publish, photo replacement, media library, availability calendar, brand colours and website settings.
 
 All default copy comes from the client's approved document *Website Dedicated Security Management B.V.*. Contact details (phone, e-mail, address, KvK) are intentionally empty until the owner fills them in under **Beheer → Instellingen**; empty fields are hidden on the site.
+
+**No database.** Like the Marli Nails site, everything the admin saves is a file in this repository, written through the GitHub API; Vercel rebuilds the site from it. Form submissions are e-mailed (Resend) and not stored anywhere else.
 
 ## Stack
 
@@ -14,12 +16,29 @@ All default copy comes from the client's approved document *Website Dedicated Se
 | --- | --- |
 | Framework | Next.js 16 (App Router, Cache Components, TypeScript) |
 | Styling / motion | Tailwind CSS 4, Motion (`motion/react`), CSS keyframes for the load sequence |
-| Data, auth, files | Supabase (Postgres + RLS, Auth, Storage) |
-| E-mail | Resend |
-| Images | `next/image` + `sharp` optimisation on upload (WebP, max 2400 px) |
+| Admin login | One account from environment variables: scrypt password hash + HMAC-signed session cookie |
+| Admin storage | JSON and WebP files in this repository via the GitHub API (`content/`, `public/uploads/`) |
+| E-mail | Resend (free plan) |
+| Rate limits | Upstash Redis via the Vercel Marketplace (optional, free); in-memory fallback |
+| Images | `next/image`; uploads shrunk in the browser, then `sharp` to WebP (max 2400 px) |
 | Hosting | Vercel |
 
-Published content is cached (`'use cache'` + `cacheTag('site-content')`) and refreshed the moment an admin publishes, so public pages stay static and fast.
+## How saving works
+
+```
+content/live/<section>.json        published content — read by the public site at build time
+content/live/availability.json     availability calendar
+content/admin/drafts/<section>.json  concepts (only while they differ from the live version)
+content/admin/media.json           media library: alt texts, order, sizes
+public/uploads/<id>.webp           uploaded photos
+```
+
+- *Concept opslaan* commits to `content/admin/` — `vercel.json`'s `ignoreCommand` skips a rebuild for those commits.
+- *Publiceren*, availability changes and uploads touch `content/live/` or `public/uploads/`, so Vercel rebuilds: the change is live after roughly one to two minutes.
+- Every save checks that the files did not change in the meantime (blob sha), so two browser tabs cannot overwrite each other silently.
+- A fresh upload is served by `/uploads/[file]` straight from GitHub until the rebuild has made it a static file.
+- A missing file means "not edited yet": the defaults in `src/lib/content/defaults.ts` are shown.
+- Locally (no `GITHUB_CONTENT_TOKEN`) the admin writes the same files into this checkout, or into `ADMIN_LOCAL_ROOT` when set.
 
 ## Local development
 
@@ -31,89 +50,89 @@ cp .env.example .env.local   # fill in the values (see below)
 npm run dev
 ```
 
-Without Supabase variables the public site runs on the built-in default content; the forms then answer with a clear "not connected yet" message and the admin login explains what is missing.
+Create a login for local testing with `npm run admin:wachtwoord`. In `.env.local`, write every `$` in `ADMIN_PASSWORD_HASH` as `\$` — Next.js expands `$NAME` in `.env` files. (Vercel stores the value as typed; there no escaping is needed.)
+
+Without `RESEND_API_KEY` the forms answer with a clear "not connected yet" message.
 
 ### Checks
 
 ```bash
 npm run lint        # ESLint
 npm run typecheck   # route types + TypeScript
-npm test            # unit tests: content merge/sanitising, validation, enquiry endpoint
-npm run test:db     # applies the SQL migration to an in-memory Postgres and checks every RLS rule
+npm test            # unit tests: content, validation, enquiry endpoint, login, admin storage flow
 npm run build       # production build
 ```
 
-## Supabase setup
+## Setup for production
 
-1. Create a Supabase project (region EU recommended).
-2. Apply the schema: either `supabase db push` with the Supabase CLI, or paste every file in `supabase/migrations/` into **SQL editor** in date order and run them. This creates the tables, row-level security policies, the enquiry-protection trigger, the public `media` storage bucket and the `availability` calendar table.
-3. **Create the administrator account** in **Authentication → Users → Add user** (e-mail + strong password, "Auto confirm"). Then grant admin rights in the SQL editor:
+### 1. Admin login
 
-   ```sql
-   insert into public.admins (user_id, email)
-   select id, email from auth.users where email = 'beheer@uw-domein.nl';
-   ```
+```bash
+npm run admin:wachtwoord
+```
 
-   Only users listed in `public.admins` can sign in to `/admin`; every page, server action and database query re-checks this.
-4. **Authentication → URL configuration**: set *Site URL* to your domain and add `https://<your-domain>/admin/auth/bevestigen` to *Redirect URLs* (also `http://localhost:3000/admin/auth/bevestigen` for local testing). Password-recovery links land there.
-5. Recommended: **Authentication → Sign In / Providers → Email**: disable *Allow new users to sign up* (admins are created manually), and configure custom SMTP so recovery e-mails come from your own domain.
-6. Copy the project URL, anon key and service-role key into the environment variables.
+Type the owner's password twice (hidden). The script prints `ADMIN_PASSWORD_HASH` and `ADMIN_SESSION_SECRET`; put both in Vercel. The password itself is never stored. The username is `ADMIN_USERNAME` (default `yassine128`).
 
-### Security model
+**New password**: run the script again, replace `ADMIN_PASSWORD_HASH` in Vercel and redeploy. Every existing session ends automatically.
 
-| Data | Anonymous visitors | Signed-in non-admin | Admin | Server (service role) |
-| --- | --- | --- | --- | --- |
-| Published content | read | read | read / write | — |
-| Draft content | — | — | read / write | — |
-| Enquiries | — | — | read, update status/notes, delete | insert (after validation) |
-| Media table / storage writes | — | — | full | — |
-| Media files (public URLs) | read | read | read | — |
+### 2. Storage (GitHub token)
 
-Submitted enquiry data cannot be altered by admins (a trigger only allows status and internal notes to change). The form endpoints validate on the server, reject oversized bodies, use a honeypot and minimum fill time against bots, deduplicate retries (per-submission token) and identical messages (24 h), and rate-limit per hashed IP (5 per 15 minutes).
+GitHub → Settings → Developer settings → **Fine-grained personal access tokens** → *Generate new token*: repository access *Only select repositories* → this repository; permission **Contents: Read and write**. Set it as `GITHUB_CONTENT_TOKEN` (plus `GITHUB_REPO` / `GITHUB_BRANCH` if they differ from `raketkroket/DSM` / `main`; the branch must be the one Vercel deploys to production). Pick the longest expiry your account allows and note the date: an expired token shows on the admin dashboard as *Opslag: actie nodig*.
 
-## E-mail (Resend)
+### 3. E-mail (Resend)
 
-1. Add and verify your sending domain in Resend.
-2. Set `RESEND_API_KEY` and `RESEND_FROM_EMAIL` (an address on the verified domain).
-3. Set the recipient for new enquiries in **Beheer → Instellingen → Meldingen** (or `ENQUIRY_NOTIFICATION_EMAIL` as fallback).
+1. Create a free Resend account, ideally with the owner's e-mail address, and an API key → `RESEND_API_KEY`.
+2. Without a verified domain, leave `RESEND_FROM_EMAIL` empty: mail is sent from `onboarding@resend.dev`, which only reaches the Resend account's own address. That is enough for the notifications to the owner; the confirmation to the customer is then skipped (the request still succeeds).
+3. To send confirmations to customers too, verify the company domain in Resend and set `RESEND_FROM_EMAIL`, e.g. `Dedicated Security Management <website@uw-domein.nl>`.
+4. Set the recipient in **Beheer → Instellingen → Meldingen** (or `ENQUIRY_NOTIFICATION_EMAIL`).
 
-Each enquiry triggers a notification to the business (reply-to set to the requester) and a confirmation to the requester. The result is stored per enquiry (`sent`, `failed` or `not_configured`) and shown in the admin, so a delivery problem is visible instead of silent.
+If the notification cannot be sent, the visitor sees an error and can try again; nothing is lost silently.
 
-> E-mail delivery has not been tested yet: it needs a verified Resend domain and API key. Send a test enquiry after configuring and check both mailboxes.
+### 4. Optional: Upstash Redis
+
+Vercel → Project → Storage → Marketplace → **Upstash for Redis** (free). It adds `KV_REST_API_URL` and `KV_REST_API_TOKEN`; login attempts and form submissions are then limited across all servers instead of per server instance.
+
+### Security
+
+- Login: scrypt (N = 32768), constant-time comparison, the same answer for a wrong username or password, 5 failed attempts per address per 15 minutes and 20 per hour for the account.
+- Session: HMAC-signed cookie (`HttpOnly`, `SameSite=Strict`, `Secure`, `__Host-` prefix in production), ends after a day without activity and always after a week; a new password invalidates all sessions. The proxy checks it on every `/admin` request and every page and server action checks it again.
+- Storage: the GitHub token stays on the server and can only write `content/live`, `content/admin` and `public/uploads/*.webp` (whitelist in `src/lib/server/storage.ts`). Content is sanitised (allowed image paths, safe links, hex colours) before it is saved.
+- Forms: server-side validation, size limit, honeypot, minimum fill time, one e-mail per submission token, duplicate messages ignored for 24 h, 5 submissions per 15 minutes per hashed IP.
 
 ## Environment variables
 
 See `.env.example`.
 
-| Variable | Where | Purpose |
-| --- | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | all | Canonical URL for metadata, sitemap, e-mail and recovery links |
-| `NEXT_PUBLIC_SUPABASE_URL` | all | Supabase project URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | all | Public anon key (safe in the browser; RLS protects data) |
-| `SUPABASE_SERVICE_ROLE_KEY` | server only | Stores validated enquiries. **Never expose.** |
-| `CRON_SECRET` | server only | Protects the daily keep-alive ping (`/api/keepalive`) |
-| `ENQUIRY_HASH_SALT` | server only | Optional salt for IP hashing |
-| `RESEND_API_KEY` | server only | Resend API key |
-| `RESEND_FROM_EMAIL` | server only | Sender on a verified domain |
-| `ENQUIRY_NOTIFICATION_EMAIL` | server only | Fallback recipient for new enquiries |
+| Variable | Purpose |
+| --- | --- |
+| `NEXT_PUBLIC_SITE_URL` | Canonical URL for metadata, sitemap and e-mail links |
+| `ADMIN_USERNAME` | Admin username (default `yassine128`) |
+| `ADMIN_PASSWORD_HASH` | From `npm run admin:wachtwoord` |
+| `ADMIN_SESSION_SECRET` | From `npm run admin:wachtwoord` (at least 32 characters) |
+| `GITHUB_CONTENT_TOKEN` | Fine-grained token, Contents read/write on this repository |
+| `GITHUB_REPO`, `GITHUB_BRANCH` | Optional, default `raketkroket/DSM` and `main` |
+| `RESEND_API_KEY` | Resend API key |
+| `RESEND_FROM_EMAIL` | Optional sender on a verified domain |
+| `ENQUIRY_NOTIFICATION_EMAIL` | Recipient when none is set in the admin |
+| `KV_REST_API_URL`, `KV_REST_API_TOKEN` | Optional Upstash Redis (added by Vercel) |
+| `ENQUIRY_HASH_SALT` | Optional salt for IP hashing |
 
 ## Deploying to Vercel
 
-1. Import the repository in Vercel (framework preset: Next.js; no build overrides needed).
-2. Add the environment variables above for *Production* (and *Preview* if you use preview deployments with a separate Supabase project).
-3. Set `CRON_SECRET` (any long random string). `vercel.json` schedules a daily call to `/api/keepalive`, which runs one tiny database query: a free Supabase project pauses after a week without activity, and because public pages are cached, real visitors alone may not keep it awake. Check it under *Settings → Cron Jobs* in Vercel; the response is 200 when the database answered.
-4. Deploy, then sign in at `/admin` and complete the checklist on the dashboard (contact details, notification e-mail, own photos).
-5. Point the domain to Vercel and update `NEXT_PUBLIC_SITE_URL` plus the Supabase redirect URLs to the final domain.
+1. Import the repository in Vercel (framework preset: Next.js; no build overrides needed). Production must deploy from the branch in `GITHUB_BRANCH`.
+2. Add the environment variables above for *Production*.
+3. Deploy, then sign in at `/admin` and complete the checklist on the dashboard (contact details, notification e-mail, own photos). The dashboard shows whether storage, e-mail and rate limiting work.
+4. Point the domain to Vercel and update `NEXT_PUBLIC_SITE_URL`.
 
 ## Content management
 
 - **Content**: every text, button, list and photo on the site is editable per page area. Changes are saved as a concept; *Voorbeeld* opens a preview with the concept, *Publiceren* puts it live. *Verwerpen* restores the published version.
 - **Photos**: choose from the media library inside the editor, upload directly from the picker, set alt text and click the preview to set the focal point (how the photo is cropped on different screens).
-- **Mediabibliotheek**: upload (drag & drop, max 15 MB, optimised to WebP), edit alt text, see where a photo is used, replace a photo everywhere it is used, reorder, and delete photos that are no longer in use.
-- **Aanvragen**: filter by status, type, service or search; open a request to change its status (nieuw / gecontacteerd / afgerond), keep internal notes, reply by e-mail (pre-filled) or call.
+- **Mediabibliotheek**: upload (drag & drop, any size up to 15 MB: large photos are shrunk in the browser first), edit alt text, see where a photo is used, replace a photo everywhere it is used, reorder, and delete photos that are no longer in use.
 - **Diensten**: services can be added, removed and reordered (Content → Diensten). Each service gets its own page at `/diensten/<webadres>`; new ones start empty, so fill in the copy and photo before publishing. Removed services disappear from the menu, sitemap, planner and quote form.
 - **Kleuren** (Instellingen → Kleuren): primary, deep, text and background colour. Each picker shows the contrast against its counterpart and warns below 4.5 : 1; *Standaard* restores the original palette.
-- **Beschikbaarheid**: a calendar where the owner marks days as *Beschikbaar*, *Beperkt beschikbaar* or *Volgeboekt*, optionally with a short note. Click a day, drag across a range or Ctrl/Shift-click to add days, then pick a status. Changes are live immediately: the contact page shows the calendar (only while future days are filled in) and the quote form offers an optional *Gewenste startdatum*, which is stored with the request and shown in the e-mail and the admin.
+- **Beschikbaarheid**: a calendar where the owner marks days as *Beschikbaar*, *Beperkt beschikbaar* or *Volgeboekt*, optionally with a short note. Click a day, drag across a range or Ctrl/Shift-click to add days, then pick a status. The contact page shows the calendar (only while future days are filled in) and the quote form offers an optional *Gewenste startdatum*, which is included in the e-mail.
+- **Aanvragen** arrive by e-mail only, with the customer as reply-to.
 
 ## Photography
 
@@ -133,20 +152,22 @@ photo straight into a slot (it is optimised to WebP and placed as a concept), th
 ## Project structure
 
 ```
+content/                 everything the admin saves (see "How saving works")
 src/app/(site)/          public pages (static, cached content)
-src/app/admin/           login, recovery, dashboard, content, media, enquiries, preview
+src/app/admin/           login, dashboard, content, photos, media, availability, settings, preview
 src/app/api/             form endpoints (quote, contact)
+src/app/uploads/         serves fresh uploads until the next deployment
 src/components/          site, home, service, about, contact, forms, admin, motion
 src/lib/content/         content types, defaults from the client document, merge + sanitise, cached getter
-src/lib/admin/           auth helpers, editor schema, server actions
+src/lib/admin/           session helpers, editor schema, server actions
+src/lib/server/          password hashing, session cookie, GitHub/local storage, rate limits
 src/lib/enquiry/         validation schema, handler, e-mail templates
-supabase/migrations/     database schema and policies
-supabase/tests/          RLS verification against an in-memory Postgres
+scripts/admin-password.mjs  creates the login secrets
 tests/                   unit tests (Vitest)
 ```
 
 ## Still to provide by the client
 
-- Contact details, KvK number, social links and logo (admin → Instellingen).
+- Contact details, KvK number, social links (admin → Instellingen).
 - Own photography.
 - Review of the privacy statement (`/privacy`) by the company before launch.
