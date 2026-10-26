@@ -91,6 +91,7 @@ See `.env.example`.
 | `NEXT_PUBLIC_SUPABASE_URL` | all | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | all | Public anon key (safe in the browser; RLS protects data) |
 | `SUPABASE_SERVICE_ROLE_KEY` | server only | Stores validated enquiries. **Never expose.** |
+| `CRON_SECRET` | server only | Protects the daily keep-alive ping (`/api/keepalive`) |
 | `ENQUIRY_HASH_SALT` | server only | Optional salt for IP hashing |
 | `RESEND_API_KEY` | server only | Resend API key |
 | `RESEND_FROM_EMAIL` | server only | Sender on a verified domain |
@@ -100,8 +101,9 @@ See `.env.example`.
 
 1. Import the repository in Vercel (framework preset: Next.js; no build overrides needed).
 2. Add the environment variables above for *Production* (and *Preview* if you use preview deployments with a separate Supabase project).
-3. Deploy, then sign in at `/admin` and complete the checklist on the dashboard (contact details, notification e-mail, own photos).
-4. Point the domain to Vercel and update `NEXT_PUBLIC_SITE_URL` plus the Supabase redirect URLs to the final domain.
+3. Set `CRON_SECRET` (any long random string). `vercel.json` schedules a daily call to `/api/keepalive`, which runs one tiny database query: a free Supabase project pauses after a week without activity, and because public pages are cached, real visitors alone may not keep it awake. Check it under *Settings → Cron Jobs* in Vercel; the response is 200 when the database answered.
+4. Deploy, then sign in at `/admin` and complete the checklist on the dashboard (contact details, notification e-mail, own photos).
+5. Point the domain to Vercel and update `NEXT_PUBLIC_SITE_URL` plus the Supabase redirect URLs to the final domain.
 
 ## Content management
 
