@@ -105,7 +105,7 @@ export function Header({ services, logo, email, phone }: HeaderProps) {
         <div className="shell">
           <div className="relative flex h-[4.5rem] items-center justify-between gap-6 md:h-20">
             <Link href="/" className="shrink-0">
-              <Logo image={logo} tone={overlay ? 'light' : 'dark'} />
+              <Logo image={logo} tone={overlay ? 'light' : 'dark'} priority />
               <span className="sr-only"> (naar de homepage)</span>
             </Link>
 

@@ -6,7 +6,7 @@ export default function NotFound() {
   return (
     <main className="blueprint flex min-h-svh items-center">
       <div className="shell">
-        <LogoMark className="h-12 w-12 text-navy" />
+        <LogoMark className="h-12" alt="Dedicated Security Management B.V." />
         <p className="eyebrow mt-10">Fout 404</p>
         <h1 className="display-lg mt-6 max-w-[16ch] text-navy">
           Deze pagina bestaat <span className="accent">niet (meer).</span>

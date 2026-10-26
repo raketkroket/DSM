@@ -47,11 +47,8 @@ export function AdminShell({ children, account }: { children: ReactNode; account
   const sidebar = (
     <div className="flex h-full flex-col">
       <Link href="/admin" className="flex items-center gap-3 px-2 text-navy">
-        <LogoMark className="h-8 w-8" />
-        <span className="leading-none">
-          <span className="block text-[0.95rem] font-semibold tracking-[-0.02em]">Dedicated</span>
-          <span className="mt-1 block font-mono text-[0.55rem] tracking-[0.2em] text-muted uppercase">Beheer</span>
-        </span>
+        <LogoMark className="h-8" alt="Dedicated Security Management" />
+        <span className="border-l border-line-strong pl-3 font-mono text-[0.6rem] tracking-[0.2em] text-muted uppercase">Beheer</span>
       </Link>
       <div className="mt-8 flex-1">{nav}</div>
       <a href="/" target="_blank" rel="noopener" className="mb-4 flex items-center gap-3 rounded-xl px-3 py-2.5 text-[0.88rem] text-muted hover:bg-mist hover:text-navy">
@@ -69,7 +66,7 @@ export function AdminShell({ children, account }: { children: ReactNode; account
       {/* Mobile top bar */}
       <div className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-line bg-white/90 px-4 backdrop-blur lg:hidden">
         <Link href="/admin" className="flex items-center gap-2.5 text-navy">
-          <LogoMark className="h-7 w-7" />
+          <LogoMark className="h-7" alt="Dedicated Security Management" />
           <span className="text-[0.95rem] font-semibold">Beheer</span>
         </Link>
         <button type="button" onClick={() => setOpen(true)} className="grid h-10 w-10 place-items-center rounded-xl border border-line" aria-label="Menu openen" aria-expanded={open}>
